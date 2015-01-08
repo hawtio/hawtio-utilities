@@ -1,5 +1,8 @@
 ### Change Log
 
+#### 2.0.3
+* Add UI helper functions
+
 #### 2.0.2
 * Add compile directive as a helper plugin
 
