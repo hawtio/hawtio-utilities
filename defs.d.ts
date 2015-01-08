@@ -4,6 +4,7 @@
 /// <reference path="d.ts/arrayHelpers.d.ts"/>
 /// <reference path="d.ts/urlHelpers.d.ts"/>
 /// <reference path="d.ts/baseHelpers.d.ts"/>
+/// <reference path="d.ts/compilePlugin.d.ts"/>
 /// <reference path="d.ts/controllerHelpers.d.ts"/>
 /// <reference path="d.ts/tasks.d.ts"/>
 /// <reference path="d.ts/coreHelpers.d.ts"/>

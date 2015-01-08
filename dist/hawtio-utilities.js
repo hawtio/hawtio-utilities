@@ -995,6 +995,35 @@ var Core;
     Core.humanizeValue = humanizeValue;
 })(Core || (Core = {}));
 
+/// <reference path="includes.ts"/>
+var HawtioCompile;
+(function (HawtioCompile) {
+    var pluginName = 'hawtio-compile';
+    var log = Logger.get(pluginName);
+    HawtioCompile._module = angular.module(pluginName, []);
+    HawtioCompile._module.run(function () {
+        log.debug("loaded");
+    });
+    HawtioCompile._module.directive('compile', ['$compile', function ($compile) {
+        return function (scope, element, attrs) {
+            scope.$watch(function (scope) {
+                // watch the 'compile' expression for changes
+                return scope.$eval(attrs.compile);
+            }, function (value) {
+                // when the 'compile' expression changes
+                // assign it into the current DOM
+                element.html(value);
+                // compile the new DOM and link it to the current
+                // scope.
+                // NOTE: we only compile .childNodes so that
+                // we don't get into infinite loop compiling ourselves
+                $compile(element.contents())(scope);
+            });
+        };
+    }]);
+    hawtioPluginLoader.addModule(pluginName);
+})(HawtioCompile || (HawtioCompile = {}));
+
 var ControllerHelpers;
 (function (ControllerHelpers) {
     var log = Logger.get("ControllerHelpers");
