@@ -3182,3 +3182,63 @@ var StorageHelpers;
     }
     StorageHelpers.bindModelToLocalStorage = bindModelToLocalStorage;
 })(StorageHelpers || (StorageHelpers = {}));
+
+/// <reference path="includes.ts"/>
+/**
+ * @module UI
+ */
+var UI;
+(function (UI) {
+    UI.scrollBarWidth = null;
+    function findParentWith($scope, attribute) {
+        if (attribute in $scope) {
+            return $scope;
+        }
+        if (!$scope.$parent) {
+            return null;
+        }
+        // let's go up the scope tree
+        return findParentWith($scope.$parent, attribute);
+    }
+    UI.findParentWith = findParentWith;
+    function getIfSet(attribute, $attr, def) {
+        if (attribute in $attr) {
+            var wantedAnswer = $attr[attribute];
+            if (wantedAnswer && !wantedAnswer.isBlank()) {
+                return wantedAnswer;
+            }
+        }
+        return def;
+    }
+    UI.getIfSet = getIfSet;
+    /*
+     * Helper function to ensure a directive attribute has some default value
+     */
+    function observe($scope, $attrs, key, defValue, callbackFunc) {
+        if (callbackFunc === void 0) { callbackFunc = null; }
+        $attrs.$observe(key, function (value) {
+            if (!angular.isDefined(value)) {
+                $scope[key] = defValue;
+            }
+            else {
+                $scope[key] = value;
+            }
+            if (angular.isDefined(callbackFunc) && callbackFunc) {
+                callbackFunc($scope[key]);
+            }
+        });
+    }
+    UI.observe = observe;
+    function getScrollbarWidth() {
+        if (!angular.isDefined(UI.scrollBarWidth)) {
+            var div = document.createElement('div');
+            div.innerHTML = '<div style="width:50px;height:50px;position:absolute;left:-50px;top:-50px;overflow:auto;"><div style="width:1px;height:100px;"></div></div>';
+            div = div.firstChild;
+            document.body.appendChild(div);
+            UI.scrollBarWidth = div.offsetWidth - div.clientWidth;
+            document.body.removeChild(div);
+        }
+        return UI.scrollBarWidth;
+    }
+    UI.getScrollbarWidth = getScrollbarWidth;
+})(UI || (UI = {}));

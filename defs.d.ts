@@ -16,3 +16,4 @@
 /// <reference path="d.ts/pollHelpers.d.ts"/>
 /// <reference path="d.ts/selectionHelpers.d.ts"/>
 /// <reference path="d.ts/storageHelpers.d.ts"/>
+/// <reference path="d.ts/uiHelpers.d.ts"/>
