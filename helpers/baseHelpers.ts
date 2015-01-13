@@ -518,6 +518,19 @@ module Core {
     return value;
   }
 
+  function getPhase($scope:ng.IScope) {
+    if ($scope.$$phase) {
+      return $scope.$$phase;
+    }
+    if (HawtioCore.injector) {
+      var $rootScope = HawtioCore.injector.get('$rootScope');
+      if ($rootScope) {
+        return $rootScope.$$phase;
+      }
+    }
+    
+  }
+
   /**
    * Performs a $scope.$apply() if not in a digest right now otherwise it will fire a digest later
    *
@@ -527,7 +540,7 @@ module Core {
    * @param {*} $scope
    */
   export function $applyNowOrLater($scope:ng.IScope) {
-    if ($scope.$$phase || $scope.$root.$$phase) {
+    if (getPhase($scope)) {
       setTimeout(() => {
         Core.$apply($scope);
       }, 50);
@@ -560,7 +573,7 @@ module Core {
    * @param {*} $scope
    */
   export function $apply($scope:ng.IScope) {
-    var phase = $scope.$$phase || $scope.$root.$$phase;
+    var phase = getPhase($scope);
     if (!phase) {
       $scope.$apply();
     }
@@ -575,7 +588,7 @@ module Core {
    * @param {*} $scope
    */
   export function $digest($scope:ng.IScope) {
-    var phase = $scope.$$phase || $scope.$root.$$phase;
+    var phase = getPhase($scope);
     if (!phase) {
       $scope.$digest();
     }

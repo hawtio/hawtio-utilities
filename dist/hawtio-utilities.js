@@ -761,6 +761,17 @@ var Core;
         return value;
     }
     Core.pathSet = pathSet;
+    function getPhase($scope) {
+        if ($scope.$$phase) {
+            return $scope.$$phase;
+        }
+        if (HawtioCore.injector) {
+            var $rootScope = HawtioCore.injector.get('$rootScope');
+            if ($rootScope) {
+                return $rootScope.$$phase;
+            }
+        }
+    }
     /**
      * Performs a $scope.$apply() if not in a digest right now otherwise it will fire a digest later
      *
@@ -770,7 +781,7 @@ var Core;
      * @param {*} $scope
      */
     function $applyNowOrLater($scope) {
-        if ($scope.$$phase || $scope.$root.$$phase) {
+        if (getPhase($scope)) {
             setTimeout(function () {
                 Core.$apply($scope);
             }, 50);
@@ -805,7 +816,7 @@ var Core;
      * @param {*} $scope
      */
     function $apply($scope) {
-        var phase = $scope.$$phase || $scope.$root.$$phase;
+        var phase = getPhase($scope);
         if (!phase) {
             $scope.$apply();
         }
@@ -820,7 +831,7 @@ var Core;
      * @param {*} $scope
      */
     function $digest($scope) {
-        var phase = $scope.$$phase || $scope.$root.$$phase;
+        var phase = getPhase($scope);
         if (!phase) {
             $scope.$digest();
         }

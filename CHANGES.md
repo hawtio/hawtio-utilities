@@ -1,5 +1,8 @@
 ### Change Log
 
+#### 2.0.4
+* Update Core.$apply and related functions, $scope no longer has a $root property
+
 #### 2.0.3
 * Add UI helper functions
 
