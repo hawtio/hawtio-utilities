@@ -1,5 +1,8 @@
 ### Change Log
 
+#### 2.0.6
+* Add logHelpers.ts
+
 #### 2.0.5
 * Add a subset of functions into preferenceHelpers.ts
 
