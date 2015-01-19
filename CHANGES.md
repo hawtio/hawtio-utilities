@@ -1,5 +1,8 @@
 ### Change Log
 
+#### 2.0.5
+* Add a subset of functions into preferenceHelpers.ts
+
 #### 2.0.4
 * Update Core.$apply and related functions, $scope no longer has a $root property
 
