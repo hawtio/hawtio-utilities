@@ -1,5 +1,8 @@
 ### Change Log
 
+#### 2.0.7
+* Avoid NPE
+
 #### 2.0.6
 * Add logHelpers.ts
 

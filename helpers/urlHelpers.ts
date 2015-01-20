@@ -10,7 +10,7 @@ module UrlHelpers {
    * @returns {string}
    */
   export function noHash(url:string):string {
-    if (url.startsWith('#')) {
+    if (url && url.startsWith('#')) {
       return url.last(url.length - 1);
     } else {
       return url;
