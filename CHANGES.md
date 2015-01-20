@@ -1,5 +1,8 @@
 ### Change Log
 
+#### 2.0.8
+* Forgot recompile, avoid NPE
+
 #### 2.0.7
 * Avoid NPE
 

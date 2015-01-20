@@ -139,7 +139,7 @@ var UrlHelpers;
      * @returns {string}
      */
     function noHash(url) {
-        if (url.startsWith('#')) {
+        if (url && url.startsWith('#')) {
             return url.last(url.length - 1);
         }
         else {
