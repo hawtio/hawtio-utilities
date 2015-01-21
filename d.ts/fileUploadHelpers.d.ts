@@ -92,5 +92,5 @@ declare module FileUpload {
         operation: String;
         arguments: any[];
     }
-    function useJolokiaTransport(uploader: FileUploader, jolokia: any, onLoad: (json: string) => RequestParameters): void;
+    function useJolokiaTransport($scope: ng.IScope, uploader: FileUploader, jolokia: any, onLoad: (json: string) => RequestParameters): void;
 }

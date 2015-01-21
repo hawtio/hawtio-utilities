@@ -2800,10 +2800,9 @@ var FileUpload;
 (function (FileUpload) {
     // add angular-file-upload to the plugin loader too
     hawtioPluginLoader.addModule('angularFileUpload');
-    function useJolokiaTransport(uploader, jolokia, onLoad) {
+    function useJolokiaTransport($scope, uploader, jolokia, onLoad) {
         // cast the uploader to one that lets us fiddle with it's goodies
         var uploaderInternal = uploader;
-        var $rootScope = HawtioCore.injector.get("$rootScope");
         // replace the uploader's transport with one that can post a
         // jolokia request
         uploaderInternal._xhrTransport = function (item) {
@@ -2816,12 +2815,12 @@ var FileUpload;
                         item.json = reader.result;
                         uploaderInternal._onSuccessItem(item, response, response.status, {});
                         uploaderInternal._onCompleteItem(item, response, response.status, {});
-                        Core.$apply($rootScope);
+                        Core.$apply($scope);
                     }, {
                         error: function (response) {
                             uploaderInternal._onErrorItem(item, response, response.status, {});
                             uploaderInternal._onCompleteItem(item, response, response.status, {});
-                            Core.$apply($rootScope);
+                            Core.$apply($scope);
                         }
                     }));
                 }

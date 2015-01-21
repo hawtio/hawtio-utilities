@@ -1,5 +1,8 @@
 ### Change Log
 
+#### 2.0.11
+* Update useJolokiaTransport to take a passed in $scope rather than trying to get it from the injector
+
 #### 2.0.10
 * Add angular-file-upload.js and add module to the plugin loader
 

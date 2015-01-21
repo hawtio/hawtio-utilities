@@ -120,11 +120,10 @@ module FileUpload {
     arguments:Array<any>;
   }
 
-  export function useJolokiaTransport(uploader:FileUploader, jolokia:any, onLoad:(json:string) => RequestParameters) {
+  export function useJolokiaTransport($scope:ng.IScope, uploader:FileUploader, jolokia:any, onLoad:(json:string) => RequestParameters) {
 
     // cast the uploader to one that lets us fiddle with it's goodies
     var uploaderInternal = <FileUploaderInternal>uploader;
-    var $rootScope = HawtioCore.injector.get("$rootScope");
 
     // replace the uploader's transport with one that can post a
     // jolokia request
@@ -138,12 +137,12 @@ module FileUpload {
             item.json = reader.result;
             uploaderInternal._onSuccessItem(item, response, response.status, {});
             uploaderInternal._onCompleteItem(item, response, response.status, {});
-            Core.$apply($rootScope);
+            Core.$apply($scope);
           }, {
             error: (response) => {
               uploaderInternal._onErrorItem(item, response, response.status, {});
               uploaderInternal._onCompleteItem(item, response, response.status, {});
-              Core.$apply($rootScope);
+              Core.$apply($scope);
             }
           }));
         }
