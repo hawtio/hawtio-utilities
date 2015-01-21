@@ -108,21 +108,23 @@ var ArrayHelpers;
     function sync(collection, newCollection, index) {
         if (index === void 0) { index = 'id'; }
         var answer = removeElements(collection, newCollection, index);
-        newCollection.forEach(function (item) {
-            var oldItem = collection.find(function (c) {
-                return c[index] === item[index];
-            });
-            if (!oldItem) {
-                answer = true;
-                collection.push(item);
-            }
-            else {
-                if (item !== oldItem) {
-                    angular.copy(item, oldItem);
+        if (newCollection) {
+            newCollection.forEach(function (item) {
+                var oldItem = collection.find(function (c) {
+                    return c[index] === item[index];
+                });
+                if (!oldItem) {
                     answer = true;
+                    collection.push(item);
                 }
-            }
-        });
+                else {
+                    if (item !== oldItem) {
+                        angular.copy(item, oldItem);
+                        answer = true;
+                    }
+                }
+            });
+        }
         return answer;
     }
     ArrayHelpers.sync = sync;
