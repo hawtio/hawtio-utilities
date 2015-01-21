@@ -19,18 +19,20 @@ module ArrayHelpers {
      */
     export function sync(collection:Array<any>, newCollection:Array<any>, index:string = 'id') {
       var answer = removeElements(collection, newCollection, index);
-      newCollection.forEach((item) => {
-        var oldItem = collection.find((c) => { return c[index] === item[index]; });
-        if (!oldItem) {
-          answer = true;
-          collection.push(item);
-        } else {
-          if (item !== oldItem) {
-            angular.copy(item, oldItem);
+      if (newCollection) {
+        newCollection.forEach((item) => {
+          var oldItem = collection.find((c) => { return c[index] === item[index]; });
+          if (!oldItem) {
             answer = true;
+            collection.push(item);
+          } else {
+            if (item !== oldItem) {
+              angular.copy(item, oldItem);
+              answer = true;
+            }
           }
-        }
-      });
+        });
+      }
       return answer;
     }
 
