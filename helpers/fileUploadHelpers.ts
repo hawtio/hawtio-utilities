@@ -3,6 +3,9 @@
 /// <reference path="coreHelpers.ts"/>
 module FileUpload {
 
+  // add angular-file-upload to the plugin loader too
+  hawtioPluginLoader.addModule('angularFileUpload');
+
   export interface IFileItem {
     url:string;
     alias?: string;

@@ -1,5 +1,8 @@
 ### Change Log
 
+#### 2.0.10
+* Add angular-file-upload.js and add module to the plugin loader
+
 #### 2.0.9
 * Fix NPE
 

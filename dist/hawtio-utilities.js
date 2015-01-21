@@ -2798,6 +2798,8 @@ var Core;
 /// <reference path="coreHelpers.ts"/>
 var FileUpload;
 (function (FileUpload) {
+    // add angular-file-upload to the plugin loader too
+    hawtioPluginLoader.addModule('angularFileUpload');
     function useJolokiaTransport(uploader, jolokia, onLoad) {
         // cast the uploader to one that lets us fiddle with it's goodies
         var uploaderInternal = uploader;

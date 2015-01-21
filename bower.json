@@ -5,6 +5,7 @@
     "hawtio"
   ],
   "main": [
+    "dist/angular-file-upload.js",
     "dist/hawtio-utilities.js"
   ],
   "ignore": [
