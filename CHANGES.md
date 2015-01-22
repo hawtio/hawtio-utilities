@@ -1,5 +1,8 @@
 ### Change Log
 
+#### 2.0.12
+* Switch from sugarjs bower package to an embedded script so we get more of the string manipulation functions like titleize()
+
 #### 2.0.11
 * Update useJolokiaTransport to take a passed in $scope rather than trying to get it from the injector
 

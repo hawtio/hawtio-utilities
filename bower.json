@@ -5,6 +5,7 @@
     "hawtio"
   ],
   "main": [
+    "dist/sugar.js",
     "dist/angular-file-upload.js",
     "dist/hawtio-utilities.js"
   ],
@@ -21,7 +22,6 @@
     "hawtio-core": "~2.0.0",
     "hawtio-core-navigation": "~2.0.0",
     "lodash": "~2.4.1",
-    "sugarjs": "~1.4.1",
     "uri.js": "~1.14.1"
   },
   "devDependencies": {
