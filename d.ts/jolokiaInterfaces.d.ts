@@ -12,7 +12,7 @@ declare module Core {
      * Schema for a JMX operation object
      */
     interface JMXOperation {
-        args: JMXOperationArgument[];
+        args: Array<JMXOperationArgument>;
         desc: string;
         ret: string;
         canInvoke?: boolean;
@@ -59,5 +59,5 @@ declare module Core {
     interface JMXDomains {
         [domainName: string]: JMXDomain;
     }
-    function operationToString(name: string, args: JMXOperationArgument[]): string;
+    function operationToString(name: string, args: Array<JMXOperationArgument>): string;
 }

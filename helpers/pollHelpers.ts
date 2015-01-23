@@ -21,7 +21,13 @@ module PollHelpers {
     var refreshFunction = () => {
       // log.debug("polling for scope: ", name);
       updateFunction(() => {
-        if (jolokia.isRunning() && $scope.$hasPoller) {
+        var keenPollingFn = $scope.$keepPolling;
+        if (!angular.isFunction(keenPollingFn)) {
+          keenPollingFn = () => {
+            return !jolokia || jolokia.isRunning();
+          }
+        }
+        if (keenPollingFn() && $scope.$hasPoller) {
           promise = $timeout(refreshFunction, period);
         }
       });

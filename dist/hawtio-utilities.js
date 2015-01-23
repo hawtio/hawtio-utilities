@@ -81,7 +81,8 @@ var Core;
     Core.createConnectOptions = createConnectOptions;
 })(Core || (Core = {}));
 
-
+/// <reference path="../libs/hawtio-core-dts/defs.d.ts"/>
+/// <reference path="coreInterfaces.ts"/>
 
 /// <reference path="includes.ts"/>
 var ArrayHelpers;
@@ -3053,7 +3054,13 @@ var PollHelpers;
         var refreshFunction = function () {
             // log.debug("polling for scope: ", name);
             updateFunction(function () {
-                if (jolokia.isRunning() && $scope.$hasPoller) {
+                var keenPollingFn = $scope.$keepPolling;
+                if (!angular.isFunction(keenPollingFn)) {
+                    keenPollingFn = function () {
+                        return !jolokia || jolokia.isRunning();
+                    };
+                }
+                if (keenPollingFn() && $scope.$hasPoller) {
                     promise = $timeout(refreshFunction, period);
                 }
             });

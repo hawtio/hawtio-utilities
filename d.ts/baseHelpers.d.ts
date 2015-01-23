@@ -30,7 +30,7 @@ declare module Core {
      *
      * @private
      */
-    function _resetJolokiaUrls(): String[];
+    function _resetJolokiaUrls(): Array<String>;
     /**
      * Trims the leading prefix from a string if its present
      * @method trimLeading
@@ -55,12 +55,12 @@ declare module Core {
      * Loads all of the available connections from local storage
      * @returns {Core.ConnectionMap}
      */
-    function loadConnectionMap(): ConnectionMap;
+    function loadConnectionMap(): Core.ConnectionMap;
     /**
      * Saves the connection map to local storage
      * @param map
      */
-    function saveConnectionMap(map: ConnectionMap): void;
+    function saveConnectionMap(map: Core.ConnectionMap): void;
     /**
      * Returns the connection options for the given connection name from localStorage
      */
@@ -73,7 +73,7 @@ declare module Core {
     /**
      * Creates the Jolokia URL string for the given connection options
      */
-    function createServerConnectionUrl(options: ConnectOptions): String;
+    function createServerConnectionUrl(options: Core.ConnectOptions): String;
     /**
      * Returns Jolokia URL by checking its availability if not in local mode
      *

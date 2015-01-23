@@ -1,10 +1,10 @@
 /// <reference path="baseHelpers.d.ts" />
 declare module SelectionHelpers {
     function selectNone(group: any[]): void;
-    function selectAll(group: any[], filter?: (any: any) => boolean): void;
+    function selectAll(group: any[], filter?: (any) => boolean): void;
     function toggleSelection(item: any): void;
     function selectOne(group: any[], item: any): void;
-    function sync(selections: any[], group: any[], index: string): any[];
+    function sync(selections: Array<any>, group: Array<any>, index: string): Array<any>;
     function select(group: any[], item: any, $event: any): void;
     function isSelected(item: any, yes?: string, no?: string): any;
     function clearGroup(group: any): void;

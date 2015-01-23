@@ -6,7 +6,7 @@ declare module FileUpload {
         url: string;
         alias?: string;
         headers: any;
-        formData: any[];
+        formData: Array<any>;
         method: string;
         withCredentials: boolean;
         removeAfterUpload: boolean;
@@ -38,13 +38,13 @@ declare module FileUpload {
         url: String;
         alias?: String;
         headers?: any;
-        queue?: IFileItem[];
+        queue?: Array<IFileItem>;
         progress?: number;
         autoUpload?: boolean;
         removeAfterUpload?: boolean;
         method?: String;
-        filters?: IFilter[];
-        formData?: any[];
+        filters?: Array<IFilter>;
+        formData?: Array<any>;
         queueLimit?: number;
         withCredentials?: boolean;
     }
@@ -52,13 +52,13 @@ declare module FileUpload {
         url: String;
         alias?: String;
         headers?: any;
-        queue?: any[];
+        queue?: Array<any>;
         progress?: number;
         autoUpload?: boolean;
         removeAfterUpload?: boolean;
         method?: String;
-        filters?: IFilter[];
-        formData?: any[];
+        filters?: Array<IFilter>;
+        formData?: Array<any>;
         queueLimit?: number;
         withCredentials?: boolean;
         addToQueue: (files: FileList, options: any, filters: String) => void;
@@ -72,11 +72,11 @@ declare module FileUpload {
         isFile: (value: any) => boolean;
         isFileLikeObject: (value: any) => boolean;
         getIndexOfItem: (item: IFileItem) => number;
-        getReadyItems: () => IFileItem[];
-        getNotUploadedItems: () => IFileItem[];
+        getReadyItems: () => Array<IFileItem>;
+        getNotUploadedItems: () => Array<IFileItem>;
         onAfterAddingFile: (item: IFileItem) => void;
         onWhenAddingFileFailed: (item: IFileItem, filter: IFilter, options: any) => void;
-        onAfterAddingAll: (addedItems: IFileItem[]) => void;
+        onAfterAddingAll: (addedItems: Array<IFileItem>) => void;
         onBeforeUploadItem: (item: IFileItem) => void;
         onProgressItem: (item: IFileItem, progress: number) => void;
         onSuccessItem: (item: IFileItem, response: any, status: number, headers: any) => void;
@@ -90,7 +90,7 @@ declare module FileUpload {
         type: String;
         mbean: String;
         operation: String;
-        arguments: any[];
+        arguments: Array<any>;
     }
     function useJolokiaTransport($scope: ng.IScope, uploader: FileUploader, jolokia: any, onLoad: (json: string) => RequestParameters): void;
 }

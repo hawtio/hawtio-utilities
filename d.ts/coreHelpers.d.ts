@@ -303,7 +303,7 @@ declare module Core {
      */
     function forEachLeafFolder(folders: any, fn: any): void;
     function extractHashURL(url: string): string;
-    function authHeaderValue(userDetails: UserDetails): string;
+    function authHeaderValue(userDetails: Core.UserDetails): string;
     function getBasicAuthHeader(username: string, password: string): string;
     /**
      * Breaks a URL up into a nice object
@@ -329,8 +329,8 @@ declare module Core {
     function addRecentConnection(localStorage: any, name: any): void;
     function removeRecentConnection(localStorage: any, name: any): void;
     function clearConnections(): void;
-    function saveConnection(options: ConnectOptions): void;
-    function connectToServer(localStorage: any, options: ConnectToServerOptions): void;
+    function saveConnection(options: Core.ConnectOptions): void;
+    function connectToServer(localStorage: any, options: Core.ConnectToServerOptions): void;
     /**
      * Extracts the url of the target, eg usually http://localhost:port, but if we use fabric to proxy to another host,
      * then we return the url that we proxied too (eg the real target)

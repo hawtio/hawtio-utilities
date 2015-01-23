@@ -9,5 +9,5 @@ declare module ObjectHelpers {
      * @param index
      * @param decorator
      */
-    function toMap(arr: any[], index: string, decorator?: (any: any) => void): any;
+    function toMap(arr: Array<any>, index: string, decorator?: (any) => void): any;
 }
