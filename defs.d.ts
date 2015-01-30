@@ -8,6 +8,7 @@
 /// <reference path="d.ts/controllerHelpers.d.ts"/>
 /// <reference path="d.ts/tasks.d.ts"/>
 /// <reference path="d.ts/coreHelpers.d.ts"/>
+/// <reference path="d.ts/coreFilters.d.ts"/>
 /// <reference path="d.ts/fileUploadHelpers.d.ts"/>
 /// <reference path="d.ts/filterHelpers.d.ts"/>
 /// <reference path="d.ts/jolokiaInterfaces.d.ts"/>
