@@ -935,37 +935,6 @@ var Core;
     }
     Core.isBlank = isBlank;
     /**
-     * Displays an alert message which is typically the result of some asynchronous operation
-     *
-     * @method notification
-     * @static
-     * @param type which is usually "success" or "error" and matches css alert-* css styles
-     * @param message the text to display
-     *
-     */
-    function notification(type, message, options) {
-        if (options === void 0) { options = null; }
-        if (options === null) {
-            options = {};
-        }
-        if (type === 'error' || type === 'warning') {
-            if (!angular.isDefined(options.onclick)) {
-                options.onclick = window['showLogPanel'];
-            }
-        }
-        toastr[type](message, '', options);
-    }
-    Core.notification = notification;
-    /**
-     * Clears all the pending notifications
-     * @method clearNotifications
-     * @static
-     */
-    function clearNotifications() {
-        toastr.clear();
-    }
-    Core.clearNotifications = clearNotifications;
-    /**
      * removes all quotes/apostrophes from beginning and end of string
      *
      * @param text
