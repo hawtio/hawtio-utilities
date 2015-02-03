@@ -325,12 +325,6 @@ declare module Core {
      * @return {String}
      */
     function useProxyIfExternal(connectUrl: any): any;
-    function getRecentConnections(localStorage: any): any;
-    function addRecentConnection(localStorage: any, name: any): void;
-    function removeRecentConnection(localStorage: any, name: any): void;
-    function clearConnections(): void;
-    function saveConnection(options: Core.ConnectOptions): void;
-    function connectToServer(localStorage: any, options: Core.ConnectToServerOptions): void;
     /**
      * Extracts the url of the target, eg usually http://localhost:port, but if we use fabric to proxy to another host,
      * then we return the url that we proxied too (eg the real target)
@@ -350,18 +344,6 @@ declare module Core {
     function doNothing(value: any): any;
     var bindModelToSearchParam: typeof ControllerHelpers.bindModelToSearchParam;
     var reloadWhenParametersChange: typeof ControllerHelpers.reloadWhenParametersChange;
-    /**
-     * Creates a jolokia object for connecting to the container with the given remote jolokia URL,
-     * username and password
-     * @method createJolokia
-     * @for Core
-     * @static
-     * @param {String} url
-     * @param {String} username
-     * @param {String} password
-     * @return {Object}
-     */
-    function createJolokia(url: string, username: string, password: string): Jolokia.IJolokia;
     /**
      * Returns a new function which ensures that the delegate function is only invoked at most once
      * within the given number of millseconds

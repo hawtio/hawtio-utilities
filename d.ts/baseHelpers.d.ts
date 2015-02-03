@@ -52,35 +52,6 @@ declare module Core {
      */
     function trimTrailing(text: string, postfix: string): string;
     /**
-     * Loads all of the available connections from local storage
-     * @returns {Core.ConnectionMap}
-     */
-    function loadConnectionMap(): Core.ConnectionMap;
-    /**
-     * Saves the connection map to local storage
-     * @param map
-     */
-    function saveConnectionMap(map: Core.ConnectionMap): void;
-    /**
-     * Returns the connection options for the given connection name from localStorage
-     */
-    function getConnectOptions(name: string, localStorage?: WindowLocalStorage): ConnectOptions;
-    var ConnectionName: string;
-    /**
-     * Returns the current connection name using the given search parameters
-     */
-    function getConnectionNameParameter(search: any): string;
-    /**
-     * Creates the Jolokia URL string for the given connection options
-     */
-    function createServerConnectionUrl(options: Core.ConnectOptions): String;
-    /**
-     * Returns Jolokia URL by checking its availability if not in local mode
-     *
-     * @returns {*}
-     */
-    function getJolokiaUrl(): String;
-    /**
      * Ensure our main app container takes up at least the viewport
      * height
      */

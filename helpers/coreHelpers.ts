@@ -1211,61 +1211,6 @@ module Core {
   }
   */
 
-  export function getRecentConnections(localStorage) {
-    if (Core.isBlank(localStorage['recentConnections'])) {
-      Core.clearConnections();
-    }
-    return angular.fromJson(localStorage['recentConnections']);
-  }
-
-  export function addRecentConnection(localStorage, name) {
-    var recent = getRecentConnections(localStorage);
-    recent = recent.add(name).unique().first(5);
-    localStorage['recentConnections'] = angular.toJson(recent);
-  }
-
-  export function removeRecentConnection(localStorage, name) {
-    var recent = getRecentConnections(localStorage);
-    recent = recent.exclude((n) => { return n === name; });
-    localStorage['recentConnections'] = angular.toJson(recent);
-  }
-
-  export function clearConnections() {
-    localStorage['recentConnections'] = '[]';
-  }
-
-  export function saveConnection(options: Core.ConnectOptions) {
-    var connectionMap = Core.loadConnectionMap();
-    // use a copy so we can leave the original one alone
-    var clone = angular.extend({}, options);
-    delete clone.userName;
-    delete clone.password;
-    connectionMap[<string>options.name] = clone;
-    Core.saveConnectionMap(connectionMap);
-  }
-
-  export function connectToServer(localStorage, options:Core.ConnectToServerOptions) {
-    log.debug("Connecting with options: ", StringHelpers.toString(options));
-    addRecentConnection(localStorage, options.name);
-    if (!('userName' in options)) {
-      var userDetails = <Core.UserDetails> HawtioCore.injector.get('userDetails');
-      options.userName = userDetails.username;
-      options.password = userDetails.password;
-    }
-    saveConnection(options);
-    var $window:ng.IWindowService = HawtioCore.injector.get('$window');
-    var url = (options.view || '#/welcome') + '?con=' + options.name;
-    url = url.replace(/\?/g, "&");
-    url = url.replace(/&/, "?");
-    var newWindow = $window.open(url);
-    newWindow['con'] = options.name;
-    newWindow['userDetails'] = {
-      username: options.userName,
-      password: options.password,
-      loginDetails: {}
-    };
-  }
-
   /**
    * Extracts the url of the target, eg usually http://localhost:port, but if we use fabric to proxy to another host,
    * then we return the url that we proxied too (eg the real target)
@@ -1343,26 +1288,6 @@ module Core {
   export var bindModelToSearchParam = ControllerHelpers.bindModelToSearchParam;
   export var reloadWhenParametersChange = ControllerHelpers.reloadWhenParametersChange;
 
-  /**
-   * Creates a jolokia object for connecting to the container with the given remote jolokia URL,
-   * username and password
-   * @method createJolokia
-   * @for Core
-   * @static
-   * @param {String} url
-   * @param {String} username
-   * @param {String} password
-   * @return {Object}
-   */
-  export function createJolokia(url: string, username: string, password: string) {
-    var jolokiaParams:Jolokia.IParams = {
-      url: url,
-      username: username,
-      password: password,
-      canonicalNaming: false, ignoreErrors: true, mimeType: 'application/json'
-    };
-    return new Jolokia(jolokiaParams);
-  }
 
   /**
    * Returns a new function which ensures that the delegate function is only invoked at most once
