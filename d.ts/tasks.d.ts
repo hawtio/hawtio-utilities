@@ -1,3 +1,4 @@
+/// <reference path="includes.d.ts" />
 declare module Core {
     interface Tasks {
         addTask: (name: string, task: () => void) => void;
@@ -33,4 +34,5 @@ declare module Core {
     }
     var postLoginTasks: Tasks;
     var preLogoutTasks: Tasks;
+    var postLogoutTasks: Tasks;
 }

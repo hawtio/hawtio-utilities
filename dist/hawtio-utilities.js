@@ -1103,9 +1103,10 @@ var __extends = this.__extends || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
+/// <reference path="includes.ts"/>
 var Core;
 (function (Core) {
-    var log = Logger.get("Core");
+    var log = Logger.get("hawtio-tasks");
     var TasksImpl = (function () {
         function TasksImpl() {
             this.tasks = {};
@@ -1174,7 +1175,7 @@ var Core;
                 return;
             }
             var theArgs = params;
-            var keys = Object.keys(this.tasks);
+            var keys = _.keys(this.tasks);
             keys.forEach(function (name) {
                 var task = _this.tasks[name];
                 if (angular.isFunction(task)) {
@@ -1197,6 +1198,7 @@ var Core;
     Core.ParameterizedTasksImpl = ParameterizedTasksImpl;
     Core.postLoginTasks = new Core.TasksImpl();
     Core.preLogoutTasks = new Core.TasksImpl();
+    Core.postLogoutTasks = new Core.TasksImpl();
 })(Core || (Core = {}));
 
 /// <reference path="baseHelpers.ts"/>
@@ -2774,6 +2776,47 @@ var CoreFilters;
     _module.filter('maskPassword', function () { return Core.maskPassword; });
     hawtioPluginLoader.addModule(pluginName);
 })(CoreFilters || (CoreFilters = {}));
+
+/// <reference path="includes.ts"/>
+/// <reference path="tasks.ts"/>
+var EventServices;
+(function (EventServices) {
+    var pluginName = 'hawtio-event-tasks';
+    var log = Logger.get(pluginName);
+    var _module = angular.module(pluginName, []);
+    // service to register tasks that should happen when the URL changes
+    _module.factory('locationChangeStartTasks', function () {
+        return new Core.ParameterizedTasksImpl();
+    });
+    // service to register stuff that should happen when the user logs in
+    _module.factory('postLoginTasks', function () {
+        return Core.postLoginTasks;
+    });
+    // service to register stuff that should happen when the user logs out
+    _module.factory('preLogoutTasks', function () {
+        return Core.preLogoutTasks;
+    });
+    // service to register stuff that should happen after the user logs out
+    _module.factory('postLogoutTasks', function () {
+        return Core.postLogoutTasks;
+    });
+    _module.run(['$rootScope', 'locationChangeStartTasks', 'postLoginTasks', 'preLogoutTasks', 'postLogoutTasks', function ($rootScope, locationChangeStartTasks, postLoginTasks, preLogoutTasks, postLogoutTasks) {
+        preLogoutTasks.addTask("ResetPreLogoutTasks", function () {
+            preLogoutTasks.reset();
+        });
+        preLogoutTasks.addTask("ResetPostLoginTasks", function () {
+            preLogoutTasks.reset();
+        });
+        postLoginTasks.addTask("ResetPostLogoutTasks", function () {
+            postLogoutTasks.reset();
+        });
+        $rootScope.$on('$locationChangeStart', function ($event, newUrl, oldUrl) {
+            locationChangeStartTasks.execute($event, newUrl, oldUrl);
+        });
+        log.debug("loaded");
+    }]);
+    hawtioPluginLoader.addModule(pluginName);
+})(EventServices || (EventServices = {}));
 
 /// <reference path="includes.ts"/>
 /// <reference path="baseHelpers.ts"/>

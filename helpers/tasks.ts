@@ -1,6 +1,7 @@
+/// <reference path="includes.ts"/>
 module Core {
 
-  var log:Logging.Logger = Logger.get("Core");
+  var log:Logging.Logger = Logger.get("hawtio-tasks");
 
   export interface Tasks {
     addTask: (name:string, task:() => void) => void;
@@ -88,7 +89,7 @@ module Core {
         return;
       }
       var theArgs:any[] = params;
-      var keys = Object.keys(this.tasks);
+      var keys = _.keys(this.tasks);
       keys.forEach((name:string) => {
         var task = this.tasks[name];
         if (angular.isFunction(task)) {
@@ -109,5 +110,6 @@ module Core {
 
   export var postLoginTasks:Tasks = new Core.TasksImpl();
   export var preLogoutTasks:Tasks = new Core.TasksImpl();
+  export var postLogoutTasks:Tasks = new Core.TasksImpl();
 
 }
