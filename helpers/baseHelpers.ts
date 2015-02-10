@@ -103,7 +103,7 @@ module Core {
    */
   export function trimLeading(text:string, prefix:string) {
     if (text && prefix) {
-      if (text.startsWith(prefix)) {
+      if (text.startsWith(prefix) || text.indexOf(prefix) === 0) {
         return text.substring(prefix.length);
       }
     }
