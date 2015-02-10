@@ -348,7 +348,7 @@ var Core;
      */
     function trimLeading(text, prefix) {
         if (text && prefix) {
-            if (text.startsWith(prefix)) {
+            if (text.startsWith(prefix) || text.indexOf(prefix) === 0) {
                 return text.substring(prefix.length);
             }
         }
