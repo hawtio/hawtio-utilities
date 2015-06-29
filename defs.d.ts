@@ -1,4 +1,3 @@
-/// <reference path="d.ts/stringHelpers.d.ts"/>
 /// <reference path="d.ts/coreInterfaces.d.ts"/>
 /// <reference path="d.ts/includes.d.ts"/>
 /// <reference path="d.ts/arrayHelpers.d.ts"/>
