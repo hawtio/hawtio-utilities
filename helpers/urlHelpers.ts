@@ -54,6 +54,10 @@ module UrlHelpers {
       if (Core.isBlank(path)) {
         return;
       }
+      if (path === '/') {
+        tmp.push('');
+        return;
+      }
       if (index !== 0 && path.first(1) === '/') {
         path = path.slice(1);
       }
