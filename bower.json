@@ -22,7 +22,7 @@
     "hawtio-core": "~2.0.0",
     "hawtio-core-navigation": "~2.0.0",
     "lodash": "~3.2.0",
-    "uri.js": "~1.14.1"
+    "urijs": "~1.16.1"
   },
   "devDependencies": {
     "bootstrap": "~3.3.1",
