@@ -44,10 +44,10 @@ module Core {
 
   export function safeNull(value:any):string {
     if (typeof value === 'boolean') {
-      return value;
+      return value + '';
     } else if (typeof value === 'number') {
       // return numbers as-is
-      return value;
+      return value + '';
     }
     if (value) {
       return value;

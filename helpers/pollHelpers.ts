@@ -13,7 +13,11 @@ module PollHelpers {
       $timeout = <ng.ITimeoutService> HawtioCore.injector.get('$timeout');
     }
     if (!jolokia) {
-      jolokia = <Jolokia.IJolokia> HawtioCore.injector.get('jolokia');
+      try {
+        jolokia = <Jolokia.IJolokia> HawtioCore.injector.get('jolokia');
+      } catch (err) {
+        // no jolokia service
+      }
     }
     var promise:ng.IPromise<any> = undefined;
     var name = $scope.name || 'anonymous scope';
@@ -21,13 +25,16 @@ module PollHelpers {
     var refreshFunction = () => {
       // log.debug("polling for scope: ", name);
       updateFunction(() => {
-        var keenPollingFn = $scope.$keepPolling;
-        if (!angular.isFunction(keenPollingFn)) {
-          keenPollingFn = () => {
-            return !jolokia || jolokia.isRunning();
+        var keepPollingFn = $scope.$keepPolling;
+        if (!angular.isFunction(keepPollingFn)) {
+          keepPollingFn = () => {
+            if (!jolokia) {
+              return true;
+            }
+            return jolokia.isRunning();
           }
         }
-        if (keenPollingFn() && $scope.$hasPoller) {
+        if (keepPollingFn() && $scope.$hasPoller) {
           promise = $timeout(refreshFunction, period);
         }
       });
