@@ -4,9 +4,7 @@
   "keywords": [
     "hawtio"
   ],
-  "main": [
-    "dist/hawtio-utilities.js"
-  ],
+  "main": "dist/hawtio-utilities.js",
   "ignore": [
     ".bowerrc",
     ".jshintrc",
