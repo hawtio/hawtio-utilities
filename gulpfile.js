@@ -34,7 +34,7 @@ gulp.task('bower', function() {
     .pipe(gulp.dest('.'));
 });
 
-gulp.task('tsc', ['clean-defs'], function() {
+gulp.task('tsc', ['path-adjust', 'clean-defs'], function() {
   var cwd = process.cwd();
   var tsResult = gulp.src(config.ts)
     .pipe(plugins.typescript(config.tsProject))
