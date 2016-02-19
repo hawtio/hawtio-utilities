@@ -279,15 +279,15 @@ module Core {
     var answer:any = {};
     var parts:any = mbean.split(":");
     if (parts.length > 1) {
-      answer['domain'] = parts.first();
-      parts = parts.exclude(parts.first());
+      answer['domain'] = _.first(parts);
+      parts = _.without(parts, _.first(parts));
       parts = parts.join(":");
       answer['attributes'] = {};
       var nameValues = parts.split(",");
       nameValues.forEach((str) => {
         var nameValue = str.split('=');
-        var name = (<string>nameValue.first()).trim();
-        nameValue = nameValue.exclude(nameValue.first());
+        var name = (<string>_.first(nameValue)).trim();
+        nameValue = _.without(nameValue, _.first(nameValue));
         answer['attributes'][name] = nameValue.join('=').trim();
       });
     }
@@ -1017,8 +1017,13 @@ module Core {
    * @return {String}
    */
   export function maybePlural(count: Number, word: string) {
-    var pluralWord = (count === 1) ? word : word.pluralize();
-    return "" + count + " " + pluralWord;
+    if (word.pluralize) {
+      var pluralWord = (count === 1) ? word : word.pluralize();
+      return "" + count + " " + pluralWord;
+    } else {
+      var pluralWord = (count === 1) ? word : word + 's';
+      return "" + count + " " + pluralWord;
+    }
   }
 
   /**
@@ -1099,7 +1104,7 @@ module Core {
     }
     var answer:string = parts[1];
     if (parts.length > 1) {
-      var remaining = parts.last(parts.length - 2);
+      var remaining = parts.slice(2);
       remaining.forEach((part) => {
         answer = answer + "#" + part;
       });
@@ -1113,7 +1118,7 @@ module Core {
 
   export function getBasicAuthHeader(username:string, password:string) {
     var authInfo = username + ":" + password;
-    authInfo = authInfo.encodeBase64();
+    authInfo = window.btoa(authInfo);
     return "Basic " + authInfo;
   }
 

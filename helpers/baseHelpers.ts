@@ -256,8 +256,8 @@ module Core {
       return numberToString(value);
     } else {
       return angular.toJson(value, true);
-    } 
-  } 
+    }
+  }
 
   /**
    * Converts boolean value to string "true" or "false"
@@ -385,7 +385,7 @@ module Core {
         return $rootScope.$$phase;
       }
     }
-    
+
   }
 
   /**
@@ -547,7 +547,7 @@ module Core {
       return true;
     }
     if (angular.isString(str)) {
-      return str.isBlank();
+      return str.trim().length === 0;
     } else {
       // TODO - not undefined but also not a string...
       return false;
