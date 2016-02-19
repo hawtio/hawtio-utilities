@@ -7,9 +7,7 @@ module ArrayHelpers {
      */
     export function removeElements(collection:Array<any>, newCollection:Array<any>, index:string = 'id') {
       var oldLength = collection.length;
-      collection.remove((item) => {
-        return !newCollection.any((c:any) => { return c[index] === item[index] }); 
-      });
+      _.remove(collection, (item) => !_.some(newCollection, (c:any) => c[index] === item[index]));
       return collection.length !== oldLength;
     }
 
@@ -21,7 +19,7 @@ module ArrayHelpers {
       var answer = removeElements(collection, newCollection, index);
       if (newCollection) {
         newCollection.forEach((item) => {
-          var oldItem = collection.find((c) => { return c[index] === item[index]; });
+          var oldItem = _.find(collection, (c) => { return c[index] === item[index]; });
           if (!oldItem) {
             answer = true;
             collection.push(item);
