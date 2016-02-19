@@ -376,11 +376,11 @@ module Core {
   }
 
   function getPhase($scope:ng.IScope) {
-    if ($scope.$$phase) {
-      return $scope.$$phase;
+    if ((<any>$scope).$$phase) {
+      return (<any>$scope).$$phase;
     }
     if (HawtioCore.injector) {
-      var $rootScope = HawtioCore.injector.get('$rootScope');
+      var $rootScope = HawtioCore.injector.get<ng.IScope>('$rootScope');
       if ($rootScope) {
         return $rootScope.$$phase;
       }
