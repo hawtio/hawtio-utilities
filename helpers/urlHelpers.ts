@@ -11,7 +11,7 @@ module UrlHelpers {
    */
   export function noHash(url:string):string {
     if (url && url.startsWith('#')) {
-      return url.last(url.length - 1);
+      return url.substring(1);
     } else {
       return url;
     }
@@ -58,10 +58,10 @@ module UrlHelpers {
         tmp.push('');
         return;
       }
-      if (index !== 0 && path.first(1) === '/') {
+      if (index !== 0 && path.match(/^\//)) {
         path = path.slice(1);
       }
-      if (index !== length && path.last(1) === '/') {
+      if (index !== length && path.match(/\/$/)) {
         path = path.slice(0, path.length - 1);
       }
       if (!Core.isBlank(path)) {
@@ -88,7 +88,7 @@ module UrlHelpers {
     if (jolokiaUrl && jolokiaUrl.startsWith('proxy/')) {
       log.debug("Jolokia URL is proxied, applying proxy to: ", url);
       return join('proxy', url);
-    } 
+    }
     var origin = window.location['origin'];
     if (url && (url.startsWith('http') && !url.startsWith(origin))) {
       log.debug("Url doesn't match page origin: ", origin, " applying proxy to: ", url);
