@@ -785,13 +785,12 @@ var Core;
     function humanizeValue(value) {
         if (value) {
             var text = value + '';
+            if (Core.isBlank(text)) {
+                return text;
+            }
             try {
                 text = _.snakeCase(text);
-            }
-            catch (e) {
-            }
-            try {
-                text = _.capitalize(text);
+                text = _.capitalize(text.split('_').join(' '));
             }
             catch (e) {
             }

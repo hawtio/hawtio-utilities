@@ -556,13 +556,12 @@ module Core {
   export function humanizeValue(value:any):string {
     if (value) {
       var text = value + '';
-      try {
-        text = _.snakeCase(text);
-      } catch (e) {
-        // ignore
+      if (Core.isBlank(text)) {
+        return text;
       }
       try {
-        text = _.capitalize(text);
+        text = _.snakeCase(text);
+        text = _.capitalize(text.split('_').join(' '));
       } catch (e) {
         // ignore
       }
