@@ -82,7 +82,7 @@ module Core {
         arr.push(line);
       }
       // sort array so the values is listed nicely
-      arr = arr.sortBy(row => row.toString());
+      arr = _.sortBy(arr, (row) => row.toString());
       return arr.join("\n");
     } else if (angular.isArray(value)) {
       // join array with new line, and do not sort as the order in the array may matter
@@ -268,7 +268,7 @@ module Core {
     if (Core.isBlank(hashUrl)) {
       return hashUrl;
     }
-    if (hashUrl.startsWith("#")) {
+    if (_.startsWith(hashUrl, "#")) {
       return hashUrl.substring(1);
     } else {
       return hashUrl;
@@ -888,10 +888,10 @@ module Core {
    * @return {string} the sortable version string
    */
   export function versionToSortableString(version: string, maxDigitsBetweenDots = 4) {
-    return (version || "").split(".").map(x => {
+    return (version || "").split(".").map((x) => {
       var length = x.length;
       return (length >= maxDigitsBetweenDots)
-        ? x : x.padLeft(' ', maxDigitsBetweenDots - length)
+        ? x : _.padLeft(x, maxDigitsBetweenDots - length, ' ')
     }).join(".");
   }
 
@@ -995,8 +995,8 @@ module Core {
    * @return {Object}
    */
   export function tryParseJson(text: string) {
-    text = text.trim();
-    if ((text.startsWith("[") && text.endsWith("]")) || (text.startsWith("{") && text.endsWith("}"))) {
+    text = _.trim(text);
+    if ((_.startsWith(text, "[") && _.endsWith(text, "]")) || (_.startsWith(text, "{") && _.endsWith(text, "}"))) {
       try {
         return JSON.parse(text);
       } catch (e) {
@@ -1017,13 +1017,15 @@ module Core {
    * @return {String}
    */
   export function maybePlural(count: Number, word: string) {
+    /* TODO - will need to find another dependency for this
     if (word.pluralize) {
       var pluralWord = (count === 1) ? word : word.pluralize();
       return "" + count + " " + pluralWord;
     } else {
-      var pluralWord = (count === 1) ? word : word + 's';
-      return "" + count + " " + pluralWord;
-    }
+    */
+    var pluralWord = (count === 1) ? word : word + 's';
+    return "" + count + " " + pluralWord;
+    //}
   }
 
   /**
@@ -1161,7 +1163,7 @@ module Core {
     var portNum = Core.parseIntValue(port);
 
     var path = parts[1];
-    if (path && path.startsWith('/')) {
+    if (path && _.startsWith(path, '/')) {
       path = path.slice(1, path.length);
     }
 

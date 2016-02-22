@@ -54,8 +54,8 @@ module Log {
     }
     var bold = true;
     if (line) {
-      line = line.trim();
-      if (line.startsWith('at')) {
+      line = _.trim(line);
+      if (_.startsWith(line, 'at')) {
         line = '  '  + line;
         bold = false;
       }

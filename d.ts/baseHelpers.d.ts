@@ -25,6 +25,7 @@ declare module Core {
      * @returns {string}
      */
     function windowLocation(): Location;
+    function unescapeHTML(str: any): string;
     /**
      * Private method to support testing.
      *

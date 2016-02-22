@@ -10,7 +10,7 @@ module UrlHelpers {
    * @returns {string}
    */
   export function noHash(url:string):string {
-    if (url && url.startsWith('#')) {
+    if (url && _.startsWith(url, '#')) {
       return url.substring(1);
     } else {
       return url;
@@ -18,7 +18,7 @@ module UrlHelpers {
   }
 
   export function extractPath(url:string):string {
-    if (url.has('?')) {
+    if (url.indexOf('?') !== -1) {
       return url.split('?')[0];
     } else {
       return url;
@@ -33,13 +33,13 @@ module UrlHelpers {
    */
   export function contextActive(url:string, thingICareAbout:string):boolean {
     var cleanUrl = extractPath(url);
-    if (thingICareAbout.endsWith('/') && thingICareAbout.startsWith("/")) {
-      return cleanUrl.has(thingICareAbout);
+    if (_.endsWith(thingICareAbout, '/') && _.startsWith(thingICareAbout, "/")) {
+      return cleanUrl.indexOf(thingICareAbout) > -1;
     }
-    if (thingICareAbout.startsWith("/")) {
-      return noHash(cleanUrl).startsWith(thingICareAbout);
+    if (_.startsWith(thingICareAbout, "/")) {
+      return _.startsWith(noHash(cleanUrl), thingICareAbout);
     }
-    return cleanUrl.endsWith(thingICareAbout);
+    return _.endsWith(cleanUrl, thingICareAbout);
   }
 
   /**
@@ -85,12 +85,12 @@ module UrlHelpers {
    * @returns {*}
    */
   export function maybeProxy(jolokiaUrl:string, url:string) {
-    if (jolokiaUrl && jolokiaUrl.startsWith('proxy/')) {
+    if (jolokiaUrl && _.startsWith(jolokiaUrl, 'proxy/')) {
       log.debug("Jolokia URL is proxied, applying proxy to: ", url);
       return join('proxy', url);
     }
     var origin = window.location['origin'];
-    if (url && (url.startsWith('http') && !url.startsWith(origin))) {
+    if (url && (_.startsWith(url, 'http') && !_.startsWith(url, origin))) {
       log.debug("Url doesn't match page origin: ", origin, " applying proxy to: ", url);
       return join('proxy', url);
     }
@@ -105,7 +105,7 @@ module UrlHelpers {
    */
   export function escapeColons(url:string):string {
     var answer = url;
-    if (url.startsWith('proxy')) {
+    if (_.startsWith(url, 'proxy')) {
       answer = url.replace(/:/g, '\\:');
     } else {
       answer = url.replace(/:([^\/])/, '\\:$1');

@@ -5,7 +5,7 @@ module FilterHelpers {
 
   export function search(object:any, filter:string, maxDepth = -1, and = true):boolean {
     var f = filter.split(" ");
-    var matches = f.filter((f) => { return searchObject(object, f, maxDepth); });
+    var matches = _.filter(f, (f) => searchObject(object, f, maxDepth));
     if (and) {
       return matches.length === f.length;
     } else {
@@ -29,13 +29,11 @@ module FilterHelpers {
     var f = filter.toLowerCase();
     var answer = false;
     if (angular.isString(object)) {
-      answer = (<string>object).toLowerCase().has(f);
+      answer = (<string>object).toLowerCase().indexOf(f) !== -1;
     } else if (angular.isNumber(object)) {
-      answer = ("" + object).toLowerCase().has(f);
+      answer = ("" + object).toLowerCase().indexOf(f) !== -1;
     } else if (angular.isArray(object)) {
-      answer = (<Array<any>>object).some((item) => {
-        return searchObject(item, f, maxDepth, depth + 1);
-      });
+      answer = _.some(object, (item) => searchObject(item, f, maxDepth, depth + 1));
     } else if (angular.isObject(object)) {
       answer = searchObject(_.values(object), f, maxDepth, depth);
     }

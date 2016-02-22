@@ -28,11 +28,11 @@ module Core {
    */
   export function url(path:string):string {
     if (path) {
-      if (path.startsWith && path.startsWith("/")) {
+      if (_.startsWith(path, "/")) {
         if (!_urlPrefix) {
           // lets discover the base url via the base html element
           _urlPrefix = (<JQueryStatic>$)('base').attr('href') || "";
-          if (_urlPrefix.endsWith && _urlPrefix.endsWith('/')) {
+          if (_.endsWith(_urlPrefix, '/')) {
               _urlPrefix = _urlPrefix.substring(0, _urlPrefix.length - 1);
           }
         }
@@ -53,27 +53,10 @@ module Core {
     return window.location;
   }
 
-  // use a better implementation of unescapeHTML
-  String.prototype.unescapeHTML = function() {
+  export function unescapeHTML(str) {
     var txt = document.createElement("textarea");
-    txt.innerHTML = this;
+    txt.innerHTML = str;
     return txt.value;
-  };
-
-  // add object.keys if we don't have it, used
-  // in a few places
-  if (!Object.keys) {
-    console.debug("Creating hawt.io version of Object.keys()");
-    Object.keys = function(obj) {
-      var keys = [],
-        k;
-      for (k in obj) {
-        if (Object.prototype.hasOwnProperty.call(obj, k)) {
-          keys.push(k);
-        }
-      }
-      return keys;
-    };
   }
 
   /**
@@ -103,7 +86,7 @@ module Core {
    */
   export function trimLeading(text:string, prefix:string) {
     if (text && prefix) {
-      if (text.startsWith(prefix) || text.indexOf(prefix) === 0) {
+      if (_.startsWith(text, prefix) || text.indexOf(prefix) === 0) {
         return text.substring(prefix.length);
       }
     }
@@ -121,7 +104,7 @@ module Core {
    */
   export function trimTrailing(text:string, postfix:string): string {
     if (text && postfix) {
-      if (text.endsWith(postfix)) {
+      if (_.endsWith(text, postfix)) {
         return text.substring(0, text.length - postfix.length);
       }
     }
@@ -561,15 +544,7 @@ module Core {
    * @returns {string}
    */
   export function trimQuotes(text:string) {
-    if (text) {
-      while (text.endsWith('"') || text.endsWith("'")) {
-        text = text.substring(0, text.length - 1);
-      }
-      while (text.startsWith('"') || text.startsWith("'")) {
-        text = text.substring(1, text.length);
-      }
-    }
-    return text;
+    return _.trim(text, ' \'"');
   }
 
   /**
@@ -582,12 +557,12 @@ module Core {
     if (value) {
       var text = value + '';
       try {
-        text = text.underscore();
+        text = _.snakeCase(text);
       } catch (e) {
         // ignore
       }
       try {
-        text = text.humanize();
+        text = _.capitalize(text);
       } catch (e) {
         // ignore
       }

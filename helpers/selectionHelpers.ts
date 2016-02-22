@@ -31,11 +31,9 @@ module SelectionHelpers {
 
   export function sync(selections:Array<any>, group:Array<any>, index:string):Array<any> {
     group.forEach((item) => {
-      item['selected'] = selections.any((selection) => {
-        return selection[index] === item[index];
-      })
+      item['selected'] = _.some(selections, (selection) => selection[index] === item[index]);
     });
-    return group.filter((item) => { return item['selected'] });
+    return _.filter(group, (item) => item['selected']);
   }
 
   export function select(group:any[], item:any, $event:any):void {
@@ -62,10 +60,10 @@ module SelectionHelpers {
 
   export function toggleSelectionFromGroup(group:any[], item:any, search?:(item:any) => boolean):void {
     var searchMethod = search || item;
-    if (group.any(searchMethod)) {
-      group.remove(searchMethod);
+    if (_.some(group, searchMethod)) {
+      _.remove(group, searchMethod);
     } else {
-      group.add(item);
+      group.push(item);
     }
   }
 
@@ -98,7 +96,7 @@ module SelectionHelpers {
       return nope(no);
     }
     var searchMethod = search || item;
-    return maybe(group.any(searchMethod), yes, no);
+    return maybe(_.some(group, searchMethod), yes, no);
   }
 
   export function filterByGroup(group:any, item:any, yes?:string, no?:string, search?:(item:any) => boolean):any {
@@ -107,7 +105,7 @@ module SelectionHelpers {
     }
     var searchMethod = search || item;
     if (angular.isArray(item)) {
-      return maybe(group.intersect(item).length === group.length, yes, no);
+      return maybe(_.intersection(group, item).length === group.length, yes, no);
     } else {
       return maybe(group.any(searchMethod), yes, no);
     }
@@ -117,7 +115,7 @@ module SelectionHelpers {
     var newGroup = [];
     if (attribute) {
       group.forEach((groupItem) => {
-        var first = collection.find((collectionItem) => {
+        var first = _.find(collection, (collectionItem) => {
           return groupItem[attribute] === collectionItem[attribute];
         });
         if (first) {
@@ -126,7 +124,7 @@ module SelectionHelpers {
       });
     } else {
       group.forEach((groupItem) => {
-        var first = collection.find((collectionItem) => {
+        var first = _.find(collection, (collectionItem) => {
           return _.isEqual(groupItem, collectionItem);
         });
         if (first) {

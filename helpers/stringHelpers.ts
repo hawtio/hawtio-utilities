@@ -21,7 +21,7 @@ module StringHelpers {
       // return null so we don't show any old random non-string thing
       return null;
     }
-    return str.chars().map((c) => { return '*'; }).join('');
+    return str.split('').map((c) => '*').join('');
   }
 
   /**
