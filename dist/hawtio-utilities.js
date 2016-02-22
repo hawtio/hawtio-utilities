@@ -3147,7 +3147,7 @@ var UI;
     function getIfSet(attribute, $attr, def) {
         if (attribute in $attr) {
             var wantedAnswer = $attr[attribute];
-            if (wantedAnswer && !wantedAnswer.isBlank()) {
+            if (!Core.isBlank(wantedAnswer)) {
                 return wantedAnswer;
             }
         }
