@@ -1,4 +1,4 @@
-/// <reference path="coreHelpers.d.ts" />
+/// <reference path="includes.d.ts" />
 /**
  * @module Core
  */
@@ -55,7 +55,7 @@ declare module Core {
          * @type NodeSelection
          * @optional
          */
-        children?: NodeSelection[];
+        children?: Array<NodeSelection>;
         /**
          * @property parent
          * @type NodeSelection
@@ -112,9 +112,11 @@ declare module Core {
     class Folder implements NodeSelection {
         title: string;
         constructor(title: string);
+        id: string;
         key: string;
         typeName: string;
-        children: NodeSelection[];
+        items: NodeSelection[];
+        children: Array<NodeSelection>;
         folderNames: string[];
         domain: string;
         objectName: string;
