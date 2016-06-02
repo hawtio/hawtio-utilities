@@ -3097,7 +3097,7 @@ var SelectionHelpers;
             });
         }
         clearGroup(group);
-        group.add(newGroup);
+        group.push.apply(group, newGroup);
     }
     SelectionHelpers.syncGroupSelection = syncGroupSelection;
     function decorate($scope) {
