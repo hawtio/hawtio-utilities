@@ -133,7 +133,7 @@ module SelectionHelpers {
       });
     }
     clearGroup(group);
-    group.add(newGroup);
+    group.push(...newGroup);
   }
 
   export function decorate($scope) {
