@@ -95,7 +95,7 @@ module SelectionHelpers {
     if (!group) {
       return nope(no);
     }
-    var searchMethod = search || item;
+    var searchMethod = search || _.matches(item);
     return maybe(_.some(group, searchMethod), yes, no);
   }
 
