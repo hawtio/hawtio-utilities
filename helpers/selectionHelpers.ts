@@ -59,7 +59,7 @@ module SelectionHelpers {
   }
 
   export function toggleSelectionFromGroup(group:any[], item:any, search?:(item:any) => boolean):void {
-    var searchMethod = search || item;
+    var searchMethod = search || _.matches(item);
     if (_.some(group, searchMethod)) {
       _.remove(group, searchMethod);
     } else {
