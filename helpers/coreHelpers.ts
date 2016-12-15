@@ -200,16 +200,14 @@ module Core {
     return false;
   }
 
-  export function encodeMBeanPath(mbean) {
-    return mbean.replace(/\//g, '!/').replace(':', '/').escapeURL();
-  }
-
+  /**
+   * Escapes the mbean path according to jolokia path rules: http://www.jolokia.org/reference/html/protocol.html#escape-rules
+   *
+   * @param mbean the mbean
+   * @returns {String}
+   */
   export function escapeMBeanPath(mbean) {
     return mbean.replace(/\//g, '!/').replace(':', '/');
-  }
-
-  export function encodeMBean(mbean) {
-    return mbean.replace(/\//g, '!/').escapeURL();
   }
 
   export function escapeDots(text:string) {
