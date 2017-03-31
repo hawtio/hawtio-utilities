@@ -16,7 +16,7 @@
     "helpers"
   ],
   "dependencies": {
-    "hawtio-core-navigation": "~3.0.0",
+    "hawtio-core": "~3.0.0",
     "angular-file-upload": "~2.4.0",
     "lodash": "^4.0.0",
     "urijs": "~1.18.0",
@@ -24,7 +24,8 @@
     "humanize-duration": "~3.10.0"
   },
   "devDependencies": {
-    "hawtio-core-dts": "~2.0.0"
+    "hawtio-core-dts": "~2.0.0",
+    "hawtio-core-navigation": "~3.0.0"
   },
   "resolutions": {
     "jquery": "~2.1.0"
