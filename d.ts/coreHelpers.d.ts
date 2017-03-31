@@ -59,9 +59,13 @@ declare module Core {
     function onSuccess(fn: any, options?: {}): {};
     function supportsLocalStorage(): boolean;
     function isNumberTypeName(typeName: any): boolean;
-    function encodeMBeanPath(mbean: any): any;
+    /**
+     * Escapes the mbean path according to jolokia path rules: http://www.jolokia.org/reference/html/protocol.html#escape-rules
+     *
+     * @param mbean the mbean
+     * @returns {String}
+     */
     function escapeMBeanPath(mbean: any): any;
-    function encodeMBean(mbean: any): any;
     function escapeDots(text: string): string;
     /**
      * Escapes all dots and 'span' text in the css style names to avoid clashing with bootstrap stuff
