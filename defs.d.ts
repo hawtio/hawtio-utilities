@@ -12,7 +12,6 @@
 /// <reference path="d.ts/eventServices.d.ts"/>
 /// <reference path="d.ts/fileUploadHelpers.d.ts"/>
 /// <reference path="d.ts/filterHelpers.d.ts"/>
-/// <reference path="d.ts/folder.d.ts"/>
 /// <reference path="d.ts/jolokiaInterfaces.d.ts"/>
 /// <reference path="d.ts/logHelpers.d.ts"/>
 /// <reference path="d.ts/objectHelpers.d.ts"/>
