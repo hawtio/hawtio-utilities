@@ -889,7 +889,7 @@ module Core {
     return (version || "").split(".").map((x) => {
       var length = x.length;
       return (length >= maxDigitsBetweenDots)
-        ? x : _.padLeft(x, maxDigitsBetweenDots - length, ' ')
+        ? x : _.padStart(x, maxDigitsBetweenDots - length, ' ')
     }).join(".");
   }
 
