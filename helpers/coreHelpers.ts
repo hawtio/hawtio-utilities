@@ -974,7 +974,7 @@ module Core {
       var uriPrefixes = ["http://", "https://", "file://", "mailto:"];
       var answer = value;
       angular.forEach(uriPrefixes, (prefix) => {
-        if (answer.startsWith(prefix)) {
+        if (_.startsWith(answer, prefix)) {
           answer = "<a href='" + value + "'>" + value + "</a>";
         }
       });

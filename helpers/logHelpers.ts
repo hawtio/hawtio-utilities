@@ -3,7 +3,7 @@ module Log {
 
   var _stackRegex = /\s*at\s+([\w\.$_]+(\.([\w$_]+))*)\((.*)?:(\d+)\).*\[(.*)\]/
 
-  export function formatStackTrace(exception:any) {
+  export function formatStackTrace(exception:any): string {
     if (!exception) {
       return '';
     }
@@ -13,13 +13,11 @@ module Log {
     }
 
     if (!angular.isArray(exception)) {
-      return "";
+      return '';
     }
 
     var answer = '<ul class="unstyled">\n';
-    exception.each((line) => {
-      answer += "<li>" + Log.formatStackLine(line) + "</li>\n"
-    });
+    exception.forEach((line) => answer += "<li>" + Log.formatStackLine(line) + "</li>\n");
     answer += "</ul>\n";
     return answer;
   }
