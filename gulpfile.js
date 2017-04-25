@@ -20,7 +20,7 @@ var config = {
     target: 'ES5',
     outFile: 'compiled.js',
     declaration: true,
-    noExternalResolve: false
+    noResolve: false
   })
 };
 
