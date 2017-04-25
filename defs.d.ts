@@ -314,7 +314,7 @@ declare module Core {
      * @param str
      * @returns {*}
      */
-    function escapeHtml(str: string): string;
+    function escapeHtml(str: any): any;
     /**
      * Returns true if the string is either null or empty
      *

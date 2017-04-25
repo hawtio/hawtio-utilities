@@ -492,7 +492,7 @@ module Core {
    * @param str
    * @returns {*}
    */
-  export function escapeHtml(str: string): string {
+  export function escapeHtml(str) {
     if (angular.isString(str)) {
       var newStr = "";
       for (var i = 0; i < str.length; i++) {
