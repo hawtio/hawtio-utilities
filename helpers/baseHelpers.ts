@@ -492,22 +492,13 @@ module Core {
    * @param str
    * @returns {*}
    */
-  export function escapeHtml(str) {
+  export function escapeHtml(str: string): string {
     if (angular.isString(str)) {
       var newStr = "";
       for (var i = 0; i < str.length; i++) {
         var ch = str.charAt(i);
-        var ch = _escapeHtmlChars[ch] || ch;
+        ch = _escapeHtmlChars[ch] || ch;
         newStr += ch;
-        /*
-         var nextCode = str.charCodeAt(i);
-         if (nextCode > 0 && nextCode < 48) {
-         newStr += "&#" + nextCode + ";";
-         }
-         else {
-         newStr += ch;
-         }
-         */
       }
       return newStr;
     }
