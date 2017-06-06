@@ -889,7 +889,7 @@ module Core {
     return (version || "").split(".").map((x) => {
       var length = x.length;
       return (length >= maxDigitsBetweenDots)
-        ? x : _.padLeft(x, maxDigitsBetweenDots - length, ' ')
+        ? x : _.padStart(x, maxDigitsBetweenDots - length, ' ')
     }).join(".");
   }
 
@@ -974,7 +974,7 @@ module Core {
       var uriPrefixes = ["http://", "https://", "file://", "mailto:"];
       var answer = value;
       angular.forEach(uriPrefixes, (prefix) => {
-        if (answer.startsWith(prefix)) {
+        if (_.startsWith(answer, prefix)) {
           answer = "<a href='" + value + "'>" + value + "</a>";
         }
       });

@@ -1,3 +1,13 @@
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
 /// <reference path="includes.ts"/>
 var StringHelpers;
 (function (StringHelpers) {
@@ -47,7 +57,6 @@ var StringHelpers;
     }
     StringHelpers.toString = toString;
 })(StringHelpers || (StringHelpers = {}));
-
 /// <reference path="includes.ts"/>
 /// <reference path="stringHelpers.ts"/>
 var Core;
@@ -78,10 +87,7 @@ var Core;
     }
     Core.createConnectOptions = createConnectOptions;
 })(Core || (Core = {}));
-
-/// <reference path="../libs/hawtio-core-dts/defs.d.ts"/>
 /// <reference path="coreInterfaces.ts"/>
-
 /// <reference path="includes.ts"/>
 var ArrayHelpers;
 (function (ArrayHelpers) {
@@ -122,7 +128,6 @@ var ArrayHelpers;
     }
     ArrayHelpers.sync = sync;
 })(ArrayHelpers || (ArrayHelpers = {}));
-
 /// <reference path="includes.ts"/>
 /// <reference path="baseHelpers.ts"/>
 var UrlHelpers;
@@ -176,7 +181,7 @@ var UrlHelpers;
     function join() {
         var paths = [];
         for (var _i = 0; _i < arguments.length; _i++) {
-            paths[_i - 0] = arguments[_i];
+            paths[_i] = arguments[_i];
         }
         var tmp = [];
         var length = paths.length - 1;
@@ -245,7 +250,6 @@ var UrlHelpers;
     }
     UrlHelpers.escapeColons = escapeColons;
 })(UrlHelpers || (UrlHelpers = {}));
-
 /// <reference path="includes.ts"/>
 /// <reference path="stringHelpers.ts"/>
 /// <reference path="urlHelpers.ts"/>
@@ -734,8 +738,17 @@ var Core;
             var newStr = "";
             for (var i = 0; i < str.length; i++) {
                 var ch = str.charAt(i);
-                var ch = _escapeHtmlChars[ch] || ch;
+                ch = _escapeHtmlChars[ch] || ch;
                 newStr += ch;
+                /*
+                 var nextCode = str.charCodeAt(i);
+                 if (nextCode > 0 && nextCode < 48) {
+                 newStr += "&#" + nextCode + ";";
+                 }
+                 else {
+                 newStr += ch;
+                 }
+                 */
             }
             return newStr;
         }
@@ -793,6 +806,7 @@ var Core;
                 text = _.capitalize(text.split('_').join(' '));
             }
             catch (e) {
+                // ignore
             }
             return trimQuotes(text);
         }
@@ -800,7 +814,6 @@ var Core;
     }
     Core.humanizeValue = humanizeValue;
 })(Core || (Core = {}));
-
 /// <reference path="includes.ts"/>
 var HawtioCompile;
 (function (HawtioCompile) {
@@ -829,7 +842,6 @@ var HawtioCompile;
         }]);
     hawtioPluginLoader.addModule(pluginName);
 })(HawtioCompile || (HawtioCompile = {}));
-
 var ControllerHelpers;
 (function (ControllerHelpers) {
     var log = Logger.get("ControllerHelpers");
@@ -919,12 +931,6 @@ var ControllerHelpers;
     }
     ControllerHelpers.reloadWhenParametersChange = reloadWhenParametersChange;
 })(ControllerHelpers || (ControllerHelpers = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
 /// <reference path="includes.ts"/>
 var Core;
 (function (Core) {
@@ -977,12 +983,12 @@ var Core;
     var ParameterizedTasksImpl = (function (_super) {
         __extends(ParameterizedTasksImpl, _super);
         function ParameterizedTasksImpl() {
-            var _this = this;
-            _super.call(this);
-            this.tasks = {};
-            this.onComplete(function () {
+            var _this = _super.call(this) || this;
+            _this.tasks = {};
+            _this.onComplete(function () {
                 _this.reset();
             });
+            return _this;
         }
         ParameterizedTasksImpl.prototype.addTask = function (name, task) {
             this.tasks[name] = task;
@@ -991,7 +997,7 @@ var Core;
             var _this = this;
             var params = [];
             for (var _i = 0; _i < arguments.length; _i++) {
-                params[_i - 0] = arguments[_i];
+                params[_i] = arguments[_i];
             }
             if (this.tasksExecuted) {
                 return;
@@ -1022,7 +1028,6 @@ var Core;
     Core.preLogoutTasks = new Core.TasksImpl();
     Core.postLogoutTasks = new Core.TasksImpl();
 })(Core || (Core = {}));
-
 /// <reference path="baseHelpers.ts"/>
 /// <reference path="controllerHelpers.ts"/>
 /// <reference path="coreInterfaces.ts"/>
@@ -1235,18 +1240,16 @@ var Core;
         return false;
     }
     Core.isNumberTypeName = isNumberTypeName;
-    function encodeMBeanPath(mbean) {
-        return mbean.replace(/\//g, '!/').replace(':', '/').escapeURL();
-    }
-    Core.encodeMBeanPath = encodeMBeanPath;
+    /**
+     * Escapes the mbean path according to jolokia path rules: http://www.jolokia.org/reference/html/protocol.html#escape-rules
+     *
+     * @param mbean the mbean
+     * @returns {String}
+     */
     function escapeMBeanPath(mbean) {
         return mbean.replace(/\//g, '!/').replace(':', '/');
     }
     Core.escapeMBeanPath = escapeMBeanPath;
-    function encodeMBean(mbean) {
-        return mbean.replace(/\//g, '!/').escapeURL();
-    }
-    Core.encodeMBean = encodeMBean;
     function escapeDots(text) {
         return text.replace(/\./g, '-');
     }
@@ -1663,6 +1666,7 @@ var Core;
             scope.$jhandle = [];
         }
         else {
+            //log.debug("Using existing handle set");
         }
         if (angular.isDefined(scope.$on)) {
             scope.$on('$destroy', function (event) {
@@ -1774,13 +1778,16 @@ var Core;
                     // such as its been removed
                     // or if we run against older containers
                     Core.log.debug("Operation ", operation, " failed due to: ", response['error']);
+                    // Core.log.debug("Stack trace: ", Logger.formatStackTraceString(response['stacktrace']));
                 }
                 else {
                     Core.log.warn("Operation ", operation, " failed due to: ", response['error']);
+                    // Core.log.info("Stack trace: ", Logger.formatStackTraceString(response['stacktrace']));
                 }
             }
             else {
                 Core.log.debug("Operation ", operation, " failed due to: ", response['error']);
+                // Core.log.debug("Stack trace: ", Logger.formatStackTraceString(response['stacktrace']));
             }
         }
     }
@@ -1793,6 +1800,7 @@ var Core;
         if (stacktrace) {
             var operation = Core.pathGet(response, ['request', 'operation']) || "unknown";
             Core.log.info("Operation ", operation, " failed due to: ", response['error']);
+            // Core.log.info("Stack trace: ", Logger.formatStackTraceString(response['stacktrace']));
         }
     }
     Core.logJolokiaStackTrace = logJolokiaStackTrace;
@@ -1909,7 +1917,7 @@ var Core;
         return (version || "").split(".").map(function (x) {
             var length = x.length;
             return (length >= maxDigitsBetweenDots)
-                ? x : _.padLeft(x, maxDigitsBetweenDots - length, ' ');
+                ? x : _.padStart(x, maxDigitsBetweenDots - length, ' ');
         }).join(".");
     }
     Core.versionToSortableString = versionToSortableString;
@@ -1999,7 +2007,7 @@ var Core;
             var uriPrefixes = ["http://", "https://", "file://", "mailto:"];
             var answer = value;
             angular.forEach(uriPrefixes, function (prefix) {
-                if (answer.startsWith(prefix)) {
+                if (_.startsWith(answer, prefix)) {
                     answer = "<a href='" + value + "'>" + value + "</a>";
                 }
             });
@@ -2024,6 +2032,7 @@ var Core;
                 return JSON.parse(text);
             }
             catch (e) {
+                // ignore
             }
         }
         return null;
@@ -2321,6 +2330,7 @@ var Core;
                 lastAnswer = fn();
             }
             else {
+                //log.debug("Not invoking function as we did call " + (now - (nextInvokeTime - millis)) + " ms ago");
             }
             return lastAnswer;
         };
@@ -2518,7 +2528,6 @@ var Core;
     }
     Core.matchFilterIgnoreCase = matchFilterIgnoreCase;
 })(Core || (Core = {}));
-
 /// <reference path="coreHelpers.ts" />
 var CoreFilters;
 (function (CoreFilters) {
@@ -2549,7 +2558,6 @@ var CoreFilters;
     });
     hawtioPluginLoader.addModule(pluginName);
 })(CoreFilters || (CoreFilters = {}));
-
 /// <reference path="includes.ts"/>
 /// <reference path="tasks.ts"/>
 var EventServices;
@@ -2590,7 +2598,6 @@ var EventServices;
         }]);
     hawtioPluginLoader.addModule(pluginName);
 })(EventServices || (EventServices = {}));
-
 /// <reference path="includes.ts"/>
 /// <reference path="baseHelpers.ts"/>
 /// <reference path="coreHelpers.ts"/>
@@ -2628,7 +2635,6 @@ var FileUpload;
     }
     FileUpload.useJolokiaTransport = useJolokiaTransport;
 })(FileUpload || (FileUpload = {}));
-
 /// <reference path="baseHelpers.ts"/>
 var FilterHelpers;
 (function (FilterHelpers) {
@@ -2679,12 +2685,6 @@ var FilterHelpers;
     }
     FilterHelpers.searchObject = searchObject;
 })(FilterHelpers || (FilterHelpers = {}));
-
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
 /// <reference path="includes.ts"/>
 /**
  * @module Core
@@ -2714,6 +2714,7 @@ var Core;
             this.entity = null;
             this.version = null;
             this.mbean = null;
+            this.expand = false;
             this.addClass = Core.escapeTreeCssStyles(title);
         }
         Object.defineProperty(Folder.prototype, "key", {
@@ -2752,7 +2753,7 @@ var Core;
         Folder.prototype.navigate = function () {
             var paths = [];
             for (var _i = 0; _i < arguments.length; _i++) {
-                paths[_i - 0] = arguments[_i];
+                paths[_i] = arguments[_i];
             }
             var node = this;
             paths.forEach(function (path) {
@@ -2841,7 +2842,7 @@ var Core;
          * Removes this node from my parent if I have one
          * @method detach
          * @for Folder
-      \   */
+         */
         Folder.prototype.detach = function () {
             var _this = this;
             var oldParent = this.parent;
@@ -2904,15 +2905,16 @@ var Core;
 var Folder = (function (_super) {
     __extends(Folder, _super);
     function Folder() {
-        _super.apply(this, arguments);
+        return _super !== null && _super.apply(this, arguments) || this;
     }
     return Folder;
 }(Core.Folder));
 ;
-
 /// <reference path="includes.ts"/>
 var Core;
 (function (Core) {
+    // interfaces that represent the response from 'list', 
+    // TODO should maybe put most of this in jolokia-1.0.d.ts
     // helper functions
     function operationToString(name, args) {
         if (!args || args.length === 0) {
@@ -2929,7 +2931,6 @@ var Core;
     }
     Core.operationToString = operationToString;
 })(Core || (Core = {}));
-
 /// <reference path="includes.ts"/>
 var Log;
 (function (Log) {
@@ -2946,7 +2947,7 @@ var Log;
             return "";
         }
         var answer = '<ul class="unstyled">\n';
-        exception.each(function (line) {
+        exception.forEach(function (line) {
             answer += "<li>" + Log.formatStackLine(line) + "</li>\n";
         });
         answer += "</ul>\n";
@@ -2998,7 +2999,6 @@ var Log;
     }
     Log.formatStackLine = formatStackLine;
 })(Log || (Log = {}));
-
 /// <reference path="includes.ts"/>
 /**
  * Module that provides functions related to working with javascript objects
@@ -3028,7 +3028,6 @@ var ObjectHelpers;
     }
     ObjectHelpers.toMap = toMap;
 })(ObjectHelpers || (ObjectHelpers = {}));
-
 /// <reference path="includes.ts"/>
 /// <reference path="urlHelpers.ts"/>
 var PluginHelpers;
@@ -3054,7 +3053,6 @@ var PluginHelpers;
     }
     PluginHelpers.createRoutingFunction = createRoutingFunction;
 })(PluginHelpers || (PluginHelpers = {}));
-
 /// <reference path="baseHelpers.ts"/>
 var PollHelpers;
 (function (PollHelpers) {
@@ -3074,6 +3072,7 @@ var PollHelpers;
                 jolokia = HawtioCore.injector.get('jolokia');
             }
             catch (err) {
+                // no jolokia service
             }
         }
         var promise = undefined;
@@ -3111,7 +3110,6 @@ var PollHelpers;
     }
     PollHelpers.setupPolling = setupPolling;
 })(PollHelpers || (PollHelpers = {}));
-
 /// <reference path="includes.ts"/>
 var Core;
 (function (Core) {
@@ -3188,7 +3186,6 @@ var Core;
     }
     Core.isValidFunction = isValidFunction;
 })(Core || (Core = {}));
-
 /// <reference path="baseHelpers.ts"/>
 var SelectionHelpers;
 (function (SelectionHelpers) {
@@ -3344,7 +3341,6 @@ var SelectionHelpers;
     }
     SelectionHelpers.decorate = decorate;
 })(SelectionHelpers || (SelectionHelpers = {}));
-
 /// <reference path="coreHelpers.ts"/>
 /// <reference path="controllerHelpers.ts"/>
 var StorageHelpers;
@@ -3373,7 +3369,6 @@ var StorageHelpers;
     }
     StorageHelpers.bindModelToLocalStorage = bindModelToLocalStorage;
 })(StorageHelpers || (StorageHelpers = {}));
-
 /// <reference path="includes.ts"/>
 /**
  * @module UI

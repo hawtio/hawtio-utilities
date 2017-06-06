@@ -17,7 +17,7 @@ module Log {
     }
 
     var answer = '<ul class="unstyled">\n';
-    exception.each((line) => {
+    exception.forEach(line => {
       answer += "<li>" + Log.formatStackLine(line) + "</li>\n"
     });
     answer += "</ul>\n";

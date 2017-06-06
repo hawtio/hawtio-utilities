@@ -1,32 +1,35 @@
 {
-  "name": "hawtio-utilities",
-  "version": "3.0.0",
+  "name": "@hawtio/utilities",
+  "version": "3.0.7",
+  "main": "./dist/hawtio-utilities.js",
+  "types": "./dist/hawtio-utilities.d.ts",
   "scripts": {
     "start": "gulp",
-    "build": "gulp build",
-    "postinstall": "bower install"
+    "build": "gulp build"
+  },
+  "dependencies": {
+    "@hawtio/core": "^3.0.9",
+    "@hawtio/core-dts": "^3.0.11",
+    "@types/angular": "^1.6.18",
+    "@types/lodash": "^4.14.65",
+    "@types/urijs": "^1.15.32",
+    "angular-file-upload": "^2.5.0",
+    "human-date": "^1.4.0",
+    "humanize-duration": "^3.10.0",
+    "lodash": "^4.17.4",
+    "urijs": "^1.18.10"
   },
   "devDependencies": {
-    "bower": "^1.0.0",
-    "del": "^2.0.0",
-    "event-stream": "^3.0.0",
-    "gulp": "^3.0.0",
-    "gulp-angular-templatecache": "^2.0.0",
-    "gulp-concat": "^2.0.0",
-    "gulp-concat-filenames": "^1.0.0",
-    "gulp-connect": "^2.0.0",
-    "gulp-filter": "^4.0.0",
-    "gulp-load-plugins": "^1.0.0",
-    "gulp-notify": "^2.0.0",
-    "gulp-replace": "~0.5.0",
-    "gulp-typescript": "^2.0.0",
-    "gulp-watch": "^3.0.0",
-    "through2": "^2.0.0",
-    "typescript": "^2.0.0",
-    "underscore.string": "^3.0.0",
-    "urijs": "^1.0.0",
-    "which": "^1.0.0",
-    "wiredep": "^4.0.0",
-    "yargs": "^6.0.0"
-  }
+    "del": "^2.2.2",
+    "gulp": "^3.9.1",
+    "gulp-connect": "^5.0.0",
+    "gulp-typescript": "^3.1.7",
+    "typescript": "^2.3.4",
+    "yargs": "^8.0.1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/hawtio/hawtio-utilities"
+  },
+  "license": "Apache-2.0"
 }

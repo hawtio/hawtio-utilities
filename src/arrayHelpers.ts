@@ -34,5 +34,4 @@ module ArrayHelpers {
       return answer;
     }
 
-
 }

@@ -497,7 +497,7 @@ module Core {
       var newStr = "";
       for (var i = 0; i < str.length; i++) {
         var ch = str.charAt(i);
-        var ch = _escapeHtmlChars[ch] || ch;
+        ch = _escapeHtmlChars[ch] || ch;
         newStr += ch;
         /*
          var nextCode = str.charCodeAt(i);
