@@ -1,0 +1,14 @@
+{
+  "compilerOptions": {
+    "target": "ES5",
+    "declaration": true,
+    "outFile": "hawtio-utilities.js",
+    "typeRoots": [
+      "node_modules/@types",
+      "node_modules/@hawtio"
+    ]
+  },
+  "include": [
+    "src/**/*"
+  ]
+}

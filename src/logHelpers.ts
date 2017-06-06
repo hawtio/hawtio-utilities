@@ -17,7 +17,13 @@ module Log {
     }
 
     var answer = '<ul class="unstyled">\n';
+<<<<<<< 4f130c680eb250e6607917bd7919d92a1105b0c6:helpers/logHelpers.ts
     exception.forEach((line) => answer += "<li>" + Log.formatStackLine(line) + "</li>\n");
+=======
+    exception.forEach(line => {
+      answer += "<li>" + Log.formatStackLine(line) + "</li>\n"
+    });
+>>>>>>> Switch from bower to npm:src/logHelpers.ts
     answer += "</ul>\n";
     return answer;
   }

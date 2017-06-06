@@ -87,7 +87,10 @@ var Core;
     }
     Core.createConnectOptions = createConnectOptions;
 })(Core || (Core = {}));
+<<<<<<< 4f130c680eb250e6607917bd7919d92a1105b0c6
 /// <reference path="../libs/hawtio-core-dts/defs.d.ts"/>
+=======
+>>>>>>> Switch from bower to npm
 /// <reference path="coreInterfaces.ts"/>
 /// <reference path="includes.ts"/>
 var ArrayHelpers;
@@ -741,6 +744,15 @@ var Core;
                 var ch = str.charAt(i);
                 ch = _escapeHtmlChars[ch] || ch;
                 newStr += ch;
+                /*
+                 var nextCode = str.charCodeAt(i);
+                 if (nextCode > 0 && nextCode < 48) {
+                 newStr += "&#" + nextCode + ";";
+                 }
+                 else {
+                 newStr += ch;
+                 }
+                 */
             }
             return newStr;
         }
@@ -2677,6 +2689,234 @@ var FilterHelpers;
     }
     FilterHelpers.searchObject = searchObject;
 })(FilterHelpers || (FilterHelpers = {}));
+<<<<<<< 4f130c680eb250e6607917bd7919d92a1105b0c6
+=======
+/// <reference path="includes.ts"/>
+/**
+ * @module Core
+ */
+var Core;
+(function (Core) {
+    /**
+     * @class Folder
+     * @uses NodeSelection
+     */
+    var Folder = (function () {
+        function Folder(title) {
+            this.title = title;
+            this.id = null;
+            this.typeName = null;
+            this.items = [];
+            this.folderNames = [];
+            this.domain = null;
+            this.objectName = null;
+            this.map = {};
+            this.entries = {};
+            this.addClass = null;
+            this.parent = null;
+            this.isLazy = false;
+            this.icon = null;
+            this.tooltip = null;
+            this.entity = null;
+            this.version = null;
+            this.mbean = null;
+            this.expand = false;
+            this.addClass = Core.escapeTreeCssStyles(title);
+        }
+        Object.defineProperty(Folder.prototype, "key", {
+            get: function () {
+                return this.id;
+            },
+            set: function (key) {
+                this.id = key;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(Folder.prototype, "children", {
+            get: function () {
+                return this.items;
+            },
+            set: function (items) {
+                this.items = items;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Folder.prototype.get = function (key) {
+            return this.map[key];
+        };
+        Folder.prototype.isFolder = function () {
+            return this.children.length > 0;
+        };
+        /**
+         * Navigates the given paths and returns the value there or null if no value could be found
+         * @method navigate
+         * @for Folder
+         * @param {Array} paths
+         * @return {NodeSelection}
+         */
+        Folder.prototype.navigate = function () {
+            var paths = [];
+            for (var _i = 0; _i < arguments.length; _i++) {
+                paths[_i] = arguments[_i];
+            }
+            var node = this;
+            paths.forEach(function (path) {
+                if (node) {
+                    node = node.get(path);
+                }
+            });
+            return node;
+        };
+        Folder.prototype.hasEntry = function (key, value) {
+            var entries = this.entries;
+            if (entries) {
+                var actual = entries[key];
+                return actual && value === actual;
+            }
+            return false;
+        };
+        Folder.prototype.parentHasEntry = function (key, value) {
+            if (this.parent) {
+                return this.parent.hasEntry(key, value);
+            }
+            return false;
+        };
+        Folder.prototype.ancestorHasEntry = function (key, value) {
+            var parent = this.parent;
+            while (parent) {
+                if (parent.hasEntry(key, value))
+                    return true;
+                parent = parent.parent;
+            }
+            return false;
+        };
+        Folder.prototype.ancestorHasType = function (typeName) {
+            var parent = this.parent;
+            while (parent) {
+                if (typeName === parent.typeName)
+                    return true;
+                parent = parent.parent;
+            }
+            return false;
+        };
+        Folder.prototype.getOrElse = function (key, defaultValue) {
+            if (defaultValue === void 0) { defaultValue = new Folder(key); }
+            var answer = this.map[key];
+            if (!answer) {
+                answer = defaultValue;
+                this.map[key] = answer;
+                this.children.push(answer);
+                answer.parent = this;
+            }
+            return answer;
+        };
+        Folder.prototype.sortChildren = function (recursive) {
+            var children = this.children;
+            if (children) {
+                this.children = _.sortBy(children, "title");
+                if (recursive) {
+                    angular.forEach(children, function (child) { return child.sortChildren(recursive); });
+                }
+            }
+        };
+        Folder.prototype.moveChild = function (child) {
+            if (child && child.parent !== this) {
+                child.detach();
+                child.parent = this;
+                this.children.push(child);
+            }
+        };
+        Folder.prototype.insertBefore = function (child, referenceFolder) {
+            child.detach();
+            child.parent = this;
+            var idx = _.indexOf((this.children), referenceFolder);
+            if (idx >= 0) {
+                this.children.splice(idx, 0, child);
+            }
+        };
+        Folder.prototype.insertAfter = function (child, referenceFolder) {
+            child.detach();
+            child.parent = this;
+            var idx = _.indexOf((this.children), referenceFolder);
+            if (idx >= 0) {
+                this.children.splice(idx + 1, 0, child);
+            }
+        };
+        /**
+         * Removes this node from my parent if I have one
+         * @method detach
+         * @for Folder
+         */
+        Folder.prototype.detach = function () {
+            var _this = this;
+            var oldParent = this.parent;
+            if (oldParent) {
+                var oldParentChildren = oldParent.children;
+                if (oldParentChildren) {
+                    var idx = oldParentChildren.indexOf(this);
+                    if (idx < 0) {
+                        _.remove(oldParent.children, function (child) { return child.key === _this.key; });
+                    }
+                    else {
+                        oldParentChildren.splice(idx, 1);
+                    }
+                }
+                this.parent = null;
+            }
+        };
+        /**
+         * Searches this folder and all its descendants for the first folder to match the filter
+         * @method findDescendant
+         * @for Folder
+         * @param {Function} filter
+         * @return {Folder}
+         */
+        Folder.prototype.findDescendant = function (filter) {
+            if (filter(this)) {
+                return this;
+            }
+            var answer = null;
+            angular.forEach(this.children, function (child) {
+                if (!answer) {
+                    answer = child.findDescendant(filter);
+                }
+            });
+            return answer;
+        };
+        /**
+         * Searches this folder and all its ancestors for the first folder to match the filter
+         * @method findDescendant
+         * @for Folder
+         * @param {Function} filter
+         * @return {Folder}
+         */
+        Folder.prototype.findAncestor = function (filter) {
+            if (filter(this)) {
+                return this;
+            }
+            if (this.parent != null) {
+                return this.parent.findAncestor(filter);
+            }
+            else {
+                return null;
+            }
+        };
+        return Folder;
+    }());
+    Core.Folder = Folder;
+})(Core || (Core = {}));
+;
+var Folder = (function (_super) {
+    __extends(Folder, _super);
+    function Folder() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    return Folder;
+}(Core.Folder));
+;
+>>>>>>> Switch from bower to npm
 /// <reference path="includes.ts"/>
 var Core;
 (function (Core) {
@@ -2714,7 +2954,13 @@ var Log;
             return '';
         }
         var answer = '<ul class="unstyled">\n';
+<<<<<<< 4f130c680eb250e6607917bd7919d92a1105b0c6
         exception.forEach(function (line) { return answer += "<li>" + Log.formatStackLine(line) + "</li>\n"; });
+=======
+        exception.forEach(function (line) {
+            answer += "<li>" + Log.formatStackLine(line) + "</li>\n";
+        });
+>>>>>>> Switch from bower to npm
         answer += "</ul>\n";
         return answer;
     }

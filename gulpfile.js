@@ -1,3 +1,4 @@
+<<<<<<< 4f130c680eb250e6607917bd7919d92a1105b0c6
 var gulp = require('gulp'),
     wiredep = require('wiredep').stream,
     eventStream = require('event-stream'),
@@ -50,31 +51,48 @@ gulp.task('tsc', ['clean-defs'], function() {
       tsResult.dts
         .pipe(plugins.rename('defs.d.ts'))
         .pipe(gulp.dest('.')));
+=======
+var gulp = require('gulp');
+var connect = require('gulp-connect');
+var argv = require('yargs').argv;
+var del = require('del');
+var ts = require('gulp-typescript');
+var tsProject = ts.createProject('tsconfig.json');
+var tsConfig = require('./tsconfig.json');
+
+gulp.task('clean', function () {
+  return del(['./dist/**/*']);
 });
 
-gulp.task('watch', ['build'], function() {
-  plugins.watch(['libs/**/*.js', 'libs/**/*.css', 'index.html', config.dist + '/' + config.js], function() {
-    gulp.start('reload');
-  });
-  plugins.watch(['libs/**/*.d.ts', config.ts], function() {
-    gulp.start('build');
-  });
+gulp.task('tsc', ['clean'], function() {
+  tsProject.src()
+    .pipe(tsProject())
+    .pipe(gulp.dest('./dist'));
 });
 
-gulp.task('connect', ['watch'], function() {
-  plugins.connect.server({
-    root: '.',
+gulp.task('watch', function() {
+  gulp.watch(tsConfig.include, ['reload']);
+>>>>>>> Switch from bower to npm
+});
+
+gulp.task('connect', function() {
+  connect.server({
     livereload: true,
-    port: 2772,
-    fallback: 'index.html'
+    port: 2772
   });
 });
 
 gulp.task('reload', function() {
   gulp.src('.')
-    .pipe(plugins.connect.reload());
+    .pipe(connect.reload());
 });
 
+<<<<<<< 4f130c680eb250e6607917bd7919d92a1105b0c6
 gulp.task('build', ['bower', 'tsc']);
 
 gulp.task('default', ['connect']);
+=======
+gulp.task('build', ['tsc']);
+
+gulp.task('default', ['build', 'connect', 'watch']);
+>>>>>>> Switch from bower to npm
