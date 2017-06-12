@@ -87,10 +87,6 @@ var Core;
     }
     Core.createConnectOptions = createConnectOptions;
 })(Core || (Core = {}));
-<<<<<<< 4f130c680eb250e6607917bd7919d92a1105b0c6
-/// <reference path="../libs/hawtio-core-dts/defs.d.ts"/>
-=======
->>>>>>> Switch from bower to npm
 /// <reference path="coreInterfaces.ts"/>
 /// <reference path="includes.ts"/>
 var ArrayHelpers;
@@ -744,15 +740,6 @@ var Core;
                 var ch = str.charAt(i);
                 ch = _escapeHtmlChars[ch] || ch;
                 newStr += ch;
-                /*
-                 var nextCode = str.charCodeAt(i);
-                 if (nextCode > 0 && nextCode < 48) {
-                 newStr += "&#" + nextCode + ";";
-                 }
-                 else {
-                 newStr += ch;
-                 }
-                 */
             }
             return newStr;
         }
@@ -2689,8 +2676,6 @@ var FilterHelpers;
     }
     FilterHelpers.searchObject = searchObject;
 })(FilterHelpers || (FilterHelpers = {}));
-<<<<<<< 4f130c680eb250e6607917bd7919d92a1105b0c6
-=======
 /// <reference path="includes.ts"/>
 /**
  * @module Core
@@ -2916,7 +2901,6 @@ var Folder = (function (_super) {
     return Folder;
 }(Core.Folder));
 ;
->>>>>>> Switch from bower to npm
 /// <reference path="includes.ts"/>
 var Core;
 (function (Core) {
@@ -2954,13 +2938,7 @@ var Log;
             return '';
         }
         var answer = '<ul class="unstyled">\n';
-<<<<<<< 4f130c680eb250e6607917bd7919d92a1105b0c6
         exception.forEach(function (line) { return answer += "<li>" + Log.formatStackLine(line) + "</li>\n"; });
-=======
-        exception.forEach(function (line) {
-            answer += "<li>" + Log.formatStackLine(line) + "</li>\n";
-        });
->>>>>>> Switch from bower to npm
         answer += "</ul>\n";
         return answer;
     }
