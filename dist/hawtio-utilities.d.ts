@@ -492,7 +492,7 @@ declare module Core {
      * @param {String} level
      * @return {String}
      */
-    function logLevelClass(level: string): "" | "error" | "warning" | "info";
+    function logLevelClass(level: string): "error" | "" | "warning" | "info";
     function toPath(hashUrl: string): string;
     function parseMBean(mbean: any): any;
     function executePostLoginTasks(): void;

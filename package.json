@@ -9,16 +9,16 @@
     "install:dev": "yarn install --flat --prod && yarn install"
   },
   "dependencies": {
-    "@hawtio/core": "^3.0.9",
-    "@hawtio/core-dts": "^3.0.11",
-    "@types/angular": "^1.6.18",
-    "@types/lodash": "^4.14.65",
-    "@types/urijs": "^1.15.32",
-    "angular-file-upload": "^2.5.0",
-    "human-date": "^1.4.0",
-    "humanize-duration": "^3.10.0",
-    "lodash": "^4.17.4",
-    "urijs": "^1.18.10"
+    "@hawtio/core": "~3.0.9",
+    "@hawtio/core-dts": "~3.0.11",
+    "@types/angular": "~1.6.18",
+    "@types/lodash": "~4.14.65",
+    "@types/urijs": "~1.15.32",
+    "angular-file-upload": "~2.5.0",
+    "human-date": "~1.4.0",
+    "humanize-duration": "~3.10.0",
+    "lodash": "~4.17.4",
+    "urijs": "~1.18.10"
   },
   "devDependencies": {
     "del": "^2.2.2",
@@ -32,5 +32,11 @@
     "type": "git",
     "url": "https://github.com/hawtio/hawtio-utilities.git"
   },
-  "license": "Apache-2.0"
+  "license": "Apache-2.0",
+  "publishConfig": {
+    "access": "public"
+  },
+  "resolutions": {
+    "@types/jquery": "~2.0.48"
+  }
 }
