@@ -1,88 +1,3 @@
-/// <reference path="includes.ts"/>
-var StringHelpers;
-(function (StringHelpers) {
-    var dateRegex = /\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:/i;
-    function isDate(str) {
-        if (!angular.isString(str)) {
-            // we only deal with strings
-            return false;
-        }
-        return dateRegex.test(str);
-    }
-    StringHelpers.isDate = isDate;
-    /**
-     * Convert a string into a bunch of '*' of the same length
-     * @param str
-     * @returns {string}
-     */
-    function obfusicate(str) {
-        if (!angular.isString(str)) {
-            // return null so we don't show any old random non-string thing
-            return null;
-        }
-        return str.split('').map(function (c) { return '*'; }).join('');
-    }
-    StringHelpers.obfusicate = obfusicate;
-    /**
-     * Simple toString that obscures any field called 'password'
-     * @param obj
-     * @returns {string}
-     */
-    function toString(obj) {
-        if (!obj) {
-            return '{ null }';
-        }
-        var answer = [];
-        angular.forEach(obj, function (value, key) {
-            var val = value;
-            if (('' + key).toLowerCase() === 'password') {
-                val = StringHelpers.obfusicate(value);
-            }
-            else if (angular.isObject(val)) {
-                val = toString(val);
-            }
-            answer.push(key + ': ' + val);
-        });
-        return '{ ' + answer.join(', ') + ' }';
-    }
-    StringHelpers.toString = toString;
-})(StringHelpers || (StringHelpers = {}));
-
-/// <reference path="includes.ts"/>
-/// <reference path="stringHelpers.ts"/>
-var Core;
-(function (Core) {
-    /**
-     * Factory to create an instance of ConnectToServerOptions
-     * @returns {ConnectToServerOptions}
-     */
-    function createConnectToServerOptions(options) {
-        var defaults = {
-            scheme: 'http',
-            host: null,
-            port: null,
-            path: null,
-            useProxy: true,
-            jolokiaUrl: null,
-            userName: null,
-            password: null,
-            view: null,
-            name: null
-        };
-        var opts = options || {};
-        return angular.extend(defaults, opts);
-    }
-    Core.createConnectToServerOptions = createConnectToServerOptions;
-    function createConnectOptions(options) {
-        return createConnectToServerOptions(options);
-    }
-    Core.createConnectOptions = createConnectOptions;
-})(Core || (Core = {}));
-
-/// <reference path="../libs/hawtio-core-dts/defs.d.ts"/>
-/// <reference path="coreInterfaces.ts"/>
-
-/// <reference path="includes.ts"/>
 var ArrayHelpers;
 (function (ArrayHelpers) {
     /**
@@ -123,130 +38,6 @@ var ArrayHelpers;
     ArrayHelpers.sync = sync;
 })(ArrayHelpers || (ArrayHelpers = {}));
 
-/// <reference path="includes.ts"/>
-/// <reference path="baseHelpers.ts"/>
-var UrlHelpers;
-(function (UrlHelpers) {
-    var log = Logger.get("UrlHelpers");
-    /**
-     * Returns the URL without the starting '#' if it's there
-     * @param url
-     * @returns {string}
-     */
-    function noHash(url) {
-        if (url && _.startsWith(url, '#')) {
-            return url.substring(1);
-        }
-        else {
-            return url;
-        }
-    }
-    UrlHelpers.noHash = noHash;
-    function extractPath(url) {
-        if (url.indexOf('?') !== -1) {
-            return url.split('?')[0];
-        }
-        else {
-            return url;
-        }
-    }
-    UrlHelpers.extractPath = extractPath;
-    /**
-     * Returns whether or not the context is in the supplied URL.  If the search string starts/ends with '/' then the entire URL is checked.  If the search string doesn't start with '/' then the search string is compared against the end of the URL.  If the search string starts with '/' but doesn't end with '/' then the start of the URL is checked, excluding any '#'
-     * @param url
-     * @param thingICareAbout
-     * @returns {boolean}
-     */
-    function contextActive(url, thingICareAbout) {
-        var cleanUrl = extractPath(url);
-        if (_.endsWith(thingICareAbout, '/') && _.startsWith(thingICareAbout, "/")) {
-            return cleanUrl.indexOf(thingICareAbout) > -1;
-        }
-        if (_.startsWith(thingICareAbout, "/")) {
-            return _.startsWith(noHash(cleanUrl), thingICareAbout);
-        }
-        return _.endsWith(cleanUrl, thingICareAbout);
-    }
-    UrlHelpers.contextActive = contextActive;
-    /**
-     * Joins the supplied strings together using '/', stripping any leading/ending '/'
-     * from the supplied strings if needed, except the first and last string
-     * @returns {string}
-     */
-    function join() {
-        var paths = [];
-        for (var _i = 0; _i < arguments.length; _i++) {
-            paths[_i - 0] = arguments[_i];
-        }
-        var tmp = [];
-        var length = paths.length - 1;
-        paths.forEach(function (path, index) {
-            if (Core.isBlank(path)) {
-                return;
-            }
-            if (path === '/') {
-                tmp.push('');
-                return;
-            }
-            if (index !== 0 && path.match(/^\//)) {
-                path = path.slice(1);
-            }
-            if (index !== length && path.match(/\/$/)) {
-                path = path.slice(0, path.length - 1);
-            }
-            if (!Core.isBlank(path)) {
-                tmp.push(path);
-            }
-        });
-        var rc = tmp.join('/');
-        return rc;
-    }
-    UrlHelpers.join = join;
-    function parseQueryString(text) {
-        var uri = new URI(text);
-        return URI.parseQuery(uri.query());
-    }
-    UrlHelpers.parseQueryString = parseQueryString;
-    //export var parseQueryString = hawtioPluginLoader.parseQueryString;
-    /**
-     * Apply a proxy to the supplied URL if the jolokiaUrl is using the proxy, or if the URL is for a a different host/port
-     * @param jolokiaUrl
-     * @param url
-     * @returns {*}
-     */
-    function maybeProxy(jolokiaUrl, url) {
-        if (jolokiaUrl && _.startsWith(jolokiaUrl, 'proxy/')) {
-            log.debug("Jolokia URL is proxied, applying proxy to: ", url);
-            return join('proxy', url);
-        }
-        var origin = window.location['origin'];
-        if (url && (_.startsWith(url, 'http') && !_.startsWith(url, origin))) {
-            log.debug("Url doesn't match page origin: ", origin, " applying proxy to: ", url);
-            return join('proxy', url);
-        }
-        log.debug("No need to proxy: ", url);
-        return url;
-    }
-    UrlHelpers.maybeProxy = maybeProxy;
-    /**
-     * Escape any colons in the URL for ng-resource, mostly useful for handling proxified URLs
-     * @param url
-     * @returns {*}
-     */
-    function escapeColons(url) {
-        var answer = url;
-        if (_.startsWith(url, 'proxy')) {
-            answer = url.replace(/:/g, '\\:');
-        }
-        else {
-            answer = url.replace(/:([^\/])/, '\\:$1');
-        }
-        return answer;
-    }
-    UrlHelpers.escapeColons = escapeColons;
-})(UrlHelpers || (UrlHelpers = {}));
-
-/// <reference path="includes.ts"/>
 /// <reference path="stringHelpers.ts"/>
 /// <reference path="urlHelpers.ts"/>
 /**
@@ -736,6 +527,15 @@ var Core;
                 var ch = str.charAt(i);
                 var ch = _escapeHtmlChars[ch] || ch;
                 newStr += ch;
+                /*
+                 var nextCode = str.charCodeAt(i);
+                 if (nextCode > 0 && nextCode < 48) {
+                 newStr += "&#" + nextCode + ";";
+                 }
+                 else {
+                 newStr += ch;
+                 }
+                 */
             }
             return newStr;
         }
@@ -793,6 +593,7 @@ var Core;
                 text = _.capitalize(text.split('_').join(' '));
             }
             catch (e) {
+                // ignore
             }
             return trimQuotes(text);
         }
@@ -801,7 +602,6 @@ var Core;
     Core.humanizeValue = humanizeValue;
 })(Core || (Core = {}));
 
-/// <reference path="includes.ts"/>
 var HawtioCompile;
 (function (HawtioCompile) {
     var pluginName = 'hawtio-compile';
@@ -920,108 +720,36 @@ var ControllerHelpers;
     ControllerHelpers.reloadWhenParametersChange = reloadWhenParametersChange;
 })(ControllerHelpers || (ControllerHelpers = {}));
 
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
-/// <reference path="includes.ts"/>
-var Core;
-(function (Core) {
-    var log = Logger.get("hawtio-tasks");
-    var TasksImpl = (function () {
-        function TasksImpl() {
-            this.tasks = {};
-            this.tasksExecuted = false;
-            this._onComplete = null;
-        }
-        TasksImpl.prototype.addTask = function (name, task) {
-            this.tasks[name] = task;
-            if (this.tasksExecuted) {
-                this.executeTask(name, task);
-            }
+/// <reference path="coreHelpers.ts" />
+var CoreFilters;
+(function (CoreFilters) {
+    var pluginName = 'hawtio-core-filters';
+    var _module = angular.module(pluginName, []);
+    _module.filter("valueToHtml", function () { return Core.valueToHtml; });
+    _module.filter('humanize', function () { return Core.humanizeValue; });
+    _module.filter('humanizeMs', function () { return Core.humanizeMilliseconds; });
+    _module.filter('maskPassword', function () { return Core.maskPassword; });
+    // relativeTime was the first humanize filter for dates,
+    // let's maybe also add a 'humanizeDate' filter to match
+    // up with 'humanizeDuration'
+    var relativeTimeFunc = function (date) {
+        return humandate.relativeTime(date);
+    };
+    // Turn a date into a relative time from right now
+    _module.filter('relativeTime', function () {
+        return relativeTimeFunc;
+    });
+    _module.filter('humanizeDate', function () {
+        return relativeTimeFunc;
+    });
+    // Output a duration in milliseconds in a human-readable format
+    _module.filter('humanizeDuration', function () {
+        return function (duration) {
+            return humanizeDuration(duration, { round: true });
         };
-        TasksImpl.prototype.executeTask = function (name, task) {
-            if (angular.isFunction(task)) {
-                log.debug("Executing task : ", name);
-                try {
-                    task();
-                }
-                catch (error) {
-                    log.debug("Failed to execute task: ", name, " error: ", error);
-                }
-            }
-        };
-        TasksImpl.prototype.onComplete = function (cb) {
-            this._onComplete = cb;
-        };
-        TasksImpl.prototype.execute = function () {
-            var _this = this;
-            if (this.tasksExecuted) {
-                return;
-            }
-            angular.forEach(this.tasks, function (task, name) {
-                _this.executeTask(name, task);
-            });
-            this.tasksExecuted = true;
-            if (angular.isFunction(this._onComplete)) {
-                this._onComplete();
-            }
-        };
-        TasksImpl.prototype.reset = function () {
-            this.tasksExecuted = false;
-        };
-        return TasksImpl;
-    }());
-    Core.TasksImpl = TasksImpl;
-    var ParameterizedTasksImpl = (function (_super) {
-        __extends(ParameterizedTasksImpl, _super);
-        function ParameterizedTasksImpl() {
-            var _this = this;
-            _super.call(this);
-            this.tasks = {};
-            this.onComplete(function () {
-                _this.reset();
-            });
-        }
-        ParameterizedTasksImpl.prototype.addTask = function (name, task) {
-            this.tasks[name] = task;
-        };
-        ParameterizedTasksImpl.prototype.execute = function () {
-            var _this = this;
-            var params = [];
-            for (var _i = 0; _i < arguments.length; _i++) {
-                params[_i - 0] = arguments[_i];
-            }
-            if (this.tasksExecuted) {
-                return;
-            }
-            var theArgs = params;
-            var keys = _.keys(this.tasks);
-            keys.forEach(function (name) {
-                var task = _this.tasks[name];
-                if (angular.isFunction(task)) {
-                    log.debug("Executing task: ", name, " with parameters: ", theArgs);
-                    try {
-                        task.apply(task, theArgs);
-                    }
-                    catch (e) {
-                        log.debug("Failed to execute task: ", name, " error: ", e);
-                    }
-                }
-            });
-            this.tasksExecuted = true;
-            if (angular.isFunction(this._onComplete)) {
-                this._onComplete();
-            }
-        };
-        return ParameterizedTasksImpl;
-    }(TasksImpl));
-    Core.ParameterizedTasksImpl = ParameterizedTasksImpl;
-    Core.postLoginTasks = new Core.TasksImpl();
-    Core.preLogoutTasks = new Core.TasksImpl();
-    Core.postLogoutTasks = new Core.TasksImpl();
-})(Core || (Core = {}));
+    });
+    hawtioPluginLoader.addModule(pluginName);
+})(CoreFilters || (CoreFilters = {}));
 
 /// <reference path="baseHelpers.ts"/>
 /// <reference path="controllerHelpers.ts"/>
@@ -1663,6 +1391,7 @@ var Core;
             scope.$jhandle = [];
         }
         else {
+            //log.debug("Using existing handle set");
         }
         if (angular.isDefined(scope.$on)) {
             scope.$on('$destroy', function (event) {
@@ -1774,13 +1503,16 @@ var Core;
                     // such as its been removed
                     // or if we run against older containers
                     Core.log.debug("Operation ", operation, " failed due to: ", response['error']);
+                    // Core.log.debug("Stack trace: ", Logger.formatStackTraceString(response['stacktrace']));
                 }
                 else {
                     Core.log.warn("Operation ", operation, " failed due to: ", response['error']);
+                    // Core.log.info("Stack trace: ", Logger.formatStackTraceString(response['stacktrace']));
                 }
             }
             else {
                 Core.log.debug("Operation ", operation, " failed due to: ", response['error']);
+                // Core.log.debug("Stack trace: ", Logger.formatStackTraceString(response['stacktrace']));
             }
         }
     }
@@ -1793,6 +1525,7 @@ var Core;
         if (stacktrace) {
             var operation = Core.pathGet(response, ['request', 'operation']) || "unknown";
             Core.log.info("Operation ", operation, " failed due to: ", response['error']);
+            // Core.log.info("Stack trace: ", Logger.formatStackTraceString(response['stacktrace']));
         }
     }
     Core.logJolokiaStackTrace = logJolokiaStackTrace;
@@ -2024,6 +1757,7 @@ var Core;
                 return JSON.parse(text);
             }
             catch (e) {
+                // ignore
             }
         }
         return null;
@@ -2321,6 +2055,7 @@ var Core;
                 lastAnswer = fn();
             }
             else {
+                //log.debug("Not invoking function as we did call " + (now - (nextInvokeTime - millis)) + " ms ago");
             }
             return lastAnswer;
         };
@@ -2519,38 +2254,36 @@ var Core;
     Core.matchFilterIgnoreCase = matchFilterIgnoreCase;
 })(Core || (Core = {}));
 
-/// <reference path="coreHelpers.ts" />
-var CoreFilters;
-(function (CoreFilters) {
-    var pluginName = 'hawtio-core-filters';
-    var _module = angular.module(pluginName, []);
-    _module.filter("valueToHtml", function () { return Core.valueToHtml; });
-    _module.filter('humanize', function () { return Core.humanizeValue; });
-    _module.filter('humanizeMs', function () { return Core.humanizeMilliseconds; });
-    _module.filter('maskPassword', function () { return Core.maskPassword; });
-    // relativeTime was the first humanize filter for dates,
-    // let's maybe also add a 'humanizeDate' filter to match
-    // up with 'humanizeDuration'
-    var relativeTimeFunc = function (date) {
-        return humandate.relativeTime(date);
-    };
-    // Turn a date into a relative time from right now
-    _module.filter('relativeTime', function () {
-        return relativeTimeFunc;
-    });
-    _module.filter('humanizeDate', function () {
-        return relativeTimeFunc;
-    });
-    // Output a duration in milliseconds in a human-readable format
-    _module.filter('humanizeDuration', function () {
-        return function (duration) {
-            return humanizeDuration(duration, { round: true });
+/// <reference path="stringHelpers.ts"/>
+var Core;
+(function (Core) {
+    /**
+     * Factory to create an instance of ConnectToServerOptions
+     * @returns {ConnectToServerOptions}
+     */
+    function createConnectToServerOptions(options) {
+        var defaults = {
+            scheme: 'http',
+            host: null,
+            port: null,
+            path: null,
+            useProxy: true,
+            jolokiaUrl: null,
+            userName: null,
+            password: null,
+            view: null,
+            name: null
         };
-    });
-    hawtioPluginLoader.addModule(pluginName);
-})(CoreFilters || (CoreFilters = {}));
+        var opts = options || {};
+        return angular.extend(defaults, opts);
+    }
+    Core.createConnectToServerOptions = createConnectToServerOptions;
+    function createConnectOptions(options) {
+        return createConnectToServerOptions(options);
+    }
+    Core.createConnectOptions = createConnectOptions;
+})(Core || (Core = {}));
 
-/// <reference path="includes.ts"/>
 /// <reference path="tasks.ts"/>
 var EventServices;
 (function (EventServices) {
@@ -2591,7 +2324,6 @@ var EventServices;
     hawtioPluginLoader.addModule(pluginName);
 })(EventServices || (EventServices = {}));
 
-/// <reference path="includes.ts"/>
 /// <reference path="baseHelpers.ts"/>
 /// <reference path="coreHelpers.ts"/>
 var FileUpload;
@@ -2680,12 +2412,16 @@ var FilterHelpers;
     FilterHelpers.searchObject = searchObject;
 })(FilterHelpers || (FilterHelpers = {}));
 
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
-/// <reference path="includes.ts"/>
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
 /**
  * @module Core
  */
@@ -2752,7 +2488,7 @@ var Core;
         Folder.prototype.navigate = function () {
             var paths = [];
             for (var _i = 0; _i < arguments.length; _i++) {
-                paths[_i - 0] = arguments[_i];
+                paths[_i] = arguments[_i];
             }
             var node = this;
             paths.forEach(function (path) {
@@ -2904,15 +2640,16 @@ var Core;
 var Folder = (function (_super) {
     __extends(Folder, _super);
     function Folder() {
-        _super.apply(this, arguments);
+        return _super !== null && _super.apply(this, arguments) || this;
     }
     return Folder;
 }(Core.Folder));
 ;
 
-/// <reference path="includes.ts"/>
 var Core;
 (function (Core) {
+    // interfaces that represent the response from 'list', 
+    // TODO should maybe put most of this in jolokia-1.0.d.ts
     // helper functions
     function operationToString(name, args) {
         if (!args || args.length === 0) {
@@ -2930,7 +2667,6 @@ var Core;
     Core.operationToString = operationToString;
 })(Core || (Core = {}));
 
-/// <reference path="includes.ts"/>
 var Log;
 (function (Log) {
     var _stackRegex = /\s*at\s+([\w\.$_]+(\.([\w$_]+))*)\((.*)?:(\d+)\).*\[(.*)\]/;
@@ -2999,7 +2735,6 @@ var Log;
     Log.formatStackLine = formatStackLine;
 })(Log || (Log = {}));
 
-/// <reference path="includes.ts"/>
 /**
  * Module that provides functions related to working with javascript objects
  */
@@ -3029,7 +2764,6 @@ var ObjectHelpers;
     ObjectHelpers.toMap = toMap;
 })(ObjectHelpers || (ObjectHelpers = {}));
 
-/// <reference path="includes.ts"/>
 /// <reference path="urlHelpers.ts"/>
 var PluginHelpers;
 (function (PluginHelpers) {
@@ -3074,6 +2808,7 @@ var PollHelpers;
                 jolokia = HawtioCore.injector.get('jolokia');
             }
             catch (err) {
+                // no jolokia service
             }
         }
         var promise = undefined;
@@ -3112,7 +2847,6 @@ var PollHelpers;
     PollHelpers.setupPolling = setupPolling;
 })(PollHelpers || (PollHelpers = {}));
 
-/// <reference path="includes.ts"/>
 var Core;
 (function (Core) {
     /**
@@ -3374,7 +3108,162 @@ var StorageHelpers;
     StorageHelpers.bindModelToLocalStorage = bindModelToLocalStorage;
 })(StorageHelpers || (StorageHelpers = {}));
 
-/// <reference path="includes.ts"/>
+var StringHelpers;
+(function (StringHelpers) {
+    var dateRegex = /\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:/i;
+    function isDate(str) {
+        if (!angular.isString(str)) {
+            // we only deal with strings
+            return false;
+        }
+        return dateRegex.test(str);
+    }
+    StringHelpers.isDate = isDate;
+    /**
+     * Convert a string into a bunch of '*' of the same length
+     * @param str
+     * @returns {string}
+     */
+    function obfusicate(str) {
+        if (!angular.isString(str)) {
+            // return null so we don't show any old random non-string thing
+            return null;
+        }
+        return str.split('').map(function (c) { return '*'; }).join('');
+    }
+    StringHelpers.obfusicate = obfusicate;
+    /**
+     * Simple toString that obscures any field called 'password'
+     * @param obj
+     * @returns {string}
+     */
+    function toString(obj) {
+        if (!obj) {
+            return '{ null }';
+        }
+        var answer = [];
+        angular.forEach(obj, function (value, key) {
+            var val = value;
+            if (('' + key).toLowerCase() === 'password') {
+                val = StringHelpers.obfusicate(value);
+            }
+            else if (angular.isObject(val)) {
+                val = toString(val);
+            }
+            answer.push(key + ': ' + val);
+        });
+        return '{ ' + answer.join(', ') + ' }';
+    }
+    StringHelpers.toString = toString;
+})(StringHelpers || (StringHelpers = {}));
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+var Core;
+(function (Core) {
+    var log = Logger.get("hawtio-tasks");
+    var TasksImpl = (function () {
+        function TasksImpl() {
+            this.tasks = {};
+            this.tasksExecuted = false;
+            this._onComplete = null;
+        }
+        TasksImpl.prototype.addTask = function (name, task) {
+            this.tasks[name] = task;
+            if (this.tasksExecuted) {
+                this.executeTask(name, task);
+            }
+        };
+        TasksImpl.prototype.executeTask = function (name, task) {
+            if (angular.isFunction(task)) {
+                log.debug("Executing task : ", name);
+                try {
+                    task();
+                }
+                catch (error) {
+                    log.debug("Failed to execute task: ", name, " error: ", error);
+                }
+            }
+        };
+        TasksImpl.prototype.onComplete = function (cb) {
+            this._onComplete = cb;
+        };
+        TasksImpl.prototype.execute = function () {
+            var _this = this;
+            if (this.tasksExecuted) {
+                return;
+            }
+            angular.forEach(this.tasks, function (task, name) {
+                _this.executeTask(name, task);
+            });
+            this.tasksExecuted = true;
+            if (angular.isFunction(this._onComplete)) {
+                this._onComplete();
+            }
+        };
+        TasksImpl.prototype.reset = function () {
+            this.tasksExecuted = false;
+        };
+        return TasksImpl;
+    }());
+    Core.TasksImpl = TasksImpl;
+    var ParameterizedTasksImpl = (function (_super) {
+        __extends(ParameterizedTasksImpl, _super);
+        function ParameterizedTasksImpl() {
+            var _this = _super.call(this) || this;
+            _this.tasks = {};
+            _this.onComplete(function () {
+                _this.reset();
+            });
+            return _this;
+        }
+        ParameterizedTasksImpl.prototype.addTask = function (name, task) {
+            this.tasks[name] = task;
+        };
+        ParameterizedTasksImpl.prototype.execute = function () {
+            var _this = this;
+            var params = [];
+            for (var _i = 0; _i < arguments.length; _i++) {
+                params[_i] = arguments[_i];
+            }
+            if (this.tasksExecuted) {
+                return;
+            }
+            var theArgs = params;
+            var keys = _.keys(this.tasks);
+            keys.forEach(function (name) {
+                var task = _this.tasks[name];
+                if (angular.isFunction(task)) {
+                    log.debug("Executing task: ", name, " with parameters: ", theArgs);
+                    try {
+                        task.apply(task, theArgs);
+                    }
+                    catch (e) {
+                        log.debug("Failed to execute task: ", name, " error: ", e);
+                    }
+                }
+            });
+            this.tasksExecuted = true;
+            if (angular.isFunction(this._onComplete)) {
+                this._onComplete();
+            }
+        };
+        return ParameterizedTasksImpl;
+    }(TasksImpl));
+    Core.ParameterizedTasksImpl = ParameterizedTasksImpl;
+    Core.postLoginTasks = new Core.TasksImpl();
+    Core.preLogoutTasks = new Core.TasksImpl();
+    Core.postLogoutTasks = new Core.TasksImpl();
+})(Core || (Core = {}));
+
 /**
  * @module UI
  */
@@ -3433,3 +3322,125 @@ var UI;
     }
     UI.getScrollbarWidth = getScrollbarWidth;
 })(UI || (UI = {}));
+
+/// <reference path="baseHelpers.ts"/>
+var UrlHelpers;
+(function (UrlHelpers) {
+    var log = Logger.get("UrlHelpers");
+    /**
+     * Returns the URL without the starting '#' if it's there
+     * @param url
+     * @returns {string}
+     */
+    function noHash(url) {
+        if (url && _.startsWith(url, '#')) {
+            return url.substring(1);
+        }
+        else {
+            return url;
+        }
+    }
+    UrlHelpers.noHash = noHash;
+    function extractPath(url) {
+        if (url.indexOf('?') !== -1) {
+            return url.split('?')[0];
+        }
+        else {
+            return url;
+        }
+    }
+    UrlHelpers.extractPath = extractPath;
+    /**
+     * Returns whether or not the context is in the supplied URL.  If the search string starts/ends with '/' then the entire URL is checked.  If the search string doesn't start with '/' then the search string is compared against the end of the URL.  If the search string starts with '/' but doesn't end with '/' then the start of the URL is checked, excluding any '#'
+     * @param url
+     * @param thingICareAbout
+     * @returns {boolean}
+     */
+    function contextActive(url, thingICareAbout) {
+        var cleanUrl = extractPath(url);
+        if (_.endsWith(thingICareAbout, '/') && _.startsWith(thingICareAbout, "/")) {
+            return cleanUrl.indexOf(thingICareAbout) > -1;
+        }
+        if (_.startsWith(thingICareAbout, "/")) {
+            return _.startsWith(noHash(cleanUrl), thingICareAbout);
+        }
+        return _.endsWith(cleanUrl, thingICareAbout);
+    }
+    UrlHelpers.contextActive = contextActive;
+    /**
+     * Joins the supplied strings together using '/', stripping any leading/ending '/'
+     * from the supplied strings if needed, except the first and last string
+     * @returns {string}
+     */
+    function join() {
+        var paths = [];
+        for (var _i = 0; _i < arguments.length; _i++) {
+            paths[_i] = arguments[_i];
+        }
+        var tmp = [];
+        var length = paths.length - 1;
+        paths.forEach(function (path, index) {
+            if (Core.isBlank(path)) {
+                return;
+            }
+            if (path === '/') {
+                tmp.push('');
+                return;
+            }
+            if (index !== 0 && path.match(/^\//)) {
+                path = path.slice(1);
+            }
+            if (index !== length && path.match(/\/$/)) {
+                path = path.slice(0, path.length - 1);
+            }
+            if (!Core.isBlank(path)) {
+                tmp.push(path);
+            }
+        });
+        var rc = tmp.join('/');
+        return rc;
+    }
+    UrlHelpers.join = join;
+    function parseQueryString(text) {
+        var uri = new URI(text);
+        return URI.parseQuery(uri.query());
+    }
+    UrlHelpers.parseQueryString = parseQueryString;
+    //export var parseQueryString = hawtioPluginLoader.parseQueryString;
+    /**
+     * Apply a proxy to the supplied URL if the jolokiaUrl is using the proxy, or if the URL is for a a different host/port
+     * @param jolokiaUrl
+     * @param url
+     * @returns {*}
+     */
+    function maybeProxy(jolokiaUrl, url) {
+        if (jolokiaUrl && _.startsWith(jolokiaUrl, 'proxy/')) {
+            log.debug("Jolokia URL is proxied, applying proxy to: ", url);
+            return join('proxy', url);
+        }
+        var origin = window.location['origin'];
+        if (url && (_.startsWith(url, 'http') && !_.startsWith(url, origin))) {
+            log.debug("Url doesn't match page origin: ", origin, " applying proxy to: ", url);
+            return join('proxy', url);
+        }
+        log.debug("No need to proxy: ", url);
+        return url;
+    }
+    UrlHelpers.maybeProxy = maybeProxy;
+    /**
+     * Escape any colons in the URL for ng-resource, mostly useful for handling proxified URLs
+     * @param url
+     * @returns {*}
+     */
+    function escapeColons(url) {
+        var answer = url;
+        if (_.startsWith(url, 'proxy')) {
+            answer = url.replace(/:/g, '\\:');
+        }
+        else {
+            answer = url.replace(/:([^\/])/, '\\:$1');
+        }
+        return answer;
+    }
+    UrlHelpers.escapeColons = escapeColons;
+})(UrlHelpers || (UrlHelpers = {}));

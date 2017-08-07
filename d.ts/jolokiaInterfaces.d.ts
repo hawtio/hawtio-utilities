@@ -1,4 +1,3 @@
-/// <reference path="includes.d.ts" />
 declare module Core {
     /**
      * Operation arguments are stored in a map of argument name -> type

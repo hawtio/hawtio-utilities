@@ -1,4 +1,3 @@
-/// <reference path="includes.d.ts" />
 declare module Core {
     interface Tasks {
         addTask: (name: string, task: () => void) => void;

@@ -18,9 +18,10 @@ var config = {
   js: pkg.name + '.js',
   tsProject: plugins.typescript.createProject({
     target: 'ES5',
-    module: 'commonjs',
-    declarationFiles: true,
-    noExternalResolve: false
+    declaration: true,
+    typeRoots: [
+      "libs/hawtio-core-dts/types"
+    ]
   })
 };
 
@@ -37,11 +38,7 @@ gulp.task('bower', function() {
 gulp.task('tsc', ['clean-defs'], function() {
   var cwd = process.cwd();
   var tsResult = gulp.src(config.ts)
-    .pipe(plugins.typescript(config.tsProject))
-    .on('error', plugins.notify.onError({
-      message: '#{ error.message }',
-      title: 'Typescript compilation error'
-    }));
+    .pipe(config.tsProject());
 
     return eventStream.merge(
       tsResult.js
@@ -83,7 +80,7 @@ gulp.task('reload', function() {
 
 gulp.task('build', ['tsc']);
 
-gulp.task('default', ['watch']);
+gulp.task('default', ['connect', 'watch']);
 
 
 

@@ -1,4 +1,3 @@
-/// <reference path="includes.d.ts" />
 declare module StringHelpers {
     function isDate(str: any): boolean;
     /**

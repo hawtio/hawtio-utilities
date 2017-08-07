@@ -81,7 +81,7 @@ declare module Core {
      * @param {String} level
      * @return {String}
      */
-    function logLevelClass(level: string): string;
+    function logLevelClass(level: string): "error" | "" | "warning" | "info";
     function toPath(hashUrl: string): string;
     function parseMBean(mbean: any): any;
     function executePostLoginTasks(): void;
@@ -241,7 +241,7 @@ declare module Core {
      * @param {Array} v2
      * @return {Number}
      */
-    function compareVersionNumberArrays(v1: number[], v2: number[]): number;
+    function compareVersionNumberArrays(v1: number[], v2: number[]): 1 | -1 | 0;
     /**
      * Helper function which converts objects into tables of key/value properties and
      * lists into a <ul> for each value.

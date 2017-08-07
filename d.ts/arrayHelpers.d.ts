@@ -1,4 +1,3 @@
-/// <reference path="includes.d.ts" />
 declare module ArrayHelpers {
     /**
      * Removes elements in the target array based on the new collection, returns true if

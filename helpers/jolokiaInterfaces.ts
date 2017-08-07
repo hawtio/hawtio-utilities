@@ -1,4 +1,3 @@
-/// <reference path="includes.ts"/>
 module Core {
 
   // interfaces that represent the response from 'list', 

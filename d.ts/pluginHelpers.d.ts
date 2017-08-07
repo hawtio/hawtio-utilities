@@ -1,4 +1,3 @@
-/// <reference path="includes.d.ts" />
 /// <reference path="urlHelpers.d.ts" />
 declare module PluginHelpers {
     interface PluginModule {

@@ -1,4 +1,3 @@
-/// <reference path="includes.ts"/>
 /// <reference path="baseHelpers.ts"/>
 /// <reference path="coreHelpers.ts"/>
 module FileUpload {

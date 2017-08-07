@@ -1,4 +1,3 @@
-/// <reference path="includes.ts"/>
 /// <reference path="tasks.ts"/>
 module EventServices {
   var pluginName = 'hawtio-event-tasks';

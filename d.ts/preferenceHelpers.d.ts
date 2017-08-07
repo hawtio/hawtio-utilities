@@ -1,4 +1,3 @@
-/// <reference path="includes.d.ts" />
 declare module Core {
     /**
     * Parsers the given value as JSON if it is define
