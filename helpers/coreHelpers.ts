@@ -1199,7 +1199,7 @@ module Core {
       return connectUrl;
     }
     var host = window.location.host;
-    if (!connectUrl.startsWith("http://" + host + "/") && !connectUrl.startsWith("https://" + host + "/")) {
+    if (!_.startsWith(connectUrl, "http://" + host + "/") && !_.startsWith(connectUrl, "https://" + host + "/")) {
         // lets remove the http stuff
         var idx = connectUrl.indexOf("://");
         if (idx > 0) {
