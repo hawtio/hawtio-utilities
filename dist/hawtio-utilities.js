@@ -1232,10 +1232,22 @@ var Core;
     }
     Core.isNumberTypeName = isNumberTypeName;
     /**
-     * Escapes the mbean path according to jolokia path rules: http://www.jolokia.org/reference/html/protocol.html#escape-rules
+     * Escapes the mbean for Jolokia GET requests.
+     * See: http://www.jolokia.org/reference/html/protocol.html#escape-rules
      *
-     * @param mbean the mbean
-     * @returns {String}
+     * @param {string} mbean the mbean
+     * @returns {string}
+     */
+    function escapeMBean(mbean) {
+        return encodeURI(mbean.replace(/\//g, '!/'));
+    }
+    Core.escapeMBean = escapeMBean;
+    /**
+     * Escapes the mbean as a path for Jolokia POST "list" requests.
+     * See: https://jolokia.org/reference/html/protocol.html#list
+     *
+     * @param {string} mbean the mbean
+     * @returns {string}
      */
     function escapeMBeanPath(mbean) {
         return mbean.replace(/\//g, '!/').replace(':', '/');
@@ -2207,7 +2219,7 @@ var Core;
             return connectUrl;
         }
         var host = window.location.host;
-        if (!connectUrl.startsWith("http://" + host + "/") && !connectUrl.startsWith("https://" + host + "/")) {
+        if (!_.startsWith(connectUrl, "http://" + host + "/") && !_.startsWith(connectUrl, "https://" + host + "/")) {
             // lets remove the http stuff
             var idx = connectUrl.indexOf("://");
             if (idx > 0) {
