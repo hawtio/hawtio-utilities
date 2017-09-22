@@ -1,8 +1,11 @@
 {
   "name": "@hawtio/utilities",
   "version": "3.0.13",
-  "main": "./dist/hawtio-utilities.js",
-  "types": "./dist/hawtio-utilities.d.ts",
+  "main": "dist/hawtio-utilities.js",
+  "types": "dist/hawtio-utilities.d.ts",
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "start": "gulp",
     "build": "gulp build"
