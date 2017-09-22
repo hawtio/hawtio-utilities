@@ -39,5 +39,5 @@ yarn start
 
 To proxy to a local JVM running on a different port than `8282` specify the `--port` CLI arguement:
 ```
-yarn start -- --port=8181
+yarn start --port=8181
 ```
