@@ -1,6 +1,6 @@
 {
   "name": "@hawtio/utilities",
-  "version": "3.0.13",
+  "version": "3.0.14",
   "main": "dist/hawtio-utilities.js",
   "types": "dist/hawtio-utilities.d.ts",
   "files": [
