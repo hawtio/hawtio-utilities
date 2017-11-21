@@ -37,6 +37,7 @@ declare module Core {
         password: String;
         view: String;
         name: String;
+        secure: boolean;
     }
     /**
      * Shorter name, less typing :-)

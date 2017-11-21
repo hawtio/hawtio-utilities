@@ -25,6 +25,7 @@ module Core {
     password: String;
     view: String;
     name: String;
+    secure: boolean;
   }
 
   /**
@@ -53,7 +54,8 @@ module Core {
       userName: null,
       password: null,
       view: null,
-      name: null
+      name: null,
+      secure: false
     };
     var opts = options || {};
     return angular.extend(defaults, opts);
