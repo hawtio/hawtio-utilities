@@ -1350,6 +1350,12 @@ var Core;
         Core.preLogoutTasks.execute();
     }
     Core.executePreLogoutTasks = executePreLogoutTasks;
+    function executePostLogoutTasks(onComplete) {
+        Core.log.debug("Executing post logout tasks");
+        Core.postLogoutTasks.onComplete(onComplete);
+        Core.postLogoutTasks.execute();
+    }
+    Core.executePostLogoutTasks = executePostLogoutTasks;
     /**
      * log out the current user
      * @for Core

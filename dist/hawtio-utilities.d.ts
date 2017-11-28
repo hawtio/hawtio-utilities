@@ -507,6 +507,7 @@ declare module Core {
     function parseMBean(mbean: any): any;
     function executePostLoginTasks(): void;
     function executePreLogoutTasks(onComplete: () => void): void;
+    function executePostLogoutTasks(onComplete: () => void): void;
     /**
      * log out the current user
      * @for Core
