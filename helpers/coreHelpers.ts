@@ -304,15 +304,21 @@ module Core {
     return answer;
   }
 
-  export function executePostLoginTasks() {
+  export function executePostLoginTasks(): void {
     log.debug("Executing post login tasks");
     Core.postLoginTasks.execute();
   }
 
-  export function executePreLogoutTasks(onComplete: () => void) {
+  export function executePreLogoutTasks(onComplete: () => void): void {
     log.debug("Executing pre logout tasks");
     Core.preLogoutTasks.onComplete(onComplete);
     Core.preLogoutTasks.execute();
+  }
+
+  export function executePostLogoutTasks(onComplete: () => void): void {
+    log.debug("Executing post logout tasks");
+    Core.postLogoutTasks.onComplete(onComplete);
+    Core.postLogoutTasks.execute();
   }
 
   /**
