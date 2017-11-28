@@ -5,7 +5,7 @@
 
 module Core {
 
-  export var log:Logging.Logger = Logger.get("Core");
+  export var log: Logging.Logger = Logger.get("Core");
 
   export var lazyLoaders = {};
 
@@ -42,7 +42,7 @@ module Core {
     return rows;
   }
 
-  export function safeNull(value:any):string {
+  export function safeNull(value: any): string {
     if (typeof value === 'boolean') {
       return value + '';
     } else if (typeof value === 'number') {
@@ -56,7 +56,7 @@ module Core {
     }
   }
 
-  export function safeNullAsString(value:any, type:string):string {
+  export function safeNullAsString(value: any, type: string): string {
     if (typeof value === 'boolean') {
       return "" + value;
     } else if (typeof value === 'number') {
@@ -148,11 +148,11 @@ module Core {
 
   export function closeHandle($scope, jolokia) {
     var jolokiaHandle = $scope.jolokiaHandle
-      if (jolokiaHandle) {
-        //console.log('Closing the handle ' + jolokiaHandle);
-        jolokia.unregister(jolokiaHandle);
-        $scope.jolokiaHandle = null;
-      }
+    if (jolokiaHandle) {
+      //console.log('Closing the handle ' + jolokiaHandle);
+      jolokia.unregister(jolokiaHandle);
+      $scope.jolokiaHandle = null;
+    }
   }
 
   /**
@@ -191,7 +191,7 @@ module Core {
   }
 
 
-  export function isNumberTypeName(typeName):boolean {
+  export function isNumberTypeName(typeName): boolean {
     if (typeName) {
       var text = typeName.toString().toLowerCase();
       var flag = numberTypeNames[text];
@@ -222,7 +222,7 @@ module Core {
     return mbean.replace(/\//g, '!/').replace(':', '/');
   }
 
-  export function escapeDots(text:string) {
+  export function escapeDots(text: string) {
     return text.replace(/\./g, '-');
   }
 
@@ -234,7 +234,7 @@ module Core {
    * @param {String} text
    * @return {String}
    */
-  export function escapeTreeCssStyles(text:string) {
+  export function escapeTreeCssStyles(text: string) {
     return escapeDots(text).replace(/span/g, 'sp-an');
   }
 
@@ -242,7 +242,7 @@ module Core {
     var log = $("#log-panel");
     var body = $('body');
     localStorage['showLog'] = 'true';
-    log.css({'bottom': '50%'});
+    log.css({ 'bottom': '50%' });
     body.css({
       'overflow-y': 'hidden'
     });
@@ -256,7 +256,7 @@ module Core {
    * @param {String} level
    * @return {String}
    */
-  export function logLevelClass(level:string) {
+  export function logLevelClass(level: string) {
     if (level) {
       var first = level[0];
       if (first === 'w' || first === "W") {
@@ -274,7 +274,7 @@ module Core {
   }
 
 
-  export function toPath(hashUrl:string) {
+  export function toPath(hashUrl: string) {
     if (Core.isBlank(hashUrl)) {
       return hashUrl;
     }
@@ -286,8 +286,8 @@ module Core {
   }
 
   export function parseMBean(mbean) {
-    var answer:any = {};
-    var parts:any = mbean.split(":");
+    var answer: any = {};
+    var parts: any = mbean.split(":");
     if (parts.length > 1) {
       answer['domain'] = _.first(parts);
       parts = _.without(parts, _.first(parts));
@@ -329,11 +329,11 @@ module Core {
    *
    */
   export function logout(jolokiaUrl,
-                  userDetails,
-                  localStorage:Storage,
-                  $scope,
-                  successCB: () => void = null,
-                  errorCB: () => void = null) {
+    userDetails,
+    localStorage: Storage,
+    $scope,
+    successCB: () => void = null,
+    errorCB: () => void = null) {
 
     if (jolokiaUrl) {
       var url = "auth/logout/";
@@ -348,7 +348,7 @@ module Core {
             userDetails.rememberMe = false;
             delete localStorage['userDetails'];
             var jvmConnect = angular.fromJson(localStorage['jvmConnect'])
-            _.each(jvmConnect, function(value) {
+            _.each(jvmConnect, function (value) {
               delete value['userName'];
               delete value['password'];
             });
@@ -367,7 +367,7 @@ module Core {
             userDetails.rememberMe = false;
             delete localStorage['userDetails'];
             var jvmConnect = angular.fromJson(localStorage['jvmConnect'])
-            _.each(jvmConnect, function(value) {
+            _.each(jvmConnect, function (value) {
               delete value['userName'];
               delete value['password'];
             });
@@ -415,7 +415,7 @@ module Core {
     var hashMap = angular.copy($location.search());
     // lets remove any top level nav bar related hash searches
     if (removeParams) {
-      angular.forEach(removeParams, (param) =>  delete hashMap[param]);
+      angular.forEach(removeParams, (param) => delete hashMap[param]);
     }
     var hash = Core.hashToString(hashMap);
     if (hash) {
@@ -434,7 +434,7 @@ module Core {
    * @return {String}
    */
   export function hashToString(hash) {
-    var keyValuePairs:string[] = [];
+    var keyValuePairs: string[] = [];
     angular.forEach(hash, function (value, key) {
       keyValuePairs.push(key + "=" + value);
     });
@@ -453,14 +453,14 @@ module Core {
   export function stringToHash(hashAsString: string) {
     var entries = {};
     if (hashAsString) {
-        var text = decodeURI(hashAsString);
-        var items = text.split('&');
-        angular.forEach(items, (item) => {
-          var kv = item.split('=');
-          var key = kv[0];
-          var value = kv[1] || key;
-          entries[key] = value;
-        });
+      var text = decodeURI(hashAsString);
+      var items = text.split('&');
+      angular.forEach(items, (item) => {
+        var kv = item.split('=');
+        var key = kv[0];
+        var value = kv[1] || key;
+        entries[key] = value;
+      });
     }
     return entries;
   }
@@ -476,7 +476,7 @@ module Core {
    * @param options
    * @returns Object
    */
-  export function registerForChanges(jolokia, $scope, arguments, callback:(response:any) => void, options?:any):() => void {
+  export function registerForChanges(jolokia, $scope, arguments, callback: (response: any) => void, options?: any): () => void {
     var decorated = {
       responseJson: '',
       success: (response) => {
@@ -495,29 +495,29 @@ module Core {
   // for the server
 
   export interface IResponseHistory {
-    [name:string]:any;
+    [name: string]: any;
   }
 
-  var responseHistory:IResponseHistory = null;
+  var responseHistory: IResponseHistory = null;
 
-  export function getOrInitObjectFromLocalStorage(key:string):any {
-    var answer:any = undefined;
+  export function getOrInitObjectFromLocalStorage(key: string): any {
+    var answer: any = undefined;
     if (!(key in localStorage)) {
       localStorage[key] = angular.toJson({});
     }
     return angular.fromJson(localStorage[key]);
   }
 
-  function argumentsToString(arguments:Array<any>) {
+  function argumentsToString(arguments: Array<any>) {
     return StringHelpers.toString(arguments);
   }
 
-  function keyForArgument(argument:any) {
+  function keyForArgument(argument: any) {
     if (!('type' in argument)) {
       return null;
     }
     var answer = <string>argument['type'];
-    switch(answer.toLowerCase()) {
+    switch (answer.toLowerCase()) {
       case 'exec':
         answer += ':' + argument['mbean'] + ':' + argument['operation'];
         var argString = argumentsToString(argument['arguments']);
@@ -534,7 +534,7 @@ module Core {
     return answer;
   }
 
-  function createResponseKey(arguments:any) {
+  function createResponseKey(arguments: any) {
     var answer = '';
     if (angular.isArray(arguments)) {
       answer = arguments.map((arg) => { return keyForArgument(arg); }).join(':');
@@ -544,7 +544,7 @@ module Core {
     return answer;
   }
 
-  export function getResponseHistory():any {
+  export function getResponseHistory(): any {
     if (responseHistory === null) {
       //responseHistory = getOrInitObjectFromLocalStorage('responseHistory');
       responseHistory = {};
@@ -555,10 +555,10 @@ module Core {
 
   export var MAX_RESPONSE_CACHE_SIZE = 20;
 
-  function getOldestKey(responseHistory:IResponseHistory) {
-    var oldest:number = null;
-    var oldestKey:string = null;
-    angular.forEach(responseHistory, (value:any, key:string) => {
+  function getOldestKey(responseHistory: IResponseHistory) {
+    var oldest: number = null;
+    var oldestKey: string = null;
+    angular.forEach(responseHistory, (value: any, key: string) => {
       //log.debug("Checking entry: ", key);
       //log.debug("Oldest timestamp: ", oldest, " key: ", key, " value: ", value);
       if (!value || !value.timestamp) {
@@ -573,7 +573,7 @@ module Core {
     return oldestKey;
   }
 
-  function addResponse(arguments:any, value:any) {
+  function addResponse(arguments: any, value: any) {
     var responseHistory = getResponseHistory();
     var key = createResponseKey(arguments);
     if (key === null) {
@@ -604,7 +604,7 @@ module Core {
     //localStorage['responseHistory'] = angular.toJson(responseHistory);
   }
 
-  function getResponse(jolokia, arguments:any, callback:any) {
+  function getResponse(jolokia, arguments: any, callback: any) {
     var responseHistory = getResponseHistory();
     var key = createResponseKey(arguments);
     if (key === null) {
@@ -636,7 +636,7 @@ module Core {
    * @param {Object} arguments
    * @param {Function} callback
    */
-  export function register(jolokia:Jolokia.IJolokia, scope, arguments: any, callback) {
+  export function register(jolokia: Jolokia.IJolokia, scope, arguments: any, callback) {
     if (scope.$$destroyed) {
       // fail fast to prevent registration leaks
       return;
@@ -660,7 +660,7 @@ module Core {
       });
     }
 
-    var handle:number = null;
+    var handle: number = null;
 
     if ('success' in callback) {
       var cb = callback.success;
@@ -739,7 +739,7 @@ module Core {
   }
   */
 
-  export function unregister(jolokia:Jolokia.IJolokia, scope) {
+  export function unregister(jolokia: Jolokia.IJolokia, scope) {
     if (angular.isDefined(scope.$jhandle)) {
       scope.$jhandle.forEach(function (handle) {
         jolokia.unregister(handle);
@@ -752,7 +752,7 @@ module Core {
    * The default error handler which logs errors either using debug or log level logging based on the silent setting
    * @param response the response from a jolokia request
    */
-  export function defaultJolokiaErrorHandler (response, options = {}) {
+  export function defaultJolokiaErrorHandler(response, options = {}) {
     //alert("Jolokia request failed: " + response.error);
     var stacktrace = response.stacktrace;
     if (stacktrace) {
@@ -922,7 +922,7 @@ module Core {
    * @param {Array} v2
    * @return {Number}
    */
-  export function compareVersionNumberArrays(v1:number[], v2:number[]) {
+  export function compareVersionNumberArrays(v1: number[], v2: number[]) {
     if (v1 && !v2) {
       return 1;
     }
@@ -1109,12 +1109,12 @@ module Core {
   }
 
 
-  export function extractHashURL(url:string) {
+  export function extractHashURL(url: string) {
     var parts = url.split('#');
     if (parts.length === 0) {
       return url;
     }
-    var answer:string = parts[1];
+    var answer: string = parts[1];
     if (parts.length > 1) {
       var remaining = parts.slice(2);
       remaining.forEach((part) => {
@@ -1124,11 +1124,11 @@ module Core {
     return answer;
   }
 
-  export function authHeaderValue(userDetails:Core.UserDetails) {
+  export function authHeaderValue(userDetails: Core.UserDetails) {
     return getBasicAuthHeader(<string>userDetails.username, <string>userDetails.password);
   }
 
-  export function getBasicAuthHeader(username:string, password:string) {
+  export function getBasicAuthHeader(username: string, password: string) {
     var authInfo = username + ":" + password;
     authInfo = window.btoa(authInfo);
     return "Basic " + authInfo;
@@ -1145,7 +1145,7 @@ module Core {
    * @param url
    * @returns object
    */
-  export function parseUrl(url:string):any {
+  export function parseUrl(url: string): any {
     if (Core.isBlank(url)) {
       return null;
     }
@@ -1162,7 +1162,7 @@ module Core {
     var host = matches[3];
     var port = matches[4];
 
-    var parts:string[] = null;
+    var parts: string[] = null;
     if (!Core.isBlank(port)) {
       parts = url.split(port);
     } else {
@@ -1190,9 +1190,9 @@ module Core {
   export function getDocHeight() {
     var D = document;
     return Math.max(
-        Math.max(D.body.scrollHeight, D.documentElement.scrollHeight),
-        Math.max(D.body.offsetHeight, (<any>D.documentElement).offsetHeight),
-        Math.max(D.body.clientHeight, D.documentElement.clientHeight)
+      Math.max(D.body.scrollHeight, D.documentElement.scrollHeight),
+      Math.max(D.body.offsetHeight, (<any>D.documentElement).offsetHeight),
+      Math.max(D.body.clientHeight, D.documentElement.clientHeight)
     );
   }
 
@@ -1212,16 +1212,16 @@ module Core {
     }
     var host = window.location.host;
     if (!_.startsWith(connectUrl, "http://" + host + "/") && !_.startsWith(connectUrl, "https://" + host + "/")) {
-        // lets remove the http stuff
-        var idx = connectUrl.indexOf("://");
-        if (idx > 0) {
-          connectUrl = connectUrl.substring(idx + 3);
-        }
-        // lets replace the : with a /
-        connectUrl = connectUrl.replace(":", "/");
-        connectUrl = Core.trimLeading(connectUrl, "/");
-        connectUrl = Core.trimTrailing(connectUrl, "/");
-        connectUrl = Core.url("/proxy/" + connectUrl);
+      // lets remove the http stuff
+      var idx = connectUrl.indexOf("://");
+      if (idx > 0) {
+        connectUrl = connectUrl.substring(idx + 3);
+      }
+      // lets replace the : with a /
+      connectUrl = connectUrl.replace(":", "/");
+      connectUrl = Core.trimLeading(connectUrl, "/");
+      connectUrl = Core.trimTrailing(connectUrl, "/");
+      connectUrl = Core.url("/proxy/" + connectUrl);
     }
     return connectUrl;
   }
@@ -1298,7 +1298,7 @@ module Core {
   /**
    * Returns true if the $location is from the hawtio proxy
    */
-  export function isProxyUrl($location:ng.ILocationService) {
+  export function isProxyUrl($location: ng.ILocationService) {
     var url = $location.url();
     return url.indexOf('/hawtio/proxy/') > 0;
   }
@@ -1306,7 +1306,7 @@ module Core {
   /**
    * handy do nothing converter for the below function
    **/
-  export function doNothing(value:any) { return value; }
+  export function doNothing(value: any) { return value; }
 
   // moved these into their own helper file
   export var bindModelToSearchParam = ControllerHelpers.bindModelToSearchParam;
@@ -1350,7 +1350,7 @@ module Core {
     try {
       answer = angular.fromJson(text);
     } catch (e) {
-      log.info("Failed to parse " + message + " from: " + text +  ". " + e);
+      log.info("Failed to parse " + message + " from: " + text + ". " + e);
     }
     return answer;
   }
@@ -1358,8 +1358,8 @@ module Core {
   /**
    * Returns the humanized markup of the given value
    */
-  export function humanizeValueHtml(value:any):string {
-    var formattedValue:string = "";
+  export function humanizeValueHtml(value: any): string {
+    var formattedValue: string = "";
     if (value === true) {
       formattedValue = '<i class="icon-check"></i>';
     } else if (value === false) {
@@ -1380,7 +1380,7 @@ module Core {
   export function getQueryParameterValue(url, parameterName) {
     var parts;
 
-    var query = (url||'').split('?');
+    var query = (url || '').split('?');
     if (query && query.length > 0) {
       parts = query[1];
     } else {
@@ -1403,7 +1403,7 @@ module Core {
    * duration
    * @param value
    */
-  export function humanizeMilliseconds(value:number):String {
+  export function humanizeMilliseconds(value: number): String {
 
     if (!angular.isNumber(value)) {
       return "XXX";
@@ -1433,28 +1433,28 @@ module Core {
     return value + " ms";
   }
 
-/*
-  export function storeConnectionRegex(regexs, name, json) {
-    if (!regexs.any((r) => { r['name'] === name })) {
-      var regex:string = '';
-
-      if (json['useProxy']) {
-        regex = '/hawtio/proxy/';
-      } else {
-        regex = '//';
+  /*
+    export function storeConnectionRegex(regexs, name, json) {
+      if (!regexs.any((r) => { r['name'] === name })) {
+        var regex:string = '';
+  
+        if (json['useProxy']) {
+          regex = '/hawtio/proxy/';
+        } else {
+          regex = '//';
+        }
+        regex += json['host'] + ':' + json['port'] + '/' + json['path'];
+        regexs.push({
+          name: name,
+          regex: regex.escapeURL(true),
+          color: UI.colors.sample()
+        });
+        writeRegexs(regexs);
       }
-      regex += json['host'] + ':' + json['port'] + '/' + json['path'];
-      regexs.push({
-        name: name,
-        regex: regex.escapeURL(true),
-        color: UI.colors.sample()
-      });
-      writeRegexs(regexs);
     }
-  }
-*/
+  */
   export function getRegexs() {
-    var regexs:any = [];
+    var regexs: any = [];
     try {
       regexs = angular.fromJson(localStorage['regexs']);
     } catch (e) {
@@ -1477,7 +1477,7 @@ module Core {
     localStorage['regexs'] = angular.toJson(regexs);
   }
 
-  export function maskPassword(value:any) {
+  export function maskPassword(value: any) {
     if (value) {
       var text = '' + value;
       // we use the same patterns as in Apache Camel in its
@@ -1500,7 +1500,7 @@ module Core {
    * @param filter the filter
    * @return true if matched, false if not.
    */
-  export function matchFilterIgnoreCase(text, filter):any {
+  export function matchFilterIgnoreCase(text, filter): any {
     if (angular.isUndefined(text) || angular.isUndefined(filter)) {
       return true;
     }
