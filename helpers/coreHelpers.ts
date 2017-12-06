@@ -164,22 +164,61 @@ module Core {
    * @param {Object} Options object to pass on to Jolokia request
    * @return {Object} initialized options object
    */
-  export function onSuccess(fn, options = {}) {
+  export function onSuccess(
+    fn: (response: Jolokia.IResponse) => void | ((response: Jolokia.IResponse) => void)[],
+    options: Jolokia.IParams = {}): any {
     options['mimeType'] = 'application/json';
-    if (angular.isDefined(fn)) {
+    if (!_.isUndefined(fn)) {
       options['success'] = fn;
     }
     if (!options['method']) {
       options['method'] = "POST";
     }
+    // the default (unsorted) order is important for Karaf runtime
     options['canonicalNaming'] = false;
     options['canonicalProperties'] = false;
     if (!options['error']) {
-      options['error'] = (response) => {
-        Core.defaultJolokiaErrorHandler(response, options);
-      }
+      options['error'] = (response: Jolokia.IErrorResponse) => defaultJolokiaErrorHandler(response, options);
     }
     return options;
+  }
+
+  /**
+   * The default error handler which logs errors either using debug or log level logging based on the silent setting
+   * @param response the response from a jolokia request
+   */
+  export function defaultJolokiaErrorHandler(response: Jolokia.IErrorResponse, options: Jolokia.IParams = {}): void {
+    let operation = Core.pathGet(response, ['request', 'operation']) || "unknown";
+    let silent = options['silent'];
+    let stacktrace = response.stacktrace;
+    if (silent || isIgnorableException(response)) {
+      log.debug("Operation", operation, "failed due to:", response['error']);
+    } else {
+      log.warn("Operation", operation, "failed due to:", response['error']);
+    }
+  }
+
+  /**
+   * Checks if it's an error that can happen on timing issues such as its been removed or if we run against older containers
+   * @param {Object} response the error response from a jolokia request
+   */
+  function isIgnorableException(response: Jolokia.IErrorResponse): boolean {
+    let isNotFound = (target) =>
+      target.indexOf("InstanceNotFoundException") >= 0
+      || target.indexOf("AttributeNotFoundException") >= 0
+      || target.indexOf("IllegalArgumentException: No operation") >= 0;
+    return (response.stacktrace && isNotFound(response.stacktrace)) || (response.error && isNotFound(response.error));
+  }
+
+  /**
+   * Logs any failed operation and stack traces
+   */
+  export function logJolokiaStackTrace(response: Jolokia.IErrorResponse) {
+    let stacktrace = response.stacktrace;
+    if (stacktrace) {
+      let operation = Core.pathGet(response, ['request', 'operation']) || "unknown";
+      log.info("Operation", operation, "failed due to:", response['error']);
+    }
   }
 
   export function supportsLocalStorage() {
@@ -753,49 +792,6 @@ module Core {
       delete scope.$jhandle;
     }
   }
-
-  /**
-   * The default error handler which logs errors either using debug or log level logging based on the silent setting
-   * @param response the response from a jolokia request
-   */
-  export function defaultJolokiaErrorHandler(response, options = {}) {
-    //alert("Jolokia request failed: " + response.error);
-    let stacktrace = response.stacktrace;
-    if (stacktrace) {
-      let silent = options['silent'];
-      let operation = Core.pathGet(response, ['request', 'operation']) || "unknown";
-      if (!silent) {
-        if (stacktrace.indexOf("javax.management.InstanceNotFoundException") >= 0 ||
-          stacktrace.indexOf("javax.management.AttributeNotFoundException") >= 0 ||
-          stacktrace.indexOf("java.lang.IllegalArgumentException: No operation") >= 0) {
-          // ignore these errors as they can happen on timing issues
-          // such as its been removed
-          // or if we run against older containers
-          Core.log.debug("Operation ", operation, " failed due to: ", response['error']);
-          // Core.log.debug("Stack trace: ", Logger.formatStackTraceString(response['stacktrace']));
-        } else {
-          Core.log.warn("Operation ", operation, " failed due to: ", response['error']);
-          // Core.log.info("Stack trace: ", Logger.formatStackTraceString(response['stacktrace']));
-        }
-      } else {
-        Core.log.debug("Operation ", operation, " failed due to: ", response['error']);
-        // Core.log.debug("Stack trace: ", Logger.formatStackTraceString(response['stacktrace']));
-      }
-    }
-  }
-
-  /**
-   * Logs any failed operation and stack traces
-   */
-  export function logJolokiaStackTrace(response) {
-    let stacktrace = response.stacktrace;
-    if (stacktrace) {
-      let operation = Core.pathGet(response, ['request', 'operation']) || "unknown";
-      Core.log.info("Operation ", operation, " failed due to: ", response['error']);
-      // Core.log.info("Stack trace: ", Logger.formatStackTraceString(response['stacktrace']));
-    }
-  }
-
 
   /**
    * Converts the given XML node to a string representation of the XML
