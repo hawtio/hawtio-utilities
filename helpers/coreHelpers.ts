@@ -5,11 +5,11 @@
 
 module Core {
 
-  export var log: Logging.Logger = Logger.get("Core");
+  export const log: Logging.Logger = Logger.get("Core");
 
-  export var lazyLoaders = {};
+  export const lazyLoaders = {};
 
-  export var numberTypeNames = {
+  export const numberTypeNames = {
     'byte': true,
     'short': true,
     'int': true,
@@ -34,7 +34,7 @@ module Core {
    *
    */
   export function lineCount(value): number {
-    var rows = 0;
+    let rows = 0;
     if (value) {
       rows = 1;
       value.toString().each(/\n/, () => rows++);
@@ -68,17 +68,17 @@ module Core {
     } else if (type === 'javax.management.openmbean.CompositeData' || type === '[Ljavax.management.openmbean.CompositeData;' || type === 'java.util.Map') {
       // composite data or composite data array, we just display as json
       // use json representation
-      var data = angular.toJson(value, true);
+      let data = angular.toJson(value, true);
       return data;
     } else if (type === 'javax.management.ObjectName') {
       return "" + (value == null ? "" : value.canonicalName);
     } else if (type === 'javax.management.openmbean.TabularData') {
       // tabular data is a key/value structure so loop each field and convert to array we can
       // turn into a String
-      var arr = [];
-      for (var key in value) {
-        var val = value[key];
-        var line = "" + key + "=" + val;
+      let arr = [];
+      for (let key in value) {
+        let val = value[key];
+        let line = "" + key + "=" + val;
         arr.push(line);
       }
       // sort array so the values is listed nicely
@@ -117,14 +117,14 @@ module Core {
 
   export function folderMatchesPatterns(node, patterns) {
     if (node) {
-      var folderNames = node.folderNames;
+      let folderNames = node.folderNames;
       if (folderNames) {
         return patterns.any((ignorePaths) => {
-          for (var i = 0; i < ignorePaths.length; i++) {
-            var folderName = folderNames[i];
-            var ignorePath = ignorePaths[i];
+          for (let i = 0; i < ignorePaths.length; i++) {
+            let folderName = folderNames[i];
+            let ignorePath = ignorePaths[i];
             if (!folderName) return false;
-            var idx = ignorePath.indexOf(folderName);
+            let idx = ignorePath.indexOf(folderName);
             if (idx < 0) {
               return false;
             }
@@ -147,7 +147,7 @@ module Core {
   }
 
   export function closeHandle($scope, jolokia) {
-    var jolokiaHandle = $scope.jolokiaHandle
+    let jolokiaHandle = $scope.jolokiaHandle
     if (jolokiaHandle) {
       //console.log('Closing the handle ' + jolokiaHandle);
       jolokia.unregister(jolokiaHandle);
@@ -193,8 +193,8 @@ module Core {
 
   export function isNumberTypeName(typeName): boolean {
     if (typeName) {
-      var text = typeName.toString().toLowerCase();
-      var flag = numberTypeNames[text];
+      let text = typeName.toString().toLowerCase();
+      let flag = numberTypeNames[text];
       return flag;
     }
     return false;
@@ -239,8 +239,8 @@ module Core {
   }
 
   export function showLogPanel() {
-    var log = $("#log-panel");
-    var body = $('body');
+    let log = $("#log-panel");
+    let body = $('body');
     localStorage['showLog'] = 'true';
     log.css({ 'bottom': '50%' });
     body.css({
@@ -258,7 +258,7 @@ module Core {
    */
   export function logLevelClass(level: string) {
     if (level) {
-      var first = level[0];
+      let first = level[0];
       if (first === 'w' || first === "W") {
         return "warning"
       } else if (first === 'e' || first === "E") {
@@ -286,17 +286,17 @@ module Core {
   }
 
   export function parseMBean(mbean) {
-    var answer: any = {};
-    var parts: any = mbean.split(":");
+    let answer: any = {};
+    let parts: any = mbean.split(":");
     if (parts.length > 1) {
       answer['domain'] = _.first(parts);
       parts = _.without(parts, _.first(parts));
       parts = parts.join(":");
       answer['attributes'] = {};
-      var nameValues = parts.split(",");
+      let nameValues = parts.split(",");
       nameValues.forEach((str) => {
-        var nameValue = str.split('=');
-        var name = (<string>_.first(nameValue)).trim();
+        let nameValue = str.split('=');
+        let name = (<string>_.first(nameValue)).trim();
         nameValue = _.without(nameValue, _.first(nameValue));
         answer['attributes'][name] = nameValue.join('=').trim();
       });
@@ -342,7 +342,7 @@ module Core {
     errorCB: () => void = null) {
 
     if (jolokiaUrl) {
-      var url = "auth/logout/";
+      let url = "auth/logout/";
 
       Core.executePreLogoutTasks(() => {
         $.ajax(url, {
@@ -353,7 +353,7 @@ module Core {
             userDetails.loginDetails = null;
             userDetails.rememberMe = false;
             delete localStorage['userDetails'];
-            var jvmConnect = angular.fromJson(localStorage['jvmConnect'])
+            let jvmConnect = angular.fromJson(localStorage['jvmConnect'])
             _.each(jvmConnect, function (value) {
               delete value['userName'];
               delete value['password'];
@@ -372,7 +372,7 @@ module Core {
             userDetails.loginDetails = null;
             userDetails.rememberMe = false;
             delete localStorage['userDetails'];
-            var jvmConnect = angular.fromJson(localStorage['jvmConnect'])
+            let jvmConnect = angular.fromJson(localStorage['jvmConnect'])
             _.each(jvmConnect, function (value) {
               delete value['userName'];
               delete value['password'];
@@ -418,14 +418,14 @@ module Core {
    * @return {Object} the link with any $location.search() parameters added
    */
   export function createHref($location, href, removeParams = null) {
-    var hashMap = angular.copy($location.search());
+    let hashMap = angular.copy($location.search());
     // lets remove any top level nav bar related hash searches
     if (removeParams) {
       angular.forEach(removeParams, (param) => delete hashMap[param]);
     }
-    var hash = Core.hashToString(hashMap);
+    let hash = Core.hashToString(hashMap);
     if (hash) {
-      var prefix = (href.indexOf("?") >= 0) ? "&" : "?";
+      let prefix = (href.indexOf("?") >= 0) ? "&" : "?";
       href += prefix + hash;
     }
     return href;
@@ -440,11 +440,11 @@ module Core {
    * @return {String}
    */
   export function hashToString(hash) {
-    var keyValuePairs: string[] = [];
+    let keyValuePairs: string[] = [];
     angular.forEach(hash, function (value, key) {
       keyValuePairs.push(key + "=" + value);
     });
-    var params = keyValuePairs.join("&");
+    let params = keyValuePairs.join("&");
     return encodeURI(params);
   }
 
@@ -457,14 +457,14 @@ module Core {
    * @return {Object}
    */
   export function stringToHash(hashAsString: string) {
-    var entries = {};
+    let entries = {};
     if (hashAsString) {
-      var text = decodeURI(hashAsString);
-      var items = text.split('&');
+      let text = decodeURI(hashAsString);
+      let items = text.split('&');
       angular.forEach(items, (item) => {
-        var kv = item.split('=');
-        var key = kv[0];
-        var value = kv[1] || key;
+        let kv = item.split('=');
+        let key = kv[0];
+        let value = kv[1] || key;
         entries[key] = value;
       });
     }
@@ -483,10 +483,10 @@ module Core {
    * @returns Object
    */
   export function registerForChanges(jolokia, $scope, arguments, callback: (response: any) => void, options?: any): () => void {
-    var decorated = {
+    let decorated = {
       responseJson: '',
       success: (response) => {
-        var json = angular.toJson(response.value);
+        let json = angular.toJson(response.value);
         if (decorated.responseJson !== json) {
           decorated.responseJson = json;
           callback(response);
@@ -504,10 +504,10 @@ module Core {
     [name: string]: any;
   }
 
-  var responseHistory: IResponseHistory = null;
+  let responseHistory: IResponseHistory = null;
 
   export function getOrInitObjectFromLocalStorage(key: string): any {
-    var answer: any = undefined;
+    let answer: any = undefined;
     if (!(key in localStorage)) {
       localStorage[key] = angular.toJson({});
     }
@@ -522,11 +522,11 @@ module Core {
     if (!('type' in argument)) {
       return null;
     }
-    var answer = <string>argument['type'];
+    let answer = <string>argument['type'];
     switch (answer.toLowerCase()) {
       case 'exec':
         answer += ':' + argument['mbean'] + ':' + argument['operation'];
-        var argString = argumentsToString(argument['arguments']);
+        let argString = argumentsToString(argument['arguments']);
         if (!Core.isBlank(argString)) {
           answer += ':' + argString;
         }
@@ -541,7 +541,7 @@ module Core {
   }
 
   function createResponseKey(arguments: any) {
-    var answer = '';
+    let answer = '';
     if (angular.isArray(arguments)) {
       answer = arguments.map((arg) => { return keyForArgument(arg); }).join(':');
     } else {
@@ -559,11 +559,11 @@ module Core {
     return responseHistory;
   }
 
-  export var MAX_RESPONSE_CACHE_SIZE = 20;
+  export const MAX_RESPONSE_CACHE_SIZE = 20;
 
   function getOldestKey(responseHistory: IResponseHistory) {
-    var oldest: number = null;
-    var oldestKey: string = null;
+    let oldest: number = null;
+    let oldestKey: string = null;
     angular.forEach(responseHistory, (value: any, key: string) => {
       //log.debug("Checking entry: ", key);
       //log.debug("Oldest timestamp: ", oldest, " key: ", key, " value: ", value);
@@ -580,19 +580,19 @@ module Core {
   }
 
   function addResponse(arguments: any, value: any) {
-    var responseHistory = getResponseHistory();
-    var key = createResponseKey(arguments);
+    let responseHistory = getResponseHistory();
+    let key = createResponseKey(arguments);
     if (key === null) {
       log.debug("key for arguments is null, not caching: ", StringHelpers.toString(arguments));
       return;
     }
     //log.debug("Adding response to history, key: ", key, " value: ", value);
     // trim the cache if needed
-    var keys = _.keys(responseHistory);
+    let keys = _.keys(responseHistory);
     //log.debug("Number of stored responses: ", keys.length);
     if (keys.length >= MAX_RESPONSE_CACHE_SIZE) {
       log.debug("Cache limit (", MAX_RESPONSE_CACHE_SIZE, ") met or  exceeded (", keys.length, "), trimming oldest response");
-      var oldestKey = getOldestKey(responseHistory);
+      let oldestKey = getOldestKey(responseHistory);
       if (oldestKey !== null) {
         // delete the oldest entry
         log.debug("Deleting key: ", oldestKey);
@@ -611,14 +611,14 @@ module Core {
   }
 
   function getResponse(jolokia, arguments: any, callback: any) {
-    var responseHistory = getResponseHistory();
-    var key = createResponseKey(arguments);
+    let responseHistory = getResponseHistory();
+    let key = createResponseKey(arguments);
     if (key === null) {
       jolokia.request(arguments, callback);
       return;
     }
     if (key in responseHistory && 'success' in callback) {
-      var value = responseHistory[key];
+      let value = responseHistory[key];
       // do this async, the controller might not handle us immediately calling back
       setTimeout(() => {
         callback['success'](value);
@@ -666,11 +666,11 @@ module Core {
       });
     }
 
-    var handle: number = null;
+    let handle: number = null;
 
     if ('success' in callback) {
-      var cb = callback.success;
-      var args = arguments;
+      let cb = callback.success;
+      let args = arguments;
       callback.success = (response) => {
         addResponse(args, response);
         cb(response);
@@ -680,12 +680,12 @@ module Core {
     if (angular.isArray(arguments)) {
       if (arguments.length >= 1) {
         // TODO can't get this to compile in typescript :)
-        //var args = [callback].concat(arguments);
-        var args = <any>[callback];
+        //let args = [callback].concat(arguments);
+        let args = <any>[callback];
         angular.forEach(arguments, (value) => args.push(value));
-        //var args = [callback];
+        //let args = [callback];
         //args.push(arguments);
-        var registerFn = jolokia.register;
+        let registerFn = jolokia.register;
         handle = registerFn.apply(jolokia, args);
         scope.$jhandle.push(handle);
         getResponse(jolokia, arguments, callback);
@@ -727,18 +727,18 @@ module Core {
       if (angular.isArray(arguments)) {
           if (arguments.length >= 1) {
               // TODO can't get this to compile in typescript :)
-              //var args = [callback].concat(arguments);
-              var args = [callback];
+              //let args = [callback].concat(arguments);
+              let args = [callback];
               angular.forEach(arguments, (value) => args.push(value));
-              //var args = [callback];
+              //let args = [callback];
               //args.push(arguments);
-              var registerFn = jolokia.register;
-              var handle = registerFn.apply(jolokia, args);
+              let registerFn = jolokia.register;
+              let handle = registerFn.apply(jolokia, args);
               scope.$jhandle.push(handle);
               jolokia.search(mbeanPattern, callback);
           }
       } else {
-          var handle = jolokia.register(callback, arguments);
+          let handle = jolokia.register(callback, arguments);
           scope.$jhandle.push(handle);
           jolokia.search(mbeanPattern, callback);
       }
@@ -760,11 +760,11 @@ module Core {
    */
   export function defaultJolokiaErrorHandler(response, options = {}) {
     //alert("Jolokia request failed: " + response.error);
-    var stacktrace = response.stacktrace;
+    let stacktrace = response.stacktrace;
     if (stacktrace) {
-      var silent = options['silent'];
+      let silent = options['silent'];
+      let operation = Core.pathGet(response, ['request', 'operation']) || "unknown";
       if (!silent) {
-        var operation = Core.pathGet(response, ['request', 'operation']) || "unknown";
         if (stacktrace.indexOf("javax.management.InstanceNotFoundException") >= 0 ||
           stacktrace.indexOf("javax.management.AttributeNotFoundException") >= 0 ||
           stacktrace.indexOf("java.lang.IllegalArgumentException: No operation") >= 0) {
@@ -788,9 +788,9 @@ module Core {
    * Logs any failed operation and stack traces
    */
   export function logJolokiaStackTrace(response) {
-    var stacktrace = response.stacktrace;
+    let stacktrace = response.stacktrace;
     if (stacktrace) {
-      var operation = Core.pathGet(response, ['request', 'operation']) || "unknown";
+      let operation = Core.pathGet(response, ['request', 'operation']) || "unknown";
       Core.log.info("Operation ", operation, " failed due to: ", response['error']);
       // Core.log.info("Stack trace: ", Logger.formatStackTraceString(response['stacktrace']));
     }
@@ -846,9 +846,9 @@ module Core {
    * @return {String}
    */
   export function fileExtension(name: string, defaultValue: string = "") {
-    var extension = defaultValue;
+    let extension = defaultValue;
     if (name) {
-      var idx = name.lastIndexOf(".");
+      let idx = name.lastIndexOf(".");
       if (idx > 0) {
         extension = name.substring(idx + 1, name.length).toLowerCase();
       }
@@ -857,13 +857,13 @@ module Core {
   }
 
   export function getUUID() {
-    var d = new Date();
-    var ms = (d.getTime() * 1000) + d.getUTCMilliseconds();
-    var random = Math.floor((1 + Math.random()) * 0x10000);
+    let d = new Date();
+    let ms = (d.getTime() * 1000) + d.getUTCMilliseconds();
+    let random = Math.floor((1 + Math.random()) * 0x10000);
     return ms.toString(16) + random.toString(16);
   }
 
-  var _versionRegex = /[^\d]*(\d+)\.(\d+)(\.(\d+))?.*/
+  let _versionRegex = /[^\d]*(\d+)\.(\d+)(\.(\d+))?.*/
 
   /**
    * Parses some text of the form "xxxx2.3.4xxxx"
@@ -878,11 +878,11 @@ module Core {
    */
   export function parseVersionNumbers(text: string) {
     if (text) {
-      var m = text.match(_versionRegex);
+      let m = text.match(_versionRegex);
       if (m && m.length > 4) {
-        var m1 = m[1];
-        var m2 = m[2];
-        var m4 = m[4];
+        let m1 = m[1];
+        let m2 = m[2];
+        let m4 = m[4];
         if (angular.isDefined(m4)) {
           return [parseInt(m1), parseInt(m2), parseInt(m4)];
         } else if (angular.isDefined(m2)) {
@@ -905,16 +905,16 @@ module Core {
    */
   export function versionToSortableString(version: string, maxDigitsBetweenDots = 4) {
     return (version || "").split(".").map((x) => {
-      var length = x.length;
+      let length = x.length;
       return (length >= maxDigitsBetweenDots)
         ? x : _.padStart(x, maxDigitsBetweenDots - length, ' ')
     }).join(".");
   }
 
   export function time(message: string, fn) {
-    var start = new Date().getTime();
-    var answer = fn();
-    var elapsed = new Date().getTime() - start;
+    let start = new Date().getTime();
+    let answer = fn();
+    let elapsed = new Date().getTime() - start;
     console.log(message + " " + elapsed);
     return answer;
   }
@@ -938,12 +938,12 @@ module Core {
     if (v1 === v2) {
       return 0;
     }
-    for (var i = 0; i < v1.length; i++) {
-      var n1 = v1[i];
+    for (let i = 0; i < v1.length; i++) {
+      let n1 = v1[i];
       if (i >= v2.length) {
         return 1;
       }
-      var n2 = v2[i];
+      let n2 = v2[i];
       if (!angular.isDefined(n1)) {
         return -1;
       }
@@ -970,27 +970,27 @@ module Core {
    */
   export function valueToHtml(value) {
     if (angular.isArray(value)) {
-      var size = value.length;
+      let size = value.length;
       if (!size) {
         return "";
       } else if (size === 1) {
         return valueToHtml(value[0]);
       } else {
-        var buffer = "<ul>";
+        let buffer = "<ul>";
         angular.forEach(value, (childValue) => {
           buffer += "<li>" + valueToHtml(childValue) + "</li>"
         });
         return buffer + "</ul>"
       }
     } else if (angular.isObject(value)) {
-      var buffer = "<table>";
+      let buffer = "<table>";
       angular.forEach(value, (childValue, key) => {
         buffer += "<tr><td>" + key + "</td><td>" + valueToHtml(childValue) + "</td></tr>"
       });
       return buffer + "</table>"
     } else if (angular.isString(value)) {
-      var uriPrefixes = ["http://", "https://", "file://", "mailto:"];
-      var answer = value;
+      let uriPrefixes = ["http://", "https://", "file://", "mailto:"];
+      let answer = value;
       angular.forEach(uriPrefixes, (prefix) => {
         if (_.startsWith(answer, prefix)) {
           answer = "<a href='" + value + "'>" + value + "</a>";
@@ -1035,11 +1035,11 @@ module Core {
   export function maybePlural(count: Number, word: string) {
     /* TODO - will need to find another dependency for this
     if (word.pluralize) {
-      var pluralWord = (count === 1) ? word : word.pluralize();
+      let pluralWord = (count === 1) ? word : word.pluralize();
       return "" + count + " " + pluralWord;
     } else {
     */
-    var pluralWord = (count === 1) ? word : word + 's';
+    let pluralWord = (count === 1) ? word : word + 's';
     return "" + count + " " + pluralWord;
     //}
   }
@@ -1054,16 +1054,16 @@ module Core {
    * @return {Object}
    */
   export function objectNameProperties(objectName: string) {
-    var entries = {};
+    let entries = {};
     if (objectName) {
-      var idx = objectName.indexOf(":");
+      let idx = objectName.indexOf(":");
       if (idx > 0) {
-        var path = objectName.substring(idx + 1);
-        var items = path.split(',');
+        let path = objectName.substring(idx + 1);
+        let items = path.split(',');
         angular.forEach(items, (item) => {
-          var kv = item.split('=');
-          var key = kv[0];
-          var value = kv[1] || key;
+          let kv = item.split('=');
+          let key = kv[0];
+          let value = kv[1] || key;
           entries[key] = value;
         });
       }
@@ -1105,7 +1105,7 @@ module Core {
    */
   export function forEachLeafFolder(folders, fn) {
     angular.forEach(folders, (folder) => {
-      var children = folder["children"];
+      let children = folder["children"];
       if (angular.isArray(children) && children.length > 0) {
         forEachLeafFolder(children, fn);
       } else {
@@ -1116,13 +1116,13 @@ module Core {
 
 
   export function extractHashURL(url: string) {
-    var parts = url.split('#');
+    let parts = url.split('#');
     if (parts.length === 0) {
       return url;
     }
-    var answer: string = parts[1];
+    let answer: string = parts[1];
     if (parts.length > 1) {
-      var remaining = parts.slice(2);
+      let remaining = parts.slice(2);
       remaining.forEach((part) => {
         answer = answer + "#" + part;
       });
@@ -1135,12 +1135,12 @@ module Core {
   }
 
   export function getBasicAuthHeader(username: string, password: string) {
-    var authInfo = username + ":" + password;
+    let authInfo = username + ":" + password;
     authInfo = window.btoa(authInfo);
     return "Basic " + authInfo;
   }
 
-  var httpRegex = new RegExp('^(https?):\/\/(([^:/?#]*)(?::([0-9]+))?)');
+  let httpRegex = new RegExp('^(https?):\/\/(([^:/?#]*)(?::([0-9]+))?)');
 
 
   /**
@@ -1156,7 +1156,7 @@ module Core {
       return null;
     }
 
-    var matches = url.match(httpRegex);
+    let matches = url.match(httpRegex);
 
     if (matches === null) {
       return null;
@@ -1164,11 +1164,11 @@ module Core {
 
     //log.debug("matches: ", matches);
 
-    var scheme = matches[1];
-    var host = matches[3];
-    var port = matches[4];
+    let scheme = matches[1];
+    let host = matches[3];
+    let port = matches[4];
 
-    var parts: string[] = null;
+    let parts: string[] = null;
     if (!Core.isBlank(port)) {
       parts = url.split(port);
     } else {
@@ -1176,9 +1176,9 @@ module Core {
     }
 
     // make sure we use port as a number
-    var portNum = Core.parseIntValue(port);
+    let portNum = Core.parseIntValue(port);
 
-    var path = parts[1];
+    let path = parts[1];
     if (path && _.startsWith(path, '/')) {
       path = path.slice(1, path.length);
     }
@@ -1194,7 +1194,7 @@ module Core {
   }
 
   export function getDocHeight() {
-    var D = document;
+    let D = document;
     return Math.max(
       Math.max(D.body.scrollHeight, D.documentElement.scrollHeight),
       Math.max(D.body.offsetHeight, (<any>D.documentElement).offsetHeight),
@@ -1216,10 +1216,10 @@ module Core {
     if (Core.isChromeApp()) {
       return connectUrl;
     }
-    var host = window.location.host;
+    let host = window.location.host;
     if (!_.startsWith(connectUrl, "http://" + host + "/") && !_.startsWith(connectUrl, "https://" + host + "/")) {
       // lets remove the http stuff
-      var idx = connectUrl.indexOf("://");
+      let idx = connectUrl.indexOf("://");
       if (idx > 0) {
         connectUrl = connectUrl.substring(idx + 3);
       }
@@ -1254,18 +1254,18 @@ module Core {
       scheme = $location.scheme();
     }
 
-    var host = $location.host();
+    let host = $location.host();
 
     //  $location.search()['url']; does not work for some strange reason
-    // var qUrl = $location.search()['url'];
+    // let qUrl = $location.search()['url'];
 
     // if its a proxy request using hawtio-proxy servlet, then the url parameter
     // has the actual host/port
-    var qUrl = $location.absUrl();
-    var idx = qUrl.indexOf("url=");
+    let qUrl = $location.absUrl();
+    let idx = qUrl.indexOf("url=");
     if (idx > 0) {
       qUrl = qUrl.substr(idx + 4);
-      var value = decodeURIComponent(qUrl);
+      let value = decodeURIComponent(qUrl);
       if (value) {
         idx = value.indexOf("/proxy/");
         // after proxy we have host and optional port (if port is not 80)
@@ -1276,12 +1276,12 @@ module Core {
           if (idx > 0) {
             value = value.substr(idx + 3);
           }
-          var data = value.split("/");
+          let data = value.split("/");
           if (data.length >= 1) {
             host = data[0];
           }
           if (angular.isUndefined(port) && data.length >= 2) {
-            var qPort = Core.parseIntValue(data[1], "port number");
+            let qPort = Core.parseIntValue(data[1], "port number");
             if (qPort) {
               port = qPort;
             }
@@ -1294,7 +1294,7 @@ module Core {
       port = $location.port();
     }
 
-    var url = scheme + "://" + host;
+    let url = scheme + "://" + host;
     if (port != 80) {
       url += ":" + port;
     }
@@ -1305,7 +1305,7 @@ module Core {
    * Returns true if the $location is from the hawtio proxy
    */
   export function isProxyUrl($location: ng.ILocationService) {
-    var url = $location.url();
+    let url = $location.url();
     return url.indexOf('/hawtio/proxy/') > 0;
   }
 
@@ -1315,8 +1315,8 @@ module Core {
   export function doNothing(value: any) { return value; }
 
   // moved these into their own helper file
-  export var bindModelToSearchParam = ControllerHelpers.bindModelToSearchParam;
-  export var reloadWhenParametersChange = ControllerHelpers.reloadWhenParametersChange;
+  export const bindModelToSearchParam = ControllerHelpers.bindModelToSearchParam;
+  export const reloadWhenParametersChange = ControllerHelpers.reloadWhenParametersChange;
 
 
   /**
@@ -1330,10 +1330,10 @@ module Core {
    * @return {Object}
    */
   export function throttled(fn, millis: number) {
-    var nextInvokeTime: number = 0;
-    var lastAnswer = null;
+    let nextInvokeTime: number = 0;
+    let lastAnswer = null;
     return () => {
-      var now = Date.now();
+      let now = Date.now();
       if (nextInvokeTime < now) {
         nextInvokeTime = now + millis;
         lastAnswer = fn();
@@ -1352,7 +1352,7 @@ module Core {
    * @param message description of the thing being parsed logged if its invalid
    */
   export function parseJsonText(text: string, message: string = "JSON") {
-    var answer = null;
+    let answer = null;
     try {
       answer = angular.fromJson(text);
     } catch (e) {
@@ -1365,7 +1365,7 @@ module Core {
    * Returns the humanized markup of the given value
    */
   export function humanizeValueHtml(value: any): string {
-    var formattedValue: string = "";
+    let formattedValue: string = "";
     if (value === true) {
       formattedValue = '<i class="icon-check"></i>';
     } else if (value === false) {
@@ -1384,18 +1384,18 @@ module Core {
    * @returns {*}
    */
   export function getQueryParameterValue(url, parameterName) {
-    var parts;
+    let parts;
 
-    var query = (url || '').split('?');
+    let query = (url || '').split('?');
     if (query && query.length > 0) {
       parts = query[1];
     } else {
       parts = '';
     }
 
-    var vars = parts.split('&');
-    for (var i = 0; i < vars.length; i++) {
-      var pair = vars[i].split('=');
+    let vars = parts.split('&');
+    for (let i = 0; i < vars.length; i++) {
+      let pair = vars[i].split('=');
       if (decodeURIComponent(pair[0]) == parameterName) {
         return decodeURIComponent(pair[1]);
       }
@@ -1415,20 +1415,20 @@ module Core {
       return "XXX";
     }
 
-    var seconds = value / 1000;
-    var years = Math.floor(seconds / 31536000);
+    let seconds = value / 1000;
+    let years = Math.floor(seconds / 31536000);
     if (years) {
       return maybePlural(years, "year");
     }
-    var days = Math.floor((seconds %= 31536000) / 86400);
+    let days = Math.floor((seconds %= 31536000) / 86400);
     if (days) {
       return maybePlural(days, "day");
     }
-    var hours = Math.floor((seconds %= 86400) / 3600);
+    let hours = Math.floor((seconds %= 86400) / 3600);
     if (hours) {
       return maybePlural(hours, 'hour');
     }
-    var minutes = Math.floor((seconds %= 3600) / 60);
+    let minutes = Math.floor((seconds %= 3600) / 60);
     if (minutes) {
       return maybePlural(minutes, 'minute');
     }
@@ -1442,7 +1442,7 @@ module Core {
   /*
     export function storeConnectionRegex(regexs, name, json) {
       if (!regexs.any((r) => { r['name'] === name })) {
-        var regex:string = '';
+        let regex:string = '';
   
         if (json['useProxy']) {
           regex = '/hawtio/proxy/';
@@ -1460,7 +1460,7 @@ module Core {
     }
   */
   export function getRegexs() {
-    var regexs: any = [];
+    let regexs: any = [];
     try {
       regexs = angular.fromJson(localStorage['regexs']);
     } catch (e) {
@@ -1471,8 +1471,8 @@ module Core {
   }
 
   export function removeRegex(name) {
-    var regexs = Core.getRegexs();
-    var hasFunc = (r) => { return r['name'] === name; };
+    let regexs = Core.getRegexs();
+    let hasFunc = (r) => { return r['name'] === name; };
     if (regexs.any(hasFunc)) {
       regexs = regexs.exclude(hasFunc);
       Core.writeRegexs(regexs);
@@ -1485,10 +1485,10 @@ module Core {
 
   export function maskPassword(value: any) {
     if (value) {
-      var text = '' + value;
+      let text = '' + value;
       // we use the same patterns as in Apache Camel in its
       // org.apache.camel.util.URISupport.sanitizeUri
-      var userInfoPattern = "(.*://.*:)(.*)(@)";
+      let userInfoPattern = "(.*://.*:)(.*)(@)";
       value = value.replace(new RegExp(userInfoPattern, 'i'), "$1xxxxxx$3");
     }
 
@@ -1522,7 +1522,7 @@ module Core {
     }
 
     // there can be more tokens separated by comma
-    var tokens = filter.split(",");
+    let tokens = filter.split(",");
 
     // filter out empty tokens, and make sure its trimmed
     tokens = tokens.filter(t => {
@@ -1531,8 +1531,8 @@ module Core {
       return t.trim();
     });
     // match if any of the tokens matches the text
-    var answer = tokens.some(t => {
-      var bool = text.indexOf(t) > -1;
+    let answer = tokens.some(t => {
+      let bool = text.indexOf(t) > -1;
       return bool;
     });
 
