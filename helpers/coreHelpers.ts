@@ -3,7 +3,7 @@
 /// <reference path="coreInterfaces.ts"/>
 /// <reference path="tasks.ts"/>
 
-module Core {
+namespace Core {
 
   export const log: Logging.Logger = Logger.get("Core");
 

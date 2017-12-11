@@ -1,7 +1,7 @@
 /// <reference path="includes.ts"/>
 /// <reference path="baseHelpers.ts"/>
 /// <reference path="coreHelpers.ts"/>
-module FileUpload {
+namespace FileUpload {
 
   // add angular-file-upload to the plugin loader too
   hawtioPluginLoader.addModule('angularFileUpload');

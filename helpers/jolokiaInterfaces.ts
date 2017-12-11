@@ -1,5 +1,5 @@
 /// <reference path="includes.ts"/>
-module Core {
+namespace Core {
 
   // interfaces that represent the response from 'list', 
   // TODO should maybe put most of this in jolokia-1.0.d.ts

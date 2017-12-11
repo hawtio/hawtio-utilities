@@ -3,7 +3,7 @@
 declare var humanizeDuration:any;
 declare var humandate:any;
 
-module CoreFilters {
+namespace CoreFilters {
   var pluginName = 'hawtio-core-filters';
   var _module = angular.module(pluginName, []);
 

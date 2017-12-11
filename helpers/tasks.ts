@@ -1,5 +1,5 @@
 /// <reference path="includes.ts"/>
-module Core {
+namespace Core {
 
   var log:Logging.Logger = Logger.get("hawtio-tasks");
 

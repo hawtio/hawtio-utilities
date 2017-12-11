@@ -1,5 +1,5 @@
 /// <reference path="baseHelpers.ts"/>
-module SelectionHelpers {
+namespace SelectionHelpers {
 
   var log:Logging.Logger = Logger.get("SelectionHelpers");
 

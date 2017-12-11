@@ -1,5 +1,5 @@
 /// <reference path="includes.ts"/>
-module Core {
+namespace Core {
 
    /**
    * Parsers the given value as JSON if it is define

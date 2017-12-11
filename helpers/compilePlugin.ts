@@ -1,6 +1,6 @@
 /// <reference path="includes.ts"/>
 
-module HawtioCompile {
+namespace HawtioCompile {
   var pluginName = 'hawtio-compile';
   var log:Logging.Logger = Logger.get(pluginName);
 

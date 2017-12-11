@@ -2,7 +2,7 @@
 /**
  * Module that provides functions related to working with javascript objects
  */
-module ObjectHelpers {
+namespace ObjectHelpers {
 
   /**
    * Convert an array of 'things' to an object, using 'index' as the attribute name for that value

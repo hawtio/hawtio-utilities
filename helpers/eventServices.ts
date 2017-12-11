@@ -1,6 +1,6 @@
 /// <reference path="includes.ts"/>
 /// <reference path="tasks.ts"/>
-module EventServices {
+namespace EventServices {
   var pluginName = 'hawtio-event-tasks';
   var log:Logging.Logger = Logger.get(pluginName);
   var _module = angular.module(pluginName, []);

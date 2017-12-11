@@ -2,7 +2,7 @@
 /**
  * @module UI
  */
-module UI {
+namespace UI {
 
   export var scrollBarWidth:number = null;
 

@@ -1,4 +1,4 @@
-module ControllerHelpers {
+namespace ControllerHelpers {
 
   var log = Logger.get("ControllerHelpers");
 

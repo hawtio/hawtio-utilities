@@ -1,6 +1,6 @@
 /// <reference path="includes.ts"/>
 /// <reference path="baseHelpers.ts"/>
-module UrlHelpers {
+namespace UrlHelpers {
 
   var log = Logger.get("UrlHelpers");
 

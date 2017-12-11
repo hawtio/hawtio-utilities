@@ -4,7 +4,7 @@
 /**
  * @module Core
  */
-module Core {
+namespace Core {
 
   var _urlPrefix:string = null;
 

@@ -1,6 +1,6 @@
 /// <reference path="includes.ts"/>
 /// <reference path="urlHelpers.ts"/>
-module PluginHelpers {
+namespace PluginHelpers {
 
   export interface PluginModule {
     pluginName:string;

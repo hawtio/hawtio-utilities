@@ -1,5 +1,5 @@
 /// <reference types="angular" />
-declare module StringHelpers {
+declare namespace StringHelpers {
     function isDate(str: any): boolean;
     /**
      * Convert a string into a bunch of '*' of the same length
@@ -14,7 +14,7 @@ declare module StringHelpers {
      */
     function toString(obj: any): string;
 }
-declare module Core {
+declare namespace Core {
     /**
      * Typescript interface that represents the UserDetails service
      */
@@ -54,7 +54,7 @@ declare module Core {
     function createConnectToServerOptions(options?: any): ConnectToServerOptions;
     function createConnectOptions(options?: any): ConnectOptions;
 }
-declare module ArrayHelpers {
+declare namespace ArrayHelpers {
     /**
      * Removes elements in the target array based on the new collection, returns true if
      * any changes were made
@@ -66,7 +66,7 @@ declare module ArrayHelpers {
      */
     function sync(collection: Array<any>, newCollection: Array<any>, index?: string): boolean;
 }
-declare module UrlHelpers {
+declare namespace UrlHelpers {
     /**
      * Returns the URL without the starting '#' if it's there
      * @param url
@@ -105,7 +105,7 @@ declare module UrlHelpers {
 /**
  * @module Core
  */
-declare module Core {
+declare namespace Core {
     var connectionSettingsKey: string;
     /**
      * Private method to support testing.
@@ -341,10 +341,10 @@ declare module Core {
      */
     function humanizeValue(value: any): string;
 }
-declare module HawtioCompile {
+declare namespace HawtioCompile {
     var _module: angular.IModule;
 }
-declare module ControllerHelpers {
+declare namespace ControllerHelpers {
     function createClassSelector(config: any): (selection: any, model: any) => string;
     function createValueClassSelector(config: any): (model: any) => string;
     /**
@@ -373,7 +373,7 @@ declare module ControllerHelpers {
      */
     function reloadWhenParametersChange($route: any, $scope: any, $location: any, parameters?: string[]): void;
 }
-declare module Core {
+declare namespace Core {
     interface Tasks {
         addTask: (name: string, task: () => void) => void;
         execute: () => void;
@@ -410,10 +410,10 @@ declare module Core {
     var preLogoutTasks: Tasks;
     var postLogoutTasks: Tasks;
 }
-declare module Core {
-    var log: Logging.Logger;
-    var lazyLoaders: {};
-    var numberTypeNames: {
+declare namespace Core {
+    const log: Logging.Logger;
+    const lazyLoaders: {};
+    const numberTypeNames: {
         'byte': boolean;
         'short': boolean;
         'int': boolean;
@@ -464,7 +464,16 @@ declare module Core {
      * @param {Object} Options object to pass on to Jolokia request
      * @return {Object} initialized options object
      */
-    function onSuccess(fn: any, options?: {}): {};
+    function onSuccess(fn: (response: Jolokia.IResponse) => void | ((response: Jolokia.IResponse) => void)[], options?: Jolokia.IParams): any;
+    /**
+     * The default error handler which logs errors either using debug or log level logging based on the silent setting
+     * @param response the response from a jolokia request
+     */
+    function defaultJolokiaErrorHandler(response: Jolokia.IErrorResponse, options?: Jolokia.IParams): void;
+    /**
+     * Logs any failed operation and stack traces
+     */
+    function logJolokiaStackTrace(response: Jolokia.IErrorResponse): void;
     function supportsLocalStorage(): boolean;
     function isNumberTypeName(typeName: any): boolean;
     /**
@@ -569,7 +578,7 @@ declare module Core {
     }
     function getOrInitObjectFromLocalStorage(key: string): any;
     function getResponseHistory(): any;
-    var MAX_RESPONSE_CACHE_SIZE: number;
+    const MAX_RESPONSE_CACHE_SIZE = 20;
     /**
      * Register a JMX operation to poll for changes
      * @method register
@@ -593,15 +602,6 @@ declare module Core {
      * @param {Function} callback
      */
     function unregister(jolokia: Jolokia.IJolokia, scope: any): void;
-    /**
-     * The default error handler which logs errors either using debug or log level logging based on the silent setting
-     * @param response the response from a jolokia request
-     */
-    function defaultJolokiaErrorHandler(response: any, options?: {}): void;
-    /**
-     * Logs any failed operation and stack traces
-     */
-    function logJolokiaStackTrace(response: any): void;
     /**
      * Converts the given XML node to a string representation of the XML
      * @method xmlNodeToString
@@ -764,8 +764,8 @@ declare module Core {
      * handy do nothing converter for the below function
      **/
     function doNothing(value: any): any;
-    var bindModelToSearchParam: typeof ControllerHelpers.bindModelToSearchParam;
-    var reloadWhenParametersChange: typeof ControllerHelpers.reloadWhenParametersChange;
+    const bindModelToSearchParam: typeof ControllerHelpers.bindModelToSearchParam;
+    const reloadWhenParametersChange: typeof ControllerHelpers.reloadWhenParametersChange;
     /**
      * Returns a new function which ensures that the delegate function is only invoked at most once
      * within the given number of millseconds
@@ -822,11 +822,11 @@ declare module Core {
 }
 declare var humanizeDuration: any;
 declare var humandate: any;
-declare module CoreFilters {
+declare namespace CoreFilters {
 }
-declare module EventServices {
+declare namespace EventServices {
 }
-declare module FileUpload {
+declare namespace FileUpload {
     interface IFileItem {
         url: string;
         alias?: string;
@@ -919,7 +919,7 @@ declare module FileUpload {
     }
     function useJolokiaTransport($scope: ng.IScope, uploader: FileUploader, jolokia: any, onLoad: (json: string) => RequestParameters): void;
 }
-declare module FilterHelpers {
+declare namespace FilterHelpers {
     var log: Logging.Logger;
     function search(object: any, filter: string, maxDepth?: number, and?: boolean): boolean;
     /**
@@ -935,7 +935,7 @@ declare module FilterHelpers {
 /**
  * @module Core
  */
-declare module Core {
+declare namespace Core {
     /**
      * a NodeSelection interface so we can expose things like the objectName and the MBean's entries
      *
@@ -1111,7 +1111,7 @@ interface NodeSelection extends Core.NodeSelection {
 }
 declare class Folder extends Core.Folder {
 }
-declare module Core {
+declare namespace Core {
     /**
      * Operation arguments are stored in a map of argument name -> type
      */
@@ -1173,14 +1173,14 @@ declare module Core {
     }
     function operationToString(name: string, args: Array<JMXOperationArgument>): string;
 }
-declare module Log {
+declare namespace Log {
     function formatStackTrace(exception: any): string;
     function formatStackLine(line: string): string;
 }
 /**
  * Module that provides functions related to working with javascript objects
  */
-declare module ObjectHelpers {
+declare namespace ObjectHelpers {
     /**
      * Convert an array of 'things' to an object, using 'index' as the attribute name for that value
      * @param arr
@@ -1189,7 +1189,7 @@ declare module ObjectHelpers {
      */
     function toMap(arr: Array<any>, index: string, decorator?: (any) => void): any;
 }
-declare module PluginHelpers {
+declare namespace PluginHelpers {
     interface PluginModule {
         pluginName: string;
         log: Logging.Logger;
@@ -1202,10 +1202,10 @@ declare module PluginHelpers {
         reloadOnSearch: boolean;
     };
 }
-declare module PollHelpers {
+declare namespace PollHelpers {
     function setupPolling($scope: any, updateFunction: (next: () => void) => void, period?: number, $timeout?: ng.ITimeoutService, jolokia?: Jolokia.IJolokia): () => void;
 }
-declare module Core {
+declare namespace Core {
     /**
     * Parsers the given value as JSON if it is define
     */
@@ -1224,7 +1224,7 @@ declare module Core {
      */
     function isValidFunction(workspace: any, validFn: any, perspectiveId: any): any;
 }
-declare module SelectionHelpers {
+declare namespace SelectionHelpers {
     function selectNone(group: any[]): void;
     function selectAll(group: any[], filter?: (any) => boolean): void;
     function toggleSelection(item: any): void;
@@ -1239,7 +1239,7 @@ declare module SelectionHelpers {
     function syncGroupSelection(group: any, collection: any, attribute?: string): void;
     function decorate($scope: any): void;
 }
-declare module StorageHelpers {
+declare namespace StorageHelpers {
     interface BindModelToLocalStorageOptions {
         $scope: any;
         $location: ng.ILocationService;
@@ -1256,7 +1256,7 @@ declare module StorageHelpers {
 /**
  * @module UI
  */
-declare module UI {
+declare namespace UI {
     var scrollBarWidth: number;
     function findParentWith($scope: any, attribute: any): any;
     function getIfSet(attribute: any, $attr: any, def: any): any;

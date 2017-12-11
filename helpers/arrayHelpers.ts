@@ -1,5 +1,5 @@
 /// <reference path="includes.ts"/>
-module ArrayHelpers {
+namespace ArrayHelpers {
 
     /**
      * Removes elements in the target array based on the new collection, returns true if

@@ -1,5 +1,5 @@
 /// <reference path="baseHelpers.ts"/>
-module PollHelpers {
+namespace PollHelpers {
 
   var log:Logging.Logger = Logger.get("PollHelpers");
   

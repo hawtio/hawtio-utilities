@@ -1,6 +1,6 @@
 /// <reference path="includes.ts"/>
 /// <reference path="stringHelpers.ts"/>
-module Core {
+namespace Core {
 
   /**
    * Typescript interface that represents the UserDetails service
