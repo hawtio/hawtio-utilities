@@ -1,6 +1,9 @@
 /// <reference path="includes.ts"/>
 namespace Core {
 
+  declare var log:Logging.Logger;
+  var log = log || Logger.get("Core");
+  
    /**
    * Parsers the given value as JSON if it is define
    */
@@ -25,11 +28,11 @@ namespace Core {
       }
       if (key in localStorage) {
         var value = converter(localStorage[key]);
-        Core.log.debug("from local storage, setting ", key, " to ", value);
+        log.debug("from local storage, setting ", key, " to ", value);
         $scope[key] = value;
       } else {
         var value = _default['value'];
-        Core.log.debug("from default, setting ", key, " to ", value);
+        log.debug("from default, setting ", key, " to ", value);
         localStorage[key] = value;
       }
 
@@ -42,7 +45,7 @@ namespace Core {
             }
 
             var value = formatter(newValue);
-            Core.log.debug("to local storage, setting ", key, " to ", value);
+            log.debug("to local storage, setting ", key, " to ", value);
             localStorage[key] = value;
 
             if (angular.isFunction(_default['post'])) {

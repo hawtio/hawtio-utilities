@@ -5,7 +5,7 @@
 
 namespace Core {
 
-  export const log: Logging.Logger = Logger.get("Core");
+  var log = log || Logger.get("Core");
 
   export const lazyLoaders = {};
 
@@ -383,7 +383,7 @@ namespace Core {
     if (jolokiaUrl) {
       let url = "auth/logout/";
 
-      Core.executePreLogoutTasks(() => {
+      executePreLogoutTasks(() => {
         $.ajax(url, {
           type: "POST",
           success: () => {

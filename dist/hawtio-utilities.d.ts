@@ -411,7 +411,6 @@ declare namespace Core {
     var postLogoutTasks: Tasks;
 }
 declare namespace Core {
-    const log: Logging.Logger;
     const lazyLoaders: {};
     const numberTypeNames: {
         'byte': boolean;
