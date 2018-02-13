@@ -374,7 +374,7 @@ namespace Core {
    *
    */
   export function logout(jolokiaUrl,
-    userDetails,
+    userDetails: Core.UserDetails,
     localStorage: Storage,
     $scope,
     successCB: () => void = null,
@@ -390,16 +390,7 @@ namespace Core {
             userDetails.username = null;
             userDetails.password = null;
             userDetails.loginDetails = null;
-            userDetails.rememberMe = false;
-            delete localStorage['userDetails'];
-            let jvmConnect = angular.fromJson(localStorage['jvmConnect'])
-            _.each(jvmConnect, function (value) {
-              delete value['userName'];
-              delete value['password'];
-            });
-            localStorage.setItem('jvmConnect', angular.toJson(jvmConnect));
-            localStorage.removeItem('activemqUserName');
-            localStorage.removeItem('activemqPassword');
+            clearLocalStorageOnLogout(localStorage);
             if (successCB && angular.isFunction(successCB)) {
               successCB();
             }
@@ -409,29 +400,18 @@ namespace Core {
             userDetails.username = null;
             userDetails.password = null;
             userDetails.loginDetails = null;
-            userDetails.rememberMe = false;
-            delete localStorage['userDetails'];
-            let jvmConnect = angular.fromJson(localStorage['jvmConnect'])
-            _.each(jvmConnect, function (value) {
-              delete value['userName'];
-              delete value['password'];
-            });
-            localStorage.setItem('jvmConnect', angular.toJson(jvmConnect));
-            localStorage.removeItem('activemqUserName');
-            localStorage.removeItem('activemqPassword');
+            clearLocalStorageOnLogout(localStorage);
             // TODO, more feedback
             switch (xhr.status) {
               case 401:
-                log.debug('Failed to log out, ', error);
-                break;
               case 403:
-                log.debug('Failed to log out, ', error);
+                log.debug('Failed to log out,', error);
                 break;
               case 0:
                 // this may happen during onbeforeunload -> logout, when XHR is cancelled
                 break;
               default:
-                log.debug('Failed to log out, ', error);
+                log.debug('Failed to log out,', error);
                 break;
             }
             if (errorCB && angular.isFunction(errorCB)) {
@@ -442,7 +422,23 @@ namespace Core {
         });
       });
     }
+  }
 
+  /**
+   * Executes common clearance tasks on the local storage when logging out.
+   * 
+   * @param localStorage
+   */
+  export function clearLocalStorageOnLogout(localStorage: Storage): void {
+    delete localStorage['userDetails'];
+    let jvmConnect = angular.fromJson(localStorage[connectionSettingsKey])
+    _.forOwn(jvmConnect, (property) => {
+      delete property['userName'];
+      delete property['password'];
+    });
+    localStorage.setItem(connectionSettingsKey, angular.toJson(jvmConnect));
+    localStorage.removeItem('activemqUserName');
+    localStorage.removeItem('activemqPassword');
   }
 
   /**

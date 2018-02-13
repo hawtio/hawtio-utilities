@@ -6,9 +6,9 @@
  */
 namespace Core {
 
-  var _urlPrefix:string = null;
+  let _urlPrefix: string = null;
 
-  export var connectionSettingsKey = "jvmConnect";
+  export const connectionSettingsKey = "jvmConnect";
 
 
   /**
