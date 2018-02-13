@@ -1,5 +1,14 @@
 ### Change Log
 
+#### 3.2.1
+* Expose `clearLocalStorageOnLogout()` function so that the task can be invoked from other plugins
+* Remove `ConnectToServerOptions` interface in favor of shorter `ConnectOptions`
+
+#### 3.2.0
+* Switch to hawtio-core 3.2.0
+
+...
+
 #### 2.0.12
 * Switch from sugarjs bower package to an embedded script so we get more of the string manipulation functions like titleize()
 
