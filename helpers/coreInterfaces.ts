@@ -14,7 +14,7 @@ namespace Core {
   /**
    * Typescript interface that represents the options needed to connect to another JVM
    */
-  export interface ConnectToServerOptions {
+  export interface ConnectOptions {
     scheme: String;
     host?: String;
     port?: Number;
@@ -28,23 +28,16 @@ namespace Core {
     secure: boolean;
   }
 
-  /**
-   * Shorter name, less typing :-)
-   */
-  export interface ConnectOptions extends ConnectToServerOptions {
-
-  }
-
   export interface ConnectionMap {
-    [name:string]: ConnectOptions;
+    [name: string]: ConnectOptions;
   }
 
   /**
    * Factory to create an instance of ConnectToServerOptions
    * @returns {ConnectToServerOptions}
    */
-  export function createConnectToServerOptions(options?:any):ConnectToServerOptions {
-    var defaults = <ConnectToServerOptions> {
+  export function createConnectOptions(options?: any): ConnectOptions {
+    let defaults: ConnectOptions = {
       scheme: 'http',
       host: null,
       port: null,
@@ -57,13 +50,8 @@ namespace Core {
       name: null,
       secure: false
     };
-    var opts = options || {};
+    let opts = options || {};
     return angular.extend(defaults, opts);
   }
-
-  export function createConnectOptions(options?:any) {
-    return <ConnectOptions> createConnectToServerOptions(options);
-  }
-
 
 }
