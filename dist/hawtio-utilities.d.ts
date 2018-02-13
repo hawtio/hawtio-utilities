@@ -26,7 +26,7 @@ declare namespace Core {
     /**
      * Typescript interface that represents the options needed to connect to another JVM
      */
-    interface ConnectToServerOptions {
+    interface ConnectOptions {
         scheme: String;
         host?: String;
         port?: Number;
@@ -39,11 +39,6 @@ declare namespace Core {
         name: String;
         secure: boolean;
     }
-    /**
-     * Shorter name, less typing :-)
-     */
-    interface ConnectOptions extends ConnectToServerOptions {
-    }
     interface ConnectionMap {
         [name: string]: ConnectOptions;
     }
@@ -51,7 +46,6 @@ declare namespace Core {
      * Factory to create an instance of ConnectToServerOptions
      * @returns {ConnectToServerOptions}
      */
-    function createConnectToServerOptions(options?: any): ConnectToServerOptions;
     function createConnectOptions(options?: any): ConnectOptions;
 }
 declare namespace ArrayHelpers {
@@ -106,7 +100,7 @@ declare namespace UrlHelpers {
  * @module Core
  */
 declare namespace Core {
-    var connectionSettingsKey: string;
+    const connectionSettingsKey = "jvmConnect";
     /**
      * Private method to support testing.
      *
@@ -529,7 +523,13 @@ declare namespace Core {
      * @param {Function} errorCB
      *
      */
-    function logout(jolokiaUrl: any, userDetails: any, localStorage: Storage, $scope: any, successCB?: () => void, errorCB?: () => void): void;
+    function logout(jolokiaUrl: any, userDetails: Core.UserDetails, localStorage: Storage, $scope: any, successCB?: () => void, errorCB?: () => void): void;
+    /**
+     * Executes common clearance tasks on the local storage when logging out.
+     *
+     * @param localStorage
+     */
+    function clearLocalStorageOnLogout(localStorage: Storage): void;
     /**
      * Creates a link by appending the current $location.search() hash to the given href link,
      * removing any required parameters from the link

@@ -65,7 +65,7 @@ var Core;
      * Factory to create an instance of ConnectToServerOptions
      * @returns {ConnectToServerOptions}
      */
-    function createConnectToServerOptions(options) {
+    function createConnectOptions(options) {
         var defaults = {
             scheme: 'http',
             host: null,
@@ -81,10 +81,6 @@ var Core;
         };
         var opts = options || {};
         return angular.extend(defaults, opts);
-    }
-    Core.createConnectToServerOptions = createConnectToServerOptions;
-    function createConnectOptions(options) {
-        return createConnectToServerOptions(options);
     }
     Core.createConnectOptions = createConnectOptions;
 })(Core || (Core = {}));
@@ -1420,16 +1416,7 @@ var Core;
                         userDetails.username = null;
                         userDetails.password = null;
                         userDetails.loginDetails = null;
-                        userDetails.rememberMe = false;
-                        delete localStorage['userDetails'];
-                        var jvmConnect = angular.fromJson(localStorage['jvmConnect']);
-                        _.each(jvmConnect, function (value) {
-                            delete value['userName'];
-                            delete value['password'];
-                        });
-                        localStorage.setItem('jvmConnect', angular.toJson(jvmConnect));
-                        localStorage.removeItem('activemqUserName');
-                        localStorage.removeItem('activemqPassword');
+                        clearLocalStorageOnLogout(localStorage);
                         if (successCB && angular.isFunction(successCB)) {
                             successCB();
                         }
@@ -1439,29 +1426,18 @@ var Core;
                         userDetails.username = null;
                         userDetails.password = null;
                         userDetails.loginDetails = null;
-                        userDetails.rememberMe = false;
-                        delete localStorage['userDetails'];
-                        var jvmConnect = angular.fromJson(localStorage['jvmConnect']);
-                        _.each(jvmConnect, function (value) {
-                            delete value['userName'];
-                            delete value['password'];
-                        });
-                        localStorage.setItem('jvmConnect', angular.toJson(jvmConnect));
-                        localStorage.removeItem('activemqUserName');
-                        localStorage.removeItem('activemqPassword');
+                        clearLocalStorageOnLogout(localStorage);
                         // TODO, more feedback
                         switch (xhr.status) {
                             case 401:
-                                log.debug('Failed to log out, ', error);
-                                break;
                             case 403:
-                                log.debug('Failed to log out, ', error);
+                                log.debug('Failed to log out,', error);
                                 break;
                             case 0:
                                 // this may happen during onbeforeunload -> logout, when XHR is cancelled
                                 break;
                             default:
-                                log.debug('Failed to log out, ', error);
+                                log.debug('Failed to log out,', error);
                                 break;
                         }
                         if (errorCB && angular.isFunction(errorCB)) {
@@ -1474,6 +1450,23 @@ var Core;
         }
     }
     Core.logout = logout;
+    /**
+     * Executes common clearance tasks on the local storage when logging out.
+     *
+     * @param localStorage
+     */
+    function clearLocalStorageOnLogout(localStorage) {
+        delete localStorage['userDetails'];
+        var jvmConnect = angular.fromJson(localStorage[Core.connectionSettingsKey]);
+        _.forOwn(jvmConnect, function (property) {
+            delete property['userName'];
+            delete property['password'];
+        });
+        localStorage.setItem(Core.connectionSettingsKey, angular.toJson(jvmConnect));
+        localStorage.removeItem('activemqUserName');
+        localStorage.removeItem('activemqPassword');
+    }
+    Core.clearLocalStorageOnLogout = clearLocalStorageOnLogout;
     /**
      * Creates a link by appending the current $location.search() hash to the given href link,
      * removing any required parameters from the link
