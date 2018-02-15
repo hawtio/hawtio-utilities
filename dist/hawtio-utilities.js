@@ -1009,6 +1009,10 @@ var Core;
         return ParameterizedTasksImpl;
     }(TasksImpl));
     Core.ParameterizedTasksImpl = ParameterizedTasksImpl;
+    /*
+     * These tasks are exported just for convenience of other helper functions.
+     * Users should always utilise them via AngularJS dependency injection.
+     */
     Core.postLoginTasks = new Core.TasksImpl();
     Core.preLogoutTasks = new Core.TasksImpl();
     Core.postLogoutTasks = new Core.TasksImpl();
@@ -2553,46 +2557,6 @@ var CoreFilters;
     hawtioPluginLoader.addModule(pluginName);
 })(CoreFilters || (CoreFilters = {}));
 /// <reference path="includes.ts"/>
-/// <reference path="tasks.ts"/>
-var EventServices;
-(function (EventServices) {
-    var pluginName = 'hawtio-event-tasks';
-    var log = Logger.get(pluginName);
-    var _module = angular.module(pluginName, []);
-    // service to register tasks that should happen when the URL changes
-    _module.factory('locationChangeStartTasks', function () {
-        return new Core.ParameterizedTasksImpl();
-    });
-    // service to register stuff that should happen when the user logs in
-    _module.factory('postLoginTasks', function () {
-        return Core.postLoginTasks;
-    });
-    // service to register stuff that should happen when the user logs out
-    _module.factory('preLogoutTasks', function () {
-        return Core.preLogoutTasks;
-    });
-    // service to register stuff that should happen after the user logs out
-    _module.factory('postLogoutTasks', function () {
-        return Core.postLogoutTasks;
-    });
-    _module.run(['$rootScope', 'locationChangeStartTasks', 'postLoginTasks', 'preLogoutTasks', 'postLogoutTasks', function ($rootScope, locationChangeStartTasks, postLoginTasks, preLogoutTasks, postLogoutTasks) {
-            preLogoutTasks.addTask("ResetPreLogoutTasks", function () {
-                preLogoutTasks.reset();
-            });
-            preLogoutTasks.addTask("ResetPostLoginTasks", function () {
-                preLogoutTasks.reset();
-            });
-            postLoginTasks.addTask("ResetPostLogoutTasks", function () {
-                postLogoutTasks.reset();
-            });
-            $rootScope.$on('$locationChangeStart', function ($event, newUrl, oldUrl) {
-                locationChangeStartTasks.execute($event, newUrl, oldUrl);
-            });
-            log.debug("loaded");
-        }]);
-    hawtioPluginLoader.addModule(pluginName);
-})(EventServices || (EventServices = {}));
-/// <reference path="includes.ts"/>
 /// <reference path="baseHelpers.ts"/>
 /// <reference path="coreHelpers.ts"/>
 var FileUpload;
@@ -3421,3 +3385,27 @@ var UI;
     }
     UI.getScrollbarWidth = getScrollbarWidth;
 })(UI || (UI = {}));
+/// <reference path="../includes.ts"/>
+/// <reference path="../tasks.ts"/>
+var EventServices;
+(function (EventServices) {
+    var pluginName = 'hawtio-core-event-services';
+    var log = Logger.get(pluginName);
+    angular.module(pluginName, [])
+        .factory('locationChangeStartTasks', function () { return new Core.ParameterizedTasksImpl(); })
+        .factory('postLoginTasks', function () { return Core.postLoginTasks; })
+        .factory('preLogoutTasks', function () { return Core.preLogoutTasks; })
+        .factory('postLogoutTasks', function () { return Core.postLogoutTasks; })
+        .run(initializeTasks);
+    function initializeTasks($rootScope, locationChangeStartTasks, postLoginTasks, preLogoutTasks, postLogoutTasks) {
+        'ngInject';
+        preLogoutTasks.addTask("ResetPreLogoutTasks", function () { return preLogoutTasks.reset(); });
+        preLogoutTasks.addTask("ResetPostLoginTasks", function () { return preLogoutTasks.reset(); });
+        postLoginTasks.addTask("ResetPostLogoutTasks", function () { return postLogoutTasks.reset(); });
+        $rootScope.$on('$locationChangeStart', function ($event, newUrl, oldUrl) {
+            return locationChangeStartTasks.execute($event, newUrl, oldUrl);
+        });
+        log.debug("Event services loaded");
+    }
+    hawtioPluginLoader.addModule(pluginName);
+})(EventServices || (EventServices = {}));

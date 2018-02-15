@@ -825,8 +825,6 @@ declare var humanizeDuration: any;
 declare var humandate: any;
 declare namespace CoreFilters {
 }
-declare namespace EventServices {
-}
 declare namespace FileUpload {
     interface IFileItem {
         url: string;
@@ -1263,4 +1261,6 @@ declare namespace UI {
     function getIfSet(attribute: any, $attr: any, def: any): any;
     function observe($scope: any, $attrs: any, key: any, defValue: any, callbackFunc?: any): void;
     function getScrollbarWidth(): number;
+}
+declare namespace EventServices {
 }
