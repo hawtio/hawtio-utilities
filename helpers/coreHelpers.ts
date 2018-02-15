@@ -5,7 +5,9 @@
 
 namespace Core {
 
-  var log = log || Logger.get("Core");
+  const log = Logger.get("hawtio-core");
+
+  const LOGOUT_URL: string = 'auth/logout';
 
   export const lazyLoaders = {};
 
@@ -369,30 +371,28 @@ namespace Core {
    * @param {*} userDetails
    * @param {Object} localStorage
    * @param {Object} $scope
-   * @param {Function} successCB
-   * @param {Function} errorCB
+   * @param {Function} onSuccess
+   * @param {Function} onError
    *
    */
   export function logout(jolokiaUrl,
     userDetails: Core.UserDetails,
     localStorage: Storage,
     $scope,
-    successCB: () => void = null,
-    errorCB: () => void = null) {
+    onSuccess: () => void = null,
+    onError: () => void = null) {
 
     if (jolokiaUrl) {
-      let url = "auth/logout/";
-
       executePreLogoutTasks(() => {
-        $.ajax(url, {
-          type: "POST",
+        $.ajax(LOGOUT_URL, {
+          type: "GET",
           success: () => {
             userDetails.username = null;
             userDetails.password = null;
             userDetails.loginDetails = null;
             clearLocalStorageOnLogout(localStorage);
-            if (successCB && angular.isFunction(successCB)) {
-              successCB();
+            if (onSuccess && angular.isFunction(onSuccess)) {
+              onSuccess();
             }
             Core.$apply($scope);
           },
@@ -414,8 +414,8 @@ namespace Core {
                 log.debug('Failed to log out,', error);
                 break;
             }
-            if (errorCB && angular.isFunction(errorCB)) {
-              errorCB();
+            if (onError && angular.isFunction(onError)) {
+              onError();
             }
             Core.$apply($scope);
           }
