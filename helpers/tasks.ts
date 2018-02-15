@@ -108,6 +108,10 @@ namespace Core {
     }
   }
 
+  /*
+   * These tasks are exported just for convenience of other helper functions.
+   * Users should always utilise them via AngularJS dependency injection.
+   */
   export const postLoginTasks: Tasks = new Core.TasksImpl();
   export const preLogoutTasks: Tasks = new Core.TasksImpl();
   export const postLogoutTasks: Tasks = new Core.TasksImpl();
