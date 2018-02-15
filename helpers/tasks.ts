@@ -1,115 +1,115 @@
 /// <reference path="includes.ts"/>
 namespace Core {
 
-  var log:Logging.Logger = Logger.get("hawtio-tasks");
+  const log: Logging.Logger = Logger.get("hawtio-core-tasks");
 
   export interface Tasks {
-    addTask: (name:string, task:() => void) => void;
-    execute: () => void;
-    reset: () => void;
-    onComplete: (cb:() => void) => void;
+    addTask(name: string, task: () => void): void;
+    execute(): void;
+    reset(): void;
+    onComplete(callback: () => void): void;
   }
 
   export interface ParameterizedTasks extends Tasks {
-    addTask: (name:string, task:(...params:any[]) => void) => void;
-    execute: (...params:any[]) => void;
+    addTask(name: string, task: (...params: any[]) => void): void;
+    execute(...params: any[]): void;
   }
 
   export interface TaskMap {
-    [name:string]: () => void;
+    [name: string]: () => void;
   }
 
   export interface ParameterizedTaskMap {
-    [name:string]: (...params:any[]) => void;
+    [name: string]: (...params: any[]) => void;
   }
 
   export class TasksImpl implements Tasks {
 
-    public tasks:TaskMap = {};
-    public tasksExecuted = false;
-    public _onComplete: () => void = null;
+    protected tasks: TaskMap = {};
+    protected tasksExecuted = false;
+    protected onCompleteCallback: () => void = null;
 
-    public addTask(name:string, task:() => void):void {
+    addTask(name: string, task: () => void): void {
       this.tasks[name] = task;
       if (this.tasksExecuted) {
         this.executeTask(name, task);
       }
     }
 
-    private executeTask(name:string, task: () => void) {
-      if (angular.isFunction(task)) {
-        log.debug("Executing task : ", name);
-        try {
-          task();
-        } catch (error) {
-          log.debug("Failed to execute task: ", name, " error: ", error);
-        }
+    private executeTask(name: string, task: () => void): void {
+      if (_.isNull(task)) {
+        return;
+      }
+      log.debug("Executing task:", name);
+      try {
+        task();
+      } catch (error) {
+        log.debug("Failed to execute task:", name, "error:", error);
       }
     }
 
-    public onComplete(cb: () => void) {
-      this._onComplete = cb;
+    onComplete(callback: () => void): void {
+      this.onCompleteCallback = callback;
     }
 
-    public execute() {
+    execute(): void {
       if (this.tasksExecuted) {
         return;
       }
-      angular.forEach(this.tasks, (task:() => void, name) => {
-        this.executeTask(name, task);
-      });
+      _.forOwn(this.tasks, (task, name) => this.executeTask(name, task));
       this.tasksExecuted = true;
-      if (angular.isFunction(this._onComplete)) {
-        this._onComplete();
+      this.callbackOnComplete();
+    }
+
+    protected callbackOnComplete(): void {
+      if (!_.isNull(this.onCompleteCallback)) {
+        this.onCompleteCallback();
       }
     }
 
-    public reset() {
+    reset(): void {
       this.tasksExecuted = false;
     }
   }
 
 
   export class ParameterizedTasksImpl extends TasksImpl implements ParameterizedTasks {
-    public tasks:ParameterizedTaskMap = {};
 
-    public constructor() {
+    protected tasks: ParameterizedTaskMap = {};
+
+    constructor() {
       super();
-      this.onComplete(() => {
-        this.reset();
-      });
+      this.onComplete(() => this.reset());
     }
 
-    public addTask(name:string, task:(...params:any[]) => void):void {
+    addTask(name: string, task: (...params: any[]) => void): void {
       this.tasks[name] = task;
     }
 
-    public execute(...params:any[]) {
+    execute(...params: any[]): void {
       if (this.tasksExecuted) {
         return;
       }
-      var theArgs:any[] = params;
-      var keys = _.keys(this.tasks);
-      keys.forEach((name:string) => {
-        var task = this.tasks[name];
-        if (angular.isFunction(task)) {
-          log.debug("Executing task: ", name, " with parameters: ", theArgs);
-          try {
-            task.apply(task, theArgs);
-          } catch(e) {
-            log.debug("Failed to execute task: ", name, " error: ", e);
-          }
-        }
-      });
+      _.forOwn(this.tasks, (task, name) => this.executeParameterizedTask(name, task, params));
       this.tasksExecuted = true;
-      if (angular.isFunction(this._onComplete)) {
-        this._onComplete();
+      this.callbackOnComplete();
+    }
+
+    private executeParameterizedTask(name: string, task: () => void, params: any[]): void {
+      if (_.isNull(task)) {
+        return;
+      }
+      log.debug("Executing task:", name, "with parameters:", params);
+      try {
+        task.apply(task, params);
+      } catch (e) {
+        log.debug("Failed to execute task:", name, "error:", e);
       }
     }
   }
 
-  export var postLoginTasks:Tasks = new Core.TasksImpl();
-  export var preLogoutTasks:Tasks = new Core.TasksImpl();
-  export var postLogoutTasks:Tasks = new Core.TasksImpl();
+  export const postLoginTasks: Tasks = new Core.TasksImpl();
+  export const preLogoutTasks: Tasks = new Core.TasksImpl();
+  export const postLogoutTasks: Tasks = new Core.TasksImpl();
 
 }

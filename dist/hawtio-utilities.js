@@ -922,12 +922,12 @@ var ControllerHelpers;
 /// <reference path="includes.ts"/>
 var Core;
 (function (Core) {
-    var log = Logger.get("hawtio-tasks");
+    var log = Logger.get("hawtio-core-tasks");
     var TasksImpl = (function () {
         function TasksImpl() {
             this.tasks = {};
             this.tasksExecuted = false;
-            this._onComplete = null;
+            this.onCompleteCallback = null;
         }
         TasksImpl.prototype.addTask = function (name, task) {
             this.tasks[name] = task;
@@ -936,30 +936,32 @@ var Core;
             }
         };
         TasksImpl.prototype.executeTask = function (name, task) {
-            if (angular.isFunction(task)) {
-                log.debug("Executing task : ", name);
-                try {
-                    task();
-                }
-                catch (error) {
-                    log.debug("Failed to execute task: ", name, " error: ", error);
-                }
+            if (_.isNull(task)) {
+                return;
+            }
+            log.debug("Executing task:", name);
+            try {
+                task();
+            }
+            catch (error) {
+                log.debug("Failed to execute task:", name, "error:", error);
             }
         };
-        TasksImpl.prototype.onComplete = function (cb) {
-            this._onComplete = cb;
+        TasksImpl.prototype.onComplete = function (callback) {
+            this.onCompleteCallback = callback;
         };
         TasksImpl.prototype.execute = function () {
             var _this = this;
             if (this.tasksExecuted) {
                 return;
             }
-            angular.forEach(this.tasks, function (task, name) {
-                _this.executeTask(name, task);
-            });
+            _.forOwn(this.tasks, function (task, name) { return _this.executeTask(name, task); });
             this.tasksExecuted = true;
-            if (angular.isFunction(this._onComplete)) {
-                this._onComplete();
+            this.callbackOnComplete();
+        };
+        TasksImpl.prototype.callbackOnComplete = function () {
+            if (!_.isNull(this.onCompleteCallback)) {
+                this.onCompleteCallback();
             }
         };
         TasksImpl.prototype.reset = function () {
@@ -973,9 +975,7 @@ var Core;
         function ParameterizedTasksImpl() {
             var _this = _super.call(this) || this;
             _this.tasks = {};
-            _this.onComplete(function () {
-                _this.reset();
-            });
+            _this.onComplete(function () { return _this.reset(); });
             return _this;
         }
         ParameterizedTasksImpl.prototype.addTask = function (name, task) {
@@ -990,23 +990,20 @@ var Core;
             if (this.tasksExecuted) {
                 return;
             }
-            var theArgs = params;
-            var keys = _.keys(this.tasks);
-            keys.forEach(function (name) {
-                var task = _this.tasks[name];
-                if (angular.isFunction(task)) {
-                    log.debug("Executing task: ", name, " with parameters: ", theArgs);
-                    try {
-                        task.apply(task, theArgs);
-                    }
-                    catch (e) {
-                        log.debug("Failed to execute task: ", name, " error: ", e);
-                    }
-                }
-            });
+            _.forOwn(this.tasks, function (task, name) { return _this.executeParameterizedTask(name, task, params); });
             this.tasksExecuted = true;
-            if (angular.isFunction(this._onComplete)) {
-                this._onComplete();
+            this.callbackOnComplete();
+        };
+        ParameterizedTasksImpl.prototype.executeParameterizedTask = function (name, task, params) {
+            if (_.isNull(task)) {
+                return;
+            }
+            log.debug("Executing task:", name, "with parameters:", params);
+            try {
+                task.apply(task, params);
+            }
+            catch (e) {
+                log.debug("Failed to execute task:", name, "error:", e);
             }
         };
         return ParameterizedTasksImpl;

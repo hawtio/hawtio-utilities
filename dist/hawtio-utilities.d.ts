@@ -369,14 +369,14 @@ declare namespace ControllerHelpers {
 }
 declare namespace Core {
     interface Tasks {
-        addTask: (name: string, task: () => void) => void;
-        execute: () => void;
-        reset: () => void;
-        onComplete: (cb: () => void) => void;
+        addTask(name: string, task: () => void): void;
+        execute(): void;
+        reset(): void;
+        onComplete(callback: () => void): void;
     }
     interface ParameterizedTasks extends Tasks {
-        addTask: (name: string, task: (...params: any[]) => void) => void;
-        execute: (...params: any[]) => void;
+        addTask(name: string, task: (...params: any[]) => void): void;
+        execute(...params: any[]): void;
     }
     interface TaskMap {
         [name: string]: () => void;
@@ -385,24 +385,26 @@ declare namespace Core {
         [name: string]: (...params: any[]) => void;
     }
     class TasksImpl implements Tasks {
-        tasks: TaskMap;
-        tasksExecuted: boolean;
-        _onComplete: () => void;
+        protected tasks: TaskMap;
+        protected tasksExecuted: boolean;
+        protected onCompleteCallback: () => void;
         addTask(name: string, task: () => void): void;
         private executeTask(name, task);
-        onComplete(cb: () => void): void;
+        onComplete(callback: () => void): void;
         execute(): void;
+        protected callbackOnComplete(): void;
         reset(): void;
     }
     class ParameterizedTasksImpl extends TasksImpl implements ParameterizedTasks {
-        tasks: ParameterizedTaskMap;
+        protected tasks: ParameterizedTaskMap;
         constructor();
         addTask(name: string, task: (...params: any[]) => void): void;
         execute(...params: any[]): void;
+        private executeParameterizedTask(name, task, params);
     }
-    var postLoginTasks: Tasks;
-    var preLogoutTasks: Tasks;
-    var postLogoutTasks: Tasks;
+    const postLoginTasks: Tasks;
+    const preLogoutTasks: Tasks;
+    const postLogoutTasks: Tasks;
 }
 declare namespace Core {
     const lazyLoaders: {};
