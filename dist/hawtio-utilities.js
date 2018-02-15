@@ -3389,6 +3389,7 @@ var UI;
 /// <reference path="../tasks.ts"/>
 var EventServices;
 (function (EventServices) {
+    initializeTasks.$inject = ["$rootScope", "locationChangeStartTasks", "postLoginTasks", "preLogoutTasks", "postLogoutTasks"];
     var pluginName = 'hawtio-core-event-services';
     var log = Logger.get(pluginName);
     angular.module(pluginName, [])
