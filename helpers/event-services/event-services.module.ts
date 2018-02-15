@@ -20,11 +20,15 @@ namespace EventServices {
 
   function initializeTasks($rootScope, locationChangeStartTasks, postLoginTasks, preLogoutTasks, postLogoutTasks): void {
     'ngInject';
-    preLogoutTasks.addTask("ResetPreLogoutTasks", () => preLogoutTasks.reset());
-    preLogoutTasks.addTask("ResetPostLoginTasks", () => preLogoutTasks.reset());
+    // Reset pre/post-logout tasks after login
+    postLoginTasks.addTask("ResetPreLogoutTasks", () => preLogoutTasks.reset());
     postLoginTasks.addTask("ResetPostLogoutTasks", () => postLogoutTasks.reset());
+    // Reset pre-login tasks before logout
+    preLogoutTasks.addTask("ResetPostLoginTasks", () => postLoginTasks.reset());
+
     $rootScope.$on('$locationChangeStart', ($event, newUrl, oldUrl) =>
       locationChangeStartTasks.execute($event, newUrl, oldUrl));
+
     log.debug("Event services loaded");
   }
 

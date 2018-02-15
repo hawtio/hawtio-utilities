@@ -3399,9 +3399,11 @@ var EventServices;
         .run(initializeTasks);
     function initializeTasks($rootScope, locationChangeStartTasks, postLoginTasks, preLogoutTasks, postLogoutTasks) {
         'ngInject';
-        preLogoutTasks.addTask("ResetPreLogoutTasks", function () { return preLogoutTasks.reset(); });
-        preLogoutTasks.addTask("ResetPostLoginTasks", function () { return preLogoutTasks.reset(); });
+        // Reset pre/post-logout tasks after login
+        postLoginTasks.addTask("ResetPreLogoutTasks", function () { return preLogoutTasks.reset(); });
         postLoginTasks.addTask("ResetPostLogoutTasks", function () { return postLogoutTasks.reset(); });
+        // Reset pre-login tasks before logout
+        preLogoutTasks.addTask("ResetPostLoginTasks", function () { return postLoginTasks.reset(); });
         $rootScope.$on('$locationChangeStart', function ($event, newUrl, oldUrl) {
             return locationChangeStartTasks.execute($event, newUrl, oldUrl);
         });
