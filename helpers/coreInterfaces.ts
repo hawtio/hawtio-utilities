@@ -6,26 +6,26 @@ namespace Core {
    * Typescript interface that represents the UserDetails service
    */
   export interface UserDetails {
-    username: string
-    password: string
-    loginDetails?: any
-    token?: string
+    username: string;
+    password: string;
+    loginDetails?: any;
+    token?: string;
   }
 
   /**
    * Typescript interface that represents the options needed to connect to another JVM
    */
   export interface ConnectOptions {
-    scheme: String;
-    host?: String;
-    port?: Number;
-    path?: String;
+    scheme: string;
+    host?: string;
+    port?: number;
+    path?: string;
     useProxy: boolean;
-    jolokiaUrl?: String;
-    userName: String;
-    password: String;
-    view: String;
-    name: String;
+    jolokiaUrl?: string;
+    userName: string;
+    password: string;
+    view: string;
+    name: string;
     secure: boolean;
   }
 
