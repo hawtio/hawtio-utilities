@@ -6,9 +6,10 @@ namespace Core {
    * Typescript interface that represents the UserDetails service
    */
   export interface UserDetails {
-    username: String
-    password: String
-    loginDetails?: Object
+    username: string
+    password: string
+    loginDetails?: any
+    token?: string
   }
 
   /**
