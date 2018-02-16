@@ -1023,7 +1023,8 @@ var Core;
 /// <reference path="tasks.ts"/>
 var Core;
 (function (Core) {
-    var log = log || Logger.get("Core");
+    var log = Logger.get("hawtio-core");
+    var LOGOUT_URL = 'auth/logout';
     Core.lazyLoaders = {};
     Core.numberTypeNames = {
         'byte': true,
@@ -1401,25 +1402,24 @@ var Core;
      * @param {*} userDetails
      * @param {Object} localStorage
      * @param {Object} $scope
-     * @param {Function} successCB
-     * @param {Function} errorCB
+     * @param {Function} onSuccess
+     * @param {Function} onError
      *
      */
-    function logout(jolokiaUrl, userDetails, localStorage, $scope, successCB, errorCB) {
-        if (successCB === void 0) { successCB = null; }
-        if (errorCB === void 0) { errorCB = null; }
+    function logout(jolokiaUrl, userDetails, localStorage, $scope, onSuccess, onError) {
+        if (onSuccess === void 0) { onSuccess = null; }
+        if (onError === void 0) { onError = null; }
         if (jolokiaUrl) {
-            var url_1 = "auth/logout/";
             executePreLogoutTasks(function () {
-                $.ajax(url_1, {
-                    type: "POST",
+                $.ajax(LOGOUT_URL, {
+                    type: "GET",
                     success: function () {
                         userDetails.username = null;
                         userDetails.password = null;
                         userDetails.loginDetails = null;
                         clearLocalStorageOnLogout(localStorage);
-                        if (successCB && angular.isFunction(successCB)) {
-                            successCB();
+                        if (onSuccess && angular.isFunction(onSuccess)) {
+                            onSuccess();
                         }
                         Core.$apply($scope);
                     },
@@ -1441,8 +1441,8 @@ var Core;
                                 log.debug('Failed to log out,', error);
                                 break;
                         }
-                        if (errorCB && angular.isFunction(errorCB)) {
-                            errorCB();
+                        if (onError && angular.isFunction(onError)) {
+                            onError();
                         }
                         Core.$apply($scope);
                     }

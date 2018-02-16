@@ -19,9 +19,10 @@ declare namespace Core {
      * Typescript interface that represents the UserDetails service
      */
     interface UserDetails {
-        username: String;
-        password: String;
-        loginDetails?: Object;
+        username: string;
+        password: string;
+        loginDetails?: any;
+        token?: string;
     }
     /**
      * Typescript interface that represents the options needed to connect to another JVM
@@ -521,11 +522,11 @@ declare namespace Core {
      * @param {*} userDetails
      * @param {Object} localStorage
      * @param {Object} $scope
-     * @param {Function} successCB
-     * @param {Function} errorCB
+     * @param {Function} onSuccess
+     * @param {Function} onError
      *
      */
-    function logout(jolokiaUrl: any, userDetails: Core.UserDetails, localStorage: Storage, $scope: any, successCB?: () => void, errorCB?: () => void): void;
+    function logout(jolokiaUrl: any, userDetails: Core.UserDetails, localStorage: Storage, $scope: any, onSuccess?: () => void, onError?: () => void): void;
     /**
      * Executes common clearance tasks on the local storage when logging out.
      *
