@@ -1,5 +1,10 @@
 ### Change Log
 
+#### 3.2.2
+* Consolidate login/logout functions into hawtio-core `UserDetails` and discontinue `AuthService`.
+  Now you can use `postLoginTasks`/`preLogoutTasks`/`postLogoutTasks` services to
+  enhance login/logout behaviours.
+
 #### 3.2.1
 * Expose `clearLocalStorageOnLogout()` function so that the task can be invoked from other plugins
 * Remove `ConnectToServerOptions` interface in favor of shorter `ConnectOptions`
