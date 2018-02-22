@@ -256,7 +256,6 @@ var UrlHelpers;
 var Core;
 (function (Core) {
     var _urlPrefix = null;
-    Core.connectionSettingsKey = "jvmConnect";
     /**
      * Private method to support testing.
      *
@@ -919,112 +918,12 @@ var ControllerHelpers;
     }
     ControllerHelpers.reloadWhenParametersChange = reloadWhenParametersChange;
 })(ControllerHelpers || (ControllerHelpers = {}));
-/// <reference path="includes.ts"/>
-var Core;
-(function (Core) {
-    var log = Logger.get("hawtio-core-tasks");
-    var TasksImpl = (function () {
-        function TasksImpl() {
-            this.tasks = {};
-            this.tasksExecuted = false;
-            this.onCompleteCallback = null;
-        }
-        TasksImpl.prototype.addTask = function (name, task) {
-            this.tasks[name] = task;
-            if (this.tasksExecuted) {
-                this.executeTask(name, task);
-            }
-        };
-        TasksImpl.prototype.executeTask = function (name, task) {
-            if (_.isNull(task)) {
-                return;
-            }
-            log.debug("Executing task:", name);
-            try {
-                task();
-            }
-            catch (error) {
-                log.debug("Failed to execute task:", name, "error:", error);
-            }
-        };
-        TasksImpl.prototype.onComplete = function (callback) {
-            this.onCompleteCallback = callback;
-        };
-        TasksImpl.prototype.execute = function () {
-            var _this = this;
-            if (this.tasksExecuted) {
-                return;
-            }
-            _.forOwn(this.tasks, function (task, name) { return _this.executeTask(name, task); });
-            this.tasksExecuted = true;
-            this.callbackOnComplete();
-        };
-        TasksImpl.prototype.callbackOnComplete = function () {
-            if (!_.isNull(this.onCompleteCallback)) {
-                this.onCompleteCallback();
-            }
-        };
-        TasksImpl.prototype.reset = function () {
-            this.tasksExecuted = false;
-        };
-        return TasksImpl;
-    }());
-    Core.TasksImpl = TasksImpl;
-    var ParameterizedTasksImpl = (function (_super) {
-        __extends(ParameterizedTasksImpl, _super);
-        function ParameterizedTasksImpl() {
-            var _this = _super.call(this) || this;
-            _this.tasks = {};
-            _this.onComplete(function () { return _this.reset(); });
-            return _this;
-        }
-        ParameterizedTasksImpl.prototype.addTask = function (name, task) {
-            this.tasks[name] = task;
-        };
-        ParameterizedTasksImpl.prototype.execute = function () {
-            var _this = this;
-            var params = [];
-            for (var _i = 0; _i < arguments.length; _i++) {
-                params[_i] = arguments[_i];
-            }
-            if (this.tasksExecuted) {
-                return;
-            }
-            _.forOwn(this.tasks, function (task, name) { return _this.executeParameterizedTask(name, task, params); });
-            this.tasksExecuted = true;
-            this.callbackOnComplete();
-        };
-        ParameterizedTasksImpl.prototype.executeParameterizedTask = function (name, task, params) {
-            if (_.isNull(task)) {
-                return;
-            }
-            log.debug("Executing task:", name, "with parameters:", params);
-            try {
-                task.apply(task, params);
-            }
-            catch (e) {
-                log.debug("Failed to execute task:", name, "error:", e);
-            }
-        };
-        return ParameterizedTasksImpl;
-    }(TasksImpl));
-    Core.ParameterizedTasksImpl = ParameterizedTasksImpl;
-    /*
-     * These tasks are exported just for convenience of other helper functions.
-     * Users should always utilise them via AngularJS dependency injection.
-     */
-    Core.postLoginTasks = new Core.TasksImpl();
-    Core.preLogoutTasks = new Core.TasksImpl();
-    Core.postLogoutTasks = new Core.TasksImpl();
-})(Core || (Core = {}));
 /// <reference path="baseHelpers.ts"/>
 /// <reference path="controllerHelpers.ts"/>
 /// <reference path="coreInterfaces.ts"/>
-/// <reference path="tasks.ts"/>
 var Core;
 (function (Core) {
     var log = Logger.get("hawtio-core");
-    var LOGOUT_URL = 'auth/logout';
     Core.lazyLoaders = {};
     Core.numberTypeNames = {
         'byte': true,
@@ -1376,98 +1275,6 @@ var Core;
         return answer;
     }
     Core.parseMBean = parseMBean;
-    function executePostLoginTasks() {
-        log.debug("Executing post login tasks");
-        Core.postLoginTasks.execute();
-    }
-    Core.executePostLoginTasks = executePostLoginTasks;
-    function executePreLogoutTasks(onComplete) {
-        log.debug("Executing pre logout tasks");
-        Core.preLogoutTasks.onComplete(onComplete);
-        Core.preLogoutTasks.execute();
-    }
-    Core.executePreLogoutTasks = executePreLogoutTasks;
-    function executePostLogoutTasks(onComplete) {
-        log.debug("Executing post logout tasks");
-        Core.postLogoutTasks.onComplete(onComplete);
-        Core.postLogoutTasks.execute();
-    }
-    Core.executePostLogoutTasks = executePostLogoutTasks;
-    /**
-     * log out the current user
-     * @for Core
-     * @static
-     * @method logout
-     * @param {String} jolokiaUrl
-     * @param {*} userDetails
-     * @param {Object} localStorage
-     * @param {Object} $scope
-     * @param {Function} onSuccess
-     * @param {Function} onError
-     *
-     */
-    function logout(jolokiaUrl, userDetails, localStorage, $scope, onSuccess, onError) {
-        if (onSuccess === void 0) { onSuccess = null; }
-        if (onError === void 0) { onError = null; }
-        if (jolokiaUrl) {
-            executePreLogoutTasks(function () {
-                $.ajax(LOGOUT_URL, {
-                    type: "GET",
-                    success: function () {
-                        userDetails.username = null;
-                        userDetails.password = null;
-                        userDetails.loginDetails = null;
-                        clearLocalStorageOnLogout(localStorage);
-                        if (onSuccess && angular.isFunction(onSuccess)) {
-                            onSuccess();
-                        }
-                        Core.$apply($scope);
-                    },
-                    error: function (xhr, textStatus, error) {
-                        userDetails.username = null;
-                        userDetails.password = null;
-                        userDetails.loginDetails = null;
-                        clearLocalStorageOnLogout(localStorage);
-                        // TODO, more feedback
-                        switch (xhr.status) {
-                            case 401:
-                            case 403:
-                                log.debug('Failed to log out,', error);
-                                break;
-                            case 0:
-                                // this may happen during onbeforeunload -> logout, when XHR is cancelled
-                                break;
-                            default:
-                                log.debug('Failed to log out,', error);
-                                break;
-                        }
-                        if (onError && angular.isFunction(onError)) {
-                            onError();
-                        }
-                        Core.$apply($scope);
-                    }
-                });
-            });
-        }
-    }
-    Core.logout = logout;
-    /**
-     * Executes common clearance tasks on the local storage when logging out.
-     *
-     * @param localStorage
-     */
-    function clearLocalStorageOnLogout(localStorage) {
-        delete localStorage['userDetails'];
-        var jvmConnect = angular.fromJson(localStorage[Core.connectionSettingsKey]);
-        _.forOwn(jvmConnect, function (property) {
-            delete property['userName'];
-            delete property['password'];
-        });
-        localStorage.setItem(Core.connectionSettingsKey, angular.toJson(jvmConnect));
-        localStorage.removeItem('activemqUserName');
-        localStorage.removeItem('activemqPassword');
-    }
-    Core.clearLocalStorageOnLogout = clearLocalStorageOnLogout;
     /**
      * Creates a link by appending the current $location.search() hash to the given href link,
      * removing any required parameters from the link
@@ -2142,16 +1949,6 @@ var Core;
         return answer;
     }
     Core.extractHashURL = extractHashURL;
-    function authHeaderValue(userDetails) {
-        return getBasicAuthHeader(userDetails.username, userDetails.password);
-    }
-    Core.authHeaderValue = authHeaderValue;
-    function getBasicAuthHeader(username, password) {
-        var authInfo = username + ":" + password;
-        authInfo = window.btoa(authInfo);
-        return "Basic " + authInfo;
-    }
-    Core.getBasicAuthHeader = getBasicAuthHeader;
     var httpRegex = new RegExp('^(https?):\/\/(([^:/?#]*)(?::([0-9]+))?)');
     /**
      * Breaks a URL up into a nice object
@@ -3385,30 +3182,3 @@ var UI;
     }
     UI.getScrollbarWidth = getScrollbarWidth;
 })(UI || (UI = {}));
-/// <reference path="../includes.ts"/>
-/// <reference path="../tasks.ts"/>
-var EventServices;
-(function (EventServices) {
-    initializeTasks.$inject = ["$rootScope", "locationChangeStartTasks", "postLoginTasks", "preLogoutTasks", "postLogoutTasks"];
-    var pluginName = 'hawtio-core-event-services';
-    var log = Logger.get(pluginName);
-    angular.module(pluginName, [])
-        .factory('locationChangeStartTasks', function () { return new Core.ParameterizedTasksImpl(); })
-        .factory('postLoginTasks', function () { return Core.postLoginTasks; })
-        .factory('preLogoutTasks', function () { return Core.preLogoutTasks; })
-        .factory('postLogoutTasks', function () { return Core.postLogoutTasks; })
-        .run(initializeTasks);
-    function initializeTasks($rootScope, locationChangeStartTasks, postLoginTasks, preLogoutTasks, postLogoutTasks) {
-        'ngInject';
-        // Reset pre/post-logout tasks after login
-        postLoginTasks.addTask("ResetPreLogoutTasks", function () { return preLogoutTasks.reset(); });
-        postLoginTasks.addTask("ResetPostLogoutTasks", function () { return postLogoutTasks.reset(); });
-        // Reset pre-login tasks before logout
-        preLogoutTasks.addTask("ResetPostLoginTasks", function () { return postLoginTasks.reset(); });
-        $rootScope.$on('$locationChangeStart', function ($event, newUrl, oldUrl) {
-            return locationChangeStartTasks.execute($event, newUrl, oldUrl);
-        });
-        log.debug("Event services loaded");
-    }
-    hawtioPluginLoader.addModule(pluginName);
-})(EventServices || (EventServices = {}));

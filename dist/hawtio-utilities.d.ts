@@ -16,28 +16,19 @@ declare namespace StringHelpers {
 }
 declare namespace Core {
     /**
-     * Typescript interface that represents the UserDetails service
-     */
-    interface UserDetails {
-        username: string;
-        password: string;
-        loginDetails?: any;
-        token?: string;
-    }
-    /**
      * Typescript interface that represents the options needed to connect to another JVM
      */
     interface ConnectOptions {
-        scheme: String;
-        host?: String;
-        port?: Number;
-        path?: String;
+        scheme: string;
+        host?: string;
+        port?: number;
+        path?: string;
         useProxy: boolean;
-        jolokiaUrl?: String;
-        userName: String;
-        password: String;
-        view: String;
-        name: String;
+        jolokiaUrl?: string;
+        userName: string;
+        password: string;
+        view: string;
+        name: string;
         secure: boolean;
     }
     interface ConnectionMap {
@@ -101,7 +92,6 @@ declare namespace UrlHelpers {
  * @module Core
  */
 declare namespace Core {
-    const connectionSettingsKey = "jvmConnect";
     /**
      * Private method to support testing.
      *
@@ -369,45 +359,6 @@ declare namespace ControllerHelpers {
     function reloadWhenParametersChange($route: any, $scope: any, $location: any, parameters?: string[]): void;
 }
 declare namespace Core {
-    interface Tasks {
-        addTask(name: string, task: () => void): void;
-        execute(): void;
-        reset(): void;
-        onComplete(callback: () => void): void;
-    }
-    interface ParameterizedTasks extends Tasks {
-        addTask(name: string, task: (...params: any[]) => void): void;
-        execute(...params: any[]): void;
-    }
-    interface TaskMap {
-        [name: string]: () => void;
-    }
-    interface ParameterizedTaskMap {
-        [name: string]: (...params: any[]) => void;
-    }
-    class TasksImpl implements Tasks {
-        protected tasks: TaskMap;
-        protected tasksExecuted: boolean;
-        protected onCompleteCallback: () => void;
-        addTask(name: string, task: () => void): void;
-        private executeTask(name, task);
-        onComplete(callback: () => void): void;
-        execute(): void;
-        protected callbackOnComplete(): void;
-        reset(): void;
-    }
-    class ParameterizedTasksImpl extends TasksImpl implements ParameterizedTasks {
-        protected tasks: ParameterizedTaskMap;
-        constructor();
-        addTask(name: string, task: (...params: any[]) => void): void;
-        execute(...params: any[]): void;
-        private executeParameterizedTask(name, task, params);
-    }
-    const postLoginTasks: Tasks;
-    const preLogoutTasks: Tasks;
-    const postLogoutTasks: Tasks;
-}
-declare namespace Core {
     const lazyLoaders: {};
     const numberTypeNames: {
         'byte': boolean;
@@ -510,29 +461,6 @@ declare namespace Core {
     function logLevelClass(level: string): "error" | "" | "warning" | "info";
     function toPath(hashUrl: string): string;
     function parseMBean(mbean: any): any;
-    function executePostLoginTasks(): void;
-    function executePreLogoutTasks(onComplete: () => void): void;
-    function executePostLogoutTasks(onComplete: () => void): void;
-    /**
-     * log out the current user
-     * @for Core
-     * @static
-     * @method logout
-     * @param {String} jolokiaUrl
-     * @param {*} userDetails
-     * @param {Object} localStorage
-     * @param {Object} $scope
-     * @param {Function} onSuccess
-     * @param {Function} onError
-     *
-     */
-    function logout(jolokiaUrl: any, userDetails: Core.UserDetails, localStorage: Storage, $scope: any, onSuccess?: () => void, onError?: () => void): void;
-    /**
-     * Executes common clearance tasks on the local storage when logging out.
-     *
-     * @param localStorage
-     */
-    function clearLocalStorageOnLogout(localStorage: Storage): void;
     /**
      * Creates a link by appending the current $location.search() hash to the given href link,
      * removing any required parameters from the link
@@ -727,8 +655,6 @@ declare namespace Core {
      */
     function forEachLeafFolder(folders: any, fn: any): void;
     function extractHashURL(url: string): string;
-    function authHeaderValue(userDetails: Core.UserDetails): string;
-    function getBasicAuthHeader(username: string, password: string): string;
     /**
      * Breaks a URL up into a nice object
      * @method parseUrl
@@ -1262,6 +1188,4 @@ declare namespace UI {
     function getIfSet(attribute: any, $attr: any, def: any): any;
     function observe($scope: any, $attrs: any, key: any, defValue: any, callbackFunc?: any): void;
     function getScrollbarWidth(): number;
-}
-declare namespace EventServices {
 }
