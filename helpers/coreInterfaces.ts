@@ -3,16 +3,6 @@
 namespace Core {
 
   /**
-   * Typescript interface that represents the UserDetails service
-   */
-  export interface UserDetails {
-    username: string;
-    password: string;
-    loginDetails?: any;
-    token?: string;
-  }
-
-  /**
    * Typescript interface that represents the options needed to connect to another JVM
    */
   export interface ConnectOptions {

@@ -1,13 +1,10 @@
 /// <reference path="baseHelpers.ts"/>
 /// <reference path="controllerHelpers.ts"/>
 /// <reference path="coreInterfaces.ts"/>
-/// <reference path="tasks.ts"/>
 
 namespace Core {
 
   const log = Logger.get("hawtio-core");
-
-  const LOGOUT_URL: string = 'auth/logout';
 
   export const lazyLoaders = {};
 
@@ -343,102 +340,6 @@ namespace Core {
       });
     }
     return answer;
-  }
-
-  export function executePostLoginTasks(): void {
-    log.debug("Executing post login tasks");
-    Core.postLoginTasks.execute();
-  }
-
-  export function executePreLogoutTasks(onComplete: () => void): void {
-    log.debug("Executing pre logout tasks");
-    Core.preLogoutTasks.onComplete(onComplete);
-    Core.preLogoutTasks.execute();
-  }
-
-  export function executePostLogoutTasks(onComplete: () => void): void {
-    log.debug("Executing post logout tasks");
-    Core.postLogoutTasks.onComplete(onComplete);
-    Core.postLogoutTasks.execute();
-  }
-
-  /**
-   * log out the current user
-   * @for Core
-   * @static
-   * @method logout
-   * @param {String} jolokiaUrl
-   * @param {*} userDetails
-   * @param {Object} localStorage
-   * @param {Object} $scope
-   * @param {Function} onSuccess
-   * @param {Function} onError
-   *
-   */
-  export function logout(jolokiaUrl,
-    userDetails: Core.UserDetails,
-    localStorage: Storage,
-    $scope,
-    onSuccess: () => void = null,
-    onError: () => void = null) {
-
-    if (jolokiaUrl) {
-      executePreLogoutTasks(() => {
-        $.ajax(LOGOUT_URL, {
-          type: "GET",
-          success: () => {
-            userDetails.username = null;
-            userDetails.password = null;
-            userDetails.loginDetails = null;
-            clearLocalStorageOnLogout(localStorage);
-            if (onSuccess && angular.isFunction(onSuccess)) {
-              onSuccess();
-            }
-            Core.$apply($scope);
-          },
-          error: (xhr, textStatus, error) => {
-            userDetails.username = null;
-            userDetails.password = null;
-            userDetails.loginDetails = null;
-            clearLocalStorageOnLogout(localStorage);
-            // TODO, more feedback
-            switch (xhr.status) {
-              case 401:
-              case 403:
-                log.debug('Failed to log out,', error);
-                break;
-              case 0:
-                // this may happen during onbeforeunload -> logout, when XHR is cancelled
-                break;
-              default:
-                log.debug('Failed to log out,', error);
-                break;
-            }
-            if (onError && angular.isFunction(onError)) {
-              onError();
-            }
-            Core.$apply($scope);
-          }
-        });
-      });
-    }
-  }
-
-  /**
-   * Executes common clearance tasks on the local storage when logging out.
-   * 
-   * @param localStorage
-   */
-  export function clearLocalStorageOnLogout(localStorage: Storage): void {
-    delete localStorage['userDetails'];
-    let jvmConnect = angular.fromJson(localStorage[connectionSettingsKey])
-    _.forOwn(jvmConnect, (property) => {
-      delete property['userName'];
-      delete property['password'];
-    });
-    localStorage.setItem(connectionSettingsKey, angular.toJson(jvmConnect));
-    localStorage.removeItem('activemqUserName');
-    localStorage.removeItem('activemqPassword');
   }
 
   /**
@@ -1120,16 +1021,6 @@ namespace Core {
       });
     }
     return answer;
-  }
-
-  export function authHeaderValue(userDetails: Core.UserDetails) {
-    return getBasicAuthHeader(<string>userDetails.username, <string>userDetails.password);
-  }
-
-  export function getBasicAuthHeader(username: string, password: string) {
-    let authInfo = username + ":" + password;
-    authInfo = window.btoa(authInfo);
-    return "Basic " + authInfo;
   }
 
   let httpRegex = new RegExp('^(https?):\/\/(([^:/?#]*)(?::([0-9]+))?)');

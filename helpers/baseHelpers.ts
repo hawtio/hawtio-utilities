@@ -8,9 +8,6 @@ namespace Core {
 
   let _urlPrefix: string = null;
 
-  export const connectionSettingsKey = "jvmConnect";
-
-
   /**
    * Private method to support testing.
    *
@@ -26,14 +23,14 @@ namespace Core {
    * @param path
    * @returns {string}
    */
-  export function url(path:string):string {
+  export function url(path: string): string {
     if (path) {
       if (_.startsWith(path, "/")) {
         if (!_urlPrefix) {
           // lets discover the base url via the base html element
           _urlPrefix = (<JQueryStatic>$)('base').attr('href') || "";
           if (_.endsWith(_urlPrefix, '/')) {
-              _urlPrefix = _urlPrefix.substring(0, _urlPrefix.length - 1);
+            _urlPrefix = _urlPrefix.substring(0, _urlPrefix.length - 1);
           }
         }
         if (_urlPrefix) {
@@ -49,7 +46,7 @@ namespace Core {
    *
    * @returns {string}
    */
-  export function windowLocation():Location {
+  export function windowLocation(): Location {
     return window.location;
   }
 
@@ -64,7 +61,7 @@ namespace Core {
    *
    * @private
    */
-  export function _resetJolokiaUrls():Array<String> {
+  export function _resetJolokiaUrls(): Array<String> {
     // Add any other known possible jolokia URLs here
     jolokiaUrls = [
       Core.url("jolokia"), // instance configured by hawtio-web war file
@@ -73,7 +70,7 @@ namespace Core {
     return jolokiaUrls;
   }
 
-  var jolokiaUrls:Array<String> = Core._resetJolokiaUrls();
+  var jolokiaUrls: Array<String> = Core._resetJolokiaUrls();
 
   /**
    * Trims the leading prefix from a string if its present
@@ -84,7 +81,7 @@ namespace Core {
    * @param {String} prefix
    * @return {String}
    */
-  export function trimLeading(text:string, prefix:string) {
+  export function trimLeading(text: string, prefix: string) {
     if (text && prefix) {
       if (_.startsWith(text, prefix) || text.indexOf(prefix) === 0) {
         return text.substring(prefix.length);
@@ -102,7 +99,7 @@ namespace Core {
    * @param {String} postfix
    * @return {String}
    */
-  export function trimTrailing(text:string, postfix:string): string {
+  export function trimTrailing(text: string, postfix: string): string {
     if (text && postfix) {
       if (_.endsWith(text, postfix)) {
         return text.substring(0, text.length - postfix.length);
@@ -132,7 +129,7 @@ namespace Core {
     extension: any;
   }
 
-  declare var chrome:Chrome;
+  declare var chrome: Chrome;
 
   export function isChromeApp() {
     var answer = false;
@@ -177,7 +174,7 @@ namespace Core {
    */
   export function getLocalStorage() {
     // TODO Create correct implementation of windowLocalStorage
-    var storage:WindowLocalStorage = window.localStorage || <any> (function() {
+    var storage: WindowLocalStorage = window.localStorage || <any>(function () {
       return dummyStorage;
     })();
     return storage;
@@ -192,7 +189,7 @@ namespace Core {
    * @param {any} value
    * @return {Array}
    */
-  export function asArray(value:any):any[] {
+  export function asArray(value: any): any[] {
     return angular.isArray(value) ? value : [value];
   }
 
@@ -207,7 +204,7 @@ namespace Core {
    * @param {Boolean} defaultValue default value to use if value is not defined
    * @return {Boolean}
    */
-  export function parseBooleanValue(value:any, defaultValue:boolean = false):boolean {
+  export function parseBooleanValue(value: any, defaultValue: boolean = false): boolean {
     if (!angular.isDefined(value) || !value) {
       return defaultValue;
     }
@@ -234,7 +231,7 @@ namespace Core {
     throw new Error("Can't convert value " + value + " to boolean");
   }
 
-  export function toString(value:any):string {
+  export function toString(value: any): string {
     if (angular.isNumber(value)) {
       return numberToString(value);
     } else {
@@ -248,7 +245,7 @@ namespace Core {
    * @param value
    * @returns {string}
    */
-  export function booleanToString(value:boolean):string {
+  export function booleanToString(value: boolean): string {
     return "" + value;
   }
 
@@ -259,7 +256,7 @@ namespace Core {
    * @param description
    * @returns {*}
    */
-  export function parseIntValue(value, description:string = "integer") {
+  export function parseIntValue(value, description: string = "integer") {
     if (angular.isString(value)) {
       try {
         return parseInt(value);
@@ -278,7 +275,7 @@ namespace Core {
    * @param value
    * @returns {string}
    */
-  export function numberToString(value:number):string {
+  export function numberToString(value: number): string {
     return "" + value;
   }
 
@@ -289,7 +286,7 @@ namespace Core {
    * @param description
    * @returns {*}
    */
-  export function parseFloatValue(value, description:string = "float") {
+  export function parseFloatValue(value, description: string = "float") {
     if (angular.isString(value)) {
       try {
         return parseFloat(value);
@@ -313,10 +310,10 @@ namespace Core {
    * @param {Array} paths an array of path names to navigate or a string of dot separated paths to navigate
    * @return {*} the last step on the path which is updated
    */
-  export function pathGet(object:any, paths:any) {
+  export function pathGet(object: any, paths: any) {
     var pathArray = (angular.isArray(paths)) ? paths : (paths || "").split(".");
     var value = object;
-    angular.forEach(pathArray, (name):any => {
+    angular.forEach(pathArray, (name): any => {
       if (value) {
         try {
           value = value[name];
@@ -343,7 +340,7 @@ namespace Core {
    * @param {Object} newValue the value to update
    * @return {*} the last step on the path which is updated
    */
-  export function pathSet(object:any, paths:any, newValue:any) {
+  export function pathSet(object: any, paths: any, newValue: any) {
     var pathArray = (angular.isArray(paths)) ? paths : (paths || "").split(".");
     var value = object;
     var lastIndex = pathArray.length - 1;
@@ -358,7 +355,7 @@ namespace Core {
     return value;
   }
 
-  function getPhase($scope:ng.IScope) {
+  function getPhase($scope: ng.IScope) {
     if ((<any>$scope).$$phase) {
       return (<any>$scope).$$phase;
     }
@@ -379,7 +376,7 @@ namespace Core {
    * @static
    * @param {*} $scope
    */
-  export function $applyNowOrLater($scope:ng.IScope) {
+  export function $applyNowOrLater($scope: ng.IScope) {
     if (getPhase($scope)) {
       setTimeout(() => {
         Core.$apply($scope);
@@ -412,7 +409,7 @@ namespace Core {
    * @static
    * @param {*} $scope
    */
-  export function $apply($scope:ng.IScope) {
+  export function $apply($scope: ng.IScope) {
     var phase = getPhase($scope);
     if (!phase) {
       $scope.$apply();
@@ -427,7 +424,7 @@ namespace Core {
    * @static
    * @param {*} $scope
    */
-  export function $digest($scope:ng.IScope) {
+  export function $digest($scope: ng.IScope) {
     var phase = getPhase($scope);
     if (!phase) {
       $scope.$digest();
@@ -448,7 +445,7 @@ namespace Core {
    * @param {Array} arrayOfElementNames
    * @return {Object}
    */
-  export function getOrCreateElements(domElement, arrayOfElementNames:string[]) {
+  export function getOrCreateElements(domElement, arrayOfElementNames: string[]) {
     var element = domElement;
     angular.forEach(arrayOfElementNames, name => {
       if (element) {
@@ -516,7 +513,7 @@ namespace Core {
    * @param {String} str
    * @return {Boolean}
    */
-  export function isBlank(str:string) {
+  export function isBlank(str: string) {
     if (str === undefined || str === null) {
       return true;
     }
@@ -534,7 +531,7 @@ namespace Core {
    * @param text
    * @returns {string}
    */
-  export function trimQuotes(text:string) {
+  export function trimQuotes(text: string) {
     return _.trim(text, ' \'"');
   }
 
@@ -544,7 +541,7 @@ namespace Core {
    * @param value
    * @returns {*}
    */
-  export function humanizeValue(value:any):string {
+  export function humanizeValue(value: any): string {
     if (value) {
       var text = value + '';
       if (Core.isBlank(text)) {
