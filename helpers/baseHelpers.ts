@@ -1,9 +1,6 @@
-/// <reference path="includes.ts"/>
 /// <reference path="stringHelpers.ts"/>
 /// <reference path="urlHelpers.ts"/>
-/**
- * @module Core
- */
+
 namespace Core {
 
   let _urlPrefix: string = null;

@@ -1,4 +1,16 @@
 /// <reference types="angular" />
+declare namespace ArrayHelpers {
+    /**
+     * Removes elements in the target array based on the new collection, returns true if
+     * any changes were made
+     */
+    function removeElements(collection: Array<any>, newCollection: Array<any>, index?: string): boolean;
+    /**
+     * Changes the existing collection to match the new collection to avoid re-assigning
+     * the array pointer, returns true if the array size has changed
+     */
+    function sync(collection: Array<any>, newCollection: Array<any>, index?: string): boolean;
+}
 declare namespace StringHelpers {
     function isDate(str: any): boolean;
     /**
@@ -13,44 +25,6 @@ declare namespace StringHelpers {
      * @returns {string}
      */
     function toString(obj: any): string;
-}
-declare namespace Core {
-    /**
-     * Typescript interface that represents the options needed to connect to another JVM
-     */
-    interface ConnectOptions {
-        scheme: string;
-        host?: string;
-        port?: number;
-        path?: string;
-        useProxy: boolean;
-        jolokiaUrl?: string;
-        userName: string;
-        password: string;
-        view: string;
-        name: string;
-        secure: boolean;
-    }
-    interface ConnectionMap {
-        [name: string]: ConnectOptions;
-    }
-    /**
-     * Factory to create an instance of ConnectToServerOptions
-     * @returns {ConnectToServerOptions}
-     */
-    function createConnectOptions(options?: any): ConnectOptions;
-}
-declare namespace ArrayHelpers {
-    /**
-     * Removes elements in the target array based on the new collection, returns true if
-     * any changes were made
-     */
-    function removeElements(collection: Array<any>, newCollection: Array<any>, index?: string): boolean;
-    /**
-     * Changes the existing collection to match the new collection to avoid re-assigning
-     * the array pointer, returns true if the array size has changed
-     */
-    function sync(collection: Array<any>, newCollection: Array<any>, index?: string): boolean;
 }
 declare namespace UrlHelpers {
     /**
@@ -88,9 +62,6 @@ declare namespace UrlHelpers {
      */
     function escapeColons(url: string): string;
 }
-/**
- * @module Core
- */
 declare namespace Core {
     /**
      * Private method to support testing.
@@ -858,9 +829,6 @@ declare namespace FilterHelpers {
      */
     function searchObject(object: any, filter: string, maxDepth?: number, depth?: number): boolean;
 }
-/**
- * @module Core
- */
 declare namespace Core {
     /**
      * a NodeSelection interface so we can expose things like the objectName and the MBean's entries
@@ -1179,9 +1147,6 @@ declare namespace StorageHelpers {
     }
     function bindModelToLocalStorage(options: BindModelToLocalStorageOptions): void;
 }
-/**
- * @module UI
- */
 declare namespace UI {
     var scrollBarWidth: number;
     function findParentWith($scope: any, attribute: any): any;

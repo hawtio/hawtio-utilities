@@ -1,4 +1,3 @@
-/// <reference path="includes.ts"/>
 namespace Core {
 
   declare var log:Logging.Logger;

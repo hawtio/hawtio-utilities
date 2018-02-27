@@ -1,7 +1,3 @@
-/// <reference path="includes.ts"/>
-/**
- * @module UI
- */
 namespace UI {
 
   export var scrollBarWidth:number = null;

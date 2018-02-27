@@ -1,6 +1,5 @@
 /// <reference path="baseHelpers.ts"/>
 /// <reference path="controllerHelpers.ts"/>
-/// <reference path="coreInterfaces.ts"/>
 
 namespace Core {
 

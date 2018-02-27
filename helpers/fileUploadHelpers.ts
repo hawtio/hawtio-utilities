@@ -1,6 +1,6 @@
-/// <reference path="includes.ts"/>
 /// <reference path="baseHelpers.ts"/>
 /// <reference path="coreHelpers.ts"/>
+
 namespace FileUpload {
 
   // add angular-file-upload to the plugin loader too

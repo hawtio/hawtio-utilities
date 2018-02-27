@@ -1,5 +1,6 @@
 /// <reference path="coreHelpers.ts"/>
 /// <reference path="controllerHelpers.ts"/>
+
 namespace StorageHelpers {
 
   export interface BindModelToLocalStorageOptions {

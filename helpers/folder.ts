@@ -1,7 +1,3 @@
-/// <reference path="includes.ts"/>
-/**
- * @module Core
- */
 namespace Core {
   /**
    * a NodeSelection interface so we can expose things like the objectName and the MBean's entries

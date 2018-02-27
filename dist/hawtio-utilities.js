@@ -8,7 +8,45 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-/// <reference path="includes.ts"/>
+var ArrayHelpers;
+(function (ArrayHelpers) {
+    /**
+     * Removes elements in the target array based on the new collection, returns true if
+     * any changes were made
+     */
+    function removeElements(collection, newCollection, index) {
+        if (index === void 0) { index = 'id'; }
+        var oldLength = collection.length;
+        _.remove(collection, function (item) { return !_.some(newCollection, function (c) { return c[index] === item[index]; }); });
+        return collection.length !== oldLength;
+    }
+    ArrayHelpers.removeElements = removeElements;
+    /**
+     * Changes the existing collection to match the new collection to avoid re-assigning
+     * the array pointer, returns true if the array size has changed
+     */
+    function sync(collection, newCollection, index) {
+        if (index === void 0) { index = 'id'; }
+        var answer = removeElements(collection, newCollection, index);
+        if (newCollection) {
+            newCollection.forEach(function (item) {
+                var oldItem = _.find(collection, function (c) { return c[index] === item[index]; });
+                if (!oldItem) {
+                    answer = true;
+                    collection.push(item);
+                }
+                else {
+                    if (item !== oldItem) {
+                        angular.copy(item, oldItem);
+                        answer = true;
+                    }
+                }
+            });
+        }
+        return answer;
+    }
+    ArrayHelpers.sync = sync;
+})(ArrayHelpers || (ArrayHelpers = {}));
 var StringHelpers;
 (function (StringHelpers) {
     var dateRegex = /\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:/i;
@@ -57,75 +95,6 @@ var StringHelpers;
     }
     StringHelpers.toString = toString;
 })(StringHelpers || (StringHelpers = {}));
-/// <reference path="includes.ts"/>
-/// <reference path="stringHelpers.ts"/>
-var Core;
-(function (Core) {
-    /**
-     * Factory to create an instance of ConnectToServerOptions
-     * @returns {ConnectToServerOptions}
-     */
-    function createConnectOptions(options) {
-        var defaults = {
-            scheme: 'http',
-            host: null,
-            port: null,
-            path: null,
-            useProxy: true,
-            jolokiaUrl: null,
-            userName: null,
-            password: null,
-            view: null,
-            name: null,
-            secure: false
-        };
-        var opts = options || {};
-        return angular.extend(defaults, opts);
-    }
-    Core.createConnectOptions = createConnectOptions;
-})(Core || (Core = {}));
-/// <reference path="coreInterfaces.ts"/>
-/// <reference path="includes.ts"/>
-var ArrayHelpers;
-(function (ArrayHelpers) {
-    /**
-     * Removes elements in the target array based on the new collection, returns true if
-     * any changes were made
-     */
-    function removeElements(collection, newCollection, index) {
-        if (index === void 0) { index = 'id'; }
-        var oldLength = collection.length;
-        _.remove(collection, function (item) { return !_.some(newCollection, function (c) { return c[index] === item[index]; }); });
-        return collection.length !== oldLength;
-    }
-    ArrayHelpers.removeElements = removeElements;
-    /**
-     * Changes the existing collection to match the new collection to avoid re-assigning
-     * the array pointer, returns true if the array size has changed
-     */
-    function sync(collection, newCollection, index) {
-        if (index === void 0) { index = 'id'; }
-        var answer = removeElements(collection, newCollection, index);
-        if (newCollection) {
-            newCollection.forEach(function (item) {
-                var oldItem = _.find(collection, function (c) { return c[index] === item[index]; });
-                if (!oldItem) {
-                    answer = true;
-                    collection.push(item);
-                }
-                else {
-                    if (item !== oldItem) {
-                        angular.copy(item, oldItem);
-                        answer = true;
-                    }
-                }
-            });
-        }
-        return answer;
-    }
-    ArrayHelpers.sync = sync;
-})(ArrayHelpers || (ArrayHelpers = {}));
-/// <reference path="includes.ts"/>
 /// <reference path="baseHelpers.ts"/>
 var UrlHelpers;
 (function (UrlHelpers) {
@@ -247,12 +216,8 @@ var UrlHelpers;
     }
     UrlHelpers.escapeColons = escapeColons;
 })(UrlHelpers || (UrlHelpers = {}));
-/// <reference path="includes.ts"/>
 /// <reference path="stringHelpers.ts"/>
 /// <reference path="urlHelpers.ts"/>
-/**
- * @module Core
- */
 var Core;
 (function (Core) {
     var _urlPrefix = null;
@@ -801,7 +766,6 @@ var Core;
     }
     Core.humanizeValue = humanizeValue;
 })(Core || (Core = {}));
-/// <reference path="includes.ts"/>
 var HawtioCompile;
 (function (HawtioCompile) {
     var pluginName = 'hawtio-compile';
@@ -920,7 +884,6 @@ var ControllerHelpers;
 })(ControllerHelpers || (ControllerHelpers = {}));
 /// <reference path="baseHelpers.ts"/>
 /// <reference path="controllerHelpers.ts"/>
-/// <reference path="coreInterfaces.ts"/>
 var Core;
 (function (Core) {
     var log = Logger.get("hawtio-core");
@@ -2353,7 +2316,6 @@ var CoreFilters;
     });
     hawtioPluginLoader.addModule(pluginName);
 })(CoreFilters || (CoreFilters = {}));
-/// <reference path="includes.ts"/>
 /// <reference path="baseHelpers.ts"/>
 /// <reference path="coreHelpers.ts"/>
 var FileUpload;
@@ -2440,10 +2402,6 @@ var FilterHelpers;
     }
     FilterHelpers.searchObject = searchObject;
 })(FilterHelpers || (FilterHelpers = {}));
-/// <reference path="includes.ts"/>
-/**
- * @module Core
- */
 var Core;
 (function (Core) {
     /**
@@ -2665,7 +2623,6 @@ var Folder = (function (_super) {
     return Folder;
 }(Core.Folder));
 ;
-/// <reference path="includes.ts"/>
 var Core;
 (function (Core) {
     // interfaces that represent the response from 'list', 
@@ -2686,7 +2643,6 @@ var Core;
     }
     Core.operationToString = operationToString;
 })(Core || (Core = {}));
-/// <reference path="includes.ts"/>
 var Log;
 (function (Log) {
     var _stackRegex = /\s*at\s+([\w\.$_]+(\.([\w$_]+))*)\((.*)?:(\d+)\).*\[(.*)\]/;
@@ -2752,7 +2708,6 @@ var Log;
     }
     Log.formatStackLine = formatStackLine;
 })(Log || (Log = {}));
-/// <reference path="includes.ts"/>
 /**
  * Module that provides functions related to working with javascript objects
  */
@@ -2781,7 +2736,6 @@ var ObjectHelpers;
     }
     ObjectHelpers.toMap = toMap;
 })(ObjectHelpers || (ObjectHelpers = {}));
-/// <reference path="includes.ts"/>
 /// <reference path="urlHelpers.ts"/>
 var PluginHelpers;
 (function (PluginHelpers) {
@@ -2863,7 +2817,6 @@ var PollHelpers;
     }
     PollHelpers.setupPolling = setupPolling;
 })(PollHelpers || (PollHelpers = {}));
-/// <reference path="includes.ts"/>
 var Core;
 (function (Core) {
     var log = log || Logger.get("Core");
@@ -3123,10 +3076,6 @@ var StorageHelpers;
     }
     StorageHelpers.bindModelToLocalStorage = bindModelToLocalStorage;
 })(StorageHelpers || (StorageHelpers = {}));
-/// <reference path="includes.ts"/>
-/**
- * @module UI
- */
 var UI;
 (function (UI) {
     UI.scrollBarWidth = null;

@@ -1,4 +1,5 @@
 /// <reference path="baseHelpers.ts"/>
+
 namespace FilterHelpers {
 
   export var log:Logging.Logger = Logger.get("FilterHelpers");

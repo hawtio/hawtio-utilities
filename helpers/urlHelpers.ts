@@ -1,5 +1,5 @@
-/// <reference path="includes.ts"/>
 /// <reference path="baseHelpers.ts"/>
+
 namespace UrlHelpers {
 
   var log = Logger.get("UrlHelpers");

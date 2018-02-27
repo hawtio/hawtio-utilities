@@ -1,4 +1,3 @@
-/// <reference path="includes.ts"/>
 namespace Log {
 
   var _stackRegex = /\s*at\s+([\w\.$_]+(\.([\w$_]+))*)\((.*)?:(\d+)\).*\[(.*)\]/

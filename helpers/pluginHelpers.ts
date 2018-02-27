@@ -1,5 +1,5 @@
-/// <reference path="includes.ts"/>
 /// <reference path="urlHelpers.ts"/>
+
 namespace PluginHelpers {
 
   export interface PluginModule {
