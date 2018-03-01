@@ -1,3 +1,7 @@
+# DEPRECATED
+
+**This project is not being actively developed or maintained.**
+
 ## hawtio-utilities
 
 This module contains various helper functions and some classes that can be used by hawtio plugins.
